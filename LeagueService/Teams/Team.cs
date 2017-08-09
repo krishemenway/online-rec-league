@@ -15,13 +15,24 @@ namespace LeagueService.Teams
 	{
 		public Team(Func<IReadOnlyList<ITeamMember>> findTeamMembersFunc = null)
 		{
-			_lazyTeamMembers = new Lazy<IReadOnlyList<ITeamMember>>(findTeamMembersFunc ?? (() => new TeamMemberStore().FindTeamMembers(TeamId)));
+			_lazyTeamMembers = new Lazy<IReadOnlyList<ITeamMember>>(findTeamMembersFunc ?? (() => new TeamMemberStore().FindTeamMembers(new[]{TeamId})[TeamId]));
 		}
 
 		public Guid TeamId { get; set; }
 		public string Name { get; set; }
 
 		public IReadOnlyList<ITeamMember> TeamMembers => _lazyTeamMembers.Value;
+
+		public override bool Equals(object obj)
+		{
+			var objAsTeam = obj as ITeam;
+			return objAsTeam != null && TeamId.Equals(objAsTeam.TeamId);
+		}
+
+		public override int GetHashCode()
+		{
+			return TeamId.GetHashCode();
+		}
 
 		private Lazy<IReadOnlyList<ITeamMember>> _lazyTeamMembers;
 	}

@@ -13,6 +13,8 @@ namespace LeagueService.Users
 
 		DateTime JoinTime { get; }
 		DateTime? QuitTime { get; }
+
+		TimeZoneInfo DefaultTimezone { get; }
 	}
 
 	public class User : IUser
@@ -33,5 +35,16 @@ namespace LeagueService.Users
 		public DateTime? QuitTime { get; set; }
 		
 		public TimeZoneInfo DefaultTimezone { get; set; }
+
+		public override bool Equals(object obj)
+		{
+			var objAsTeam = obj as IUser;
+			return objAsTeam != null && UserId.Equals(objAsTeam.UserId);
+		}
+
+		public override int GetHashCode()
+		{
+			return UserId.GetHashCode();
+		}
 	}
 }

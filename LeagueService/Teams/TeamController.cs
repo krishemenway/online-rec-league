@@ -13,7 +13,7 @@ namespace LeagueService.Teams
 			return Json(new TeamRepository().CreateTeam(createTeamRequest, UserFromSession));
 		}
 
-		public IUser UserFromSession => new UserSessionStore().FindUser(HttpContext.Session);
+		public IUser UserFromSession => new UserSessionStore().FindUserOrThrow(HttpContext.Session);
 	}
 
 	public class CreateTeamRequest

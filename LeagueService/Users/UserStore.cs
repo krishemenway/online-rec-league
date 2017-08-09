@@ -61,7 +61,7 @@ namespace LeagueService.Users
 						request.Email,
 						request.JoinTime,
 						request.DefaultTimezone,
-						EmailValidated = false,
+						EmailValidated = false
 					};
 
 				var userId = connection.QuerySingle<Guid>(sql, sqlParams);

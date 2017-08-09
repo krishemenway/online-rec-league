@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using LeagueService.CommonDataTypes;
 using LeagueService.Users;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace LeagueService.Teams
 {
 	public interface ITeamMemberStore
 	{
-		ITeamMember JoinTeam(IUser user, ITeam team);
+		void JoinTeam(IUser user, ITeam team);
 		IReadOnlyDictionary<Guid, IReadOnlyList<ITeamMember>> FindTeamMembers(IReadOnlyList<Guid> teamIds);
 	}
 
@@ -24,30 +25,39 @@ namespace LeagueService.Teams
 					nickname,
 					joined_time as joinedtime
 				FROM
-					public.team_member
+					svc.team_member
 				WHERE
 					team_id = any(@TeamIds)";
 
 			using (var connection = AppDataConnection.Create())
 			{
-				return connection.Query<TeamMemberRecord>(sql, new { teamIds }).GroupBy(x => x.TeamId, x => x).ToDictionary(x => x.Key, x => (IReadOnlyList<ITeamMember>)x.Select(CreateTeamMember).ToList());
+				return connection
+					.Query<TeamMemberRecord>(sql, new { teamIds })
+					.GroupBy(x => x.TeamId, x => x)
+					.ToDictionary(x => x.Key, x => (IReadOnlyList<ITeamMember>)x.Select(CreateTeamMember).ToList());
 			}
 		}
 
-		public IReadOnlyList<ITeamMember> FindTeamMembers(Guid teamId)
+		public void JoinTeam(IUser user, ITeam team)
 		{
-			return new List<ITeamMember>();
-		}
+			const string sql = @"
+				INSERT INTO svc.team_member
+				(team_id, user_id, nickname, joined_time)
+				VALUES
+				(@TeamId, @UserId, @NickName, @JoinedTime)";
 
-		public ITeamMember JoinTeam(IUser user, ITeam team)
-		{
-			return null;
+			using (var connection = AppDataConnection.Create())
+			{
+				connection.Execute(sql, new { user.UserId, user.NickName, team.TeamId, JoinedTime = user.DefaultTimezone.CurrentTime() });
+			}
 		}
 
 		private ITeamMember CreateTeamMember(TeamMemberRecord record)
 		{
 			return new TeamMember
 				{
+					TeamId = record.TeamId,
+					UserId = record.UserId,
 					NickName = record.NickName,
 					JoinedTime = record.JoinedTime
 				};

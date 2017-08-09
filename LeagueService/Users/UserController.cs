@@ -31,6 +31,6 @@ namespace LeagueService.Users
 			throw new NotImplementedException();
 		}
 
-		public IUser UserFromSession => new UserSessionStore().FindUser(HttpContext.Session);
+		public IUser UserFromSession => new UserSessionStore().FindUserOrThrow(HttpContext.Session);
 	}
 }

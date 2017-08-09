@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Ladders\LadderChallengeTable.sql" />
+    <Content Include="Ladders\LadderChallenges\LadderChallengeTable.sql" />
     <Content Include="Users\UserTable.sql" />
   </ItemGroup>
   <ItemGroup>

@@ -35,7 +35,7 @@ namespace LeagueService.Users
 
 		public Result<IUserProfile> CreateUser(CreateNewUserRequest request, ISession session)
 		{
-			request.JoinTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById(request.DefaultTimezone));
+			request.JoinTime = TimeZoneInfo.FindSystemTimeZoneById(request.DefaultTimezone).CurrentTime();
 
 			var newUser = _userStore.CreateNewUser(request);
 			_userSessionStore.SetLoggedInUser(session, newUser);

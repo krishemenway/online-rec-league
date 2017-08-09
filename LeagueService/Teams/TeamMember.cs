@@ -17,6 +17,9 @@ namespace LeagueService.Teams
 		public IUser User { get; set; }
 		public ITeam Team { get; set; }
 
+		public Guid TeamId { get; set; }
+		public Guid UserId { get; set; }
+
 		public string NickName { get; set; }
 		public DateTime JoinedTime { get; set; }
 	}

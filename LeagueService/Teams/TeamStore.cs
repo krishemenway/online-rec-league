@@ -9,7 +9,6 @@ namespace LeagueService.Teams
 	{
 		bool TryFindTeam(Guid teamId, out ITeam team);
 		IReadOnlyList<ITeam> FindTeams(IReadOnlyList<Guid> teamIds);
-		ITeam UpsertTeam(UpsertTeamRequest request);
 	}
 
 	public class TeamStore : ITeamStore
@@ -34,22 +33,37 @@ namespace LeagueService.Teams
 			using (var connection = AppDataConnection.Create())
 			{
 				var teamMembersByTeamId = new Dictionary<Guid, IReadOnlyList<ITeamMember>>();
-				var teams = connection.Query<TeamRecord>(sql, new { teamIds }).Select(record => CreateTeam(record, () => teamMembersByTeamId[record.TeamId])).ToList();
+
+				var teams = connection
+					.Query<TeamRecord>(sql, new { teamIds })
+					.Select(record => CreateTeam(record, () => teamMembersByTeamId[record.TeamId]))
+					.ToList();
+
 				LoadTeamMembersForTeams(teams, teamMembersByTeamId);
+
 				return teams;
 			}
 		}
 
-		public ITeam UpsertTeam(UpsertTeamRequest request)
-		{
-			const string sql = @"
-				";
+		//public ITeam CreateTeam(UpsertTeamRequest request)
+		//{
+		//	const string sql = @"
+		//		INSERT INTO svc.team
+		//		()
+		//		VALUES
+		//		(@TeamId, @)
+		//		";
 
-			using (var connection = AppDataConnection.Create())
-			{
-				return null;
-			}
-		}
+		//	using (var connection = AppDataConnection.Create())
+		//	{
+		//		var teams = connection
+		//			.Query<TeamRecord>(sql, new { teamIds })
+		//			.Select(record => CreateTeam(record, () => teamMembersByTeamId[record.TeamId]))
+		//			.ToList();
+
+		//		return teams;
+		//	}
+		//}
 
 		private void LoadTeamMembersForTeams(List<ITeam> teams, Dictionary<Guid, IReadOnlyList<ITeamMember>> referenceTeamMembersByTeamId)
 		{
