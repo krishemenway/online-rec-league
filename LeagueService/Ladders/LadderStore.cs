@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LeagueService.Ladders
@@ -7,6 +8,9 @@ namespace LeagueService.Ladders
 	public interface ILadderStore
 	{
 		ILadder Find(Guid ladderId);
+		IReadOnlyList<ILadder> FindAll();
+
+		ILadder Create(CreateLadderRequest createLadderRequest);
 	}
 
 	public class LadderStore : ILadderStore
@@ -26,6 +30,38 @@ namespace LeagueService.Ladders
 			using (var connection = AppDataConnection.Create())
 			{
 				return connection.Query<LadderRecord>(sql, new { ladderId }).Select(Create).Single();
+			}
+		}
+
+		public IReadOnlyList<ILadder> FindAll()
+		{
+			const string sql = @"
+				SELECT
+					ladder_id as ladderid,
+					name,
+					uri_path as uripath,
+					esport_id,
+					forces_real_names as forcesrealnames
+				FROM svc.ladder";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				return connection.Query<LadderRecord>(sql).Select(Create).ToList();
+			}
+		}
+
+		public ILadder Create(CreateLadderRequest createLadderRequest)
+		{
+			const string sql = @"
+				INSERT INTO svc.ladder
+				(name,uri_path,esport_id)
+				VALUES
+				(@Name,@UriPath,@EsportId)
+				RETURNING ladder_id;";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				return Find(connection.Query<Guid>(sql, createLadderRequest).Single());
 			}
 		}
 

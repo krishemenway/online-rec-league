@@ -32,13 +32,14 @@ namespace LeagueService.Ladders
 				ladderTeamRanking.AddBefore(challengedLadderRanking, ladderChallenge.ChallengerLadderTeam);
 			}
 
-			var updateRankingRequests = new List<UpdateLadderRankRequest>();
+			var updateRankingRequests = new List<UpdateLadderRungRequest>();
 			var rank = 1;
+
 			foreach (var ladderTeam in ladderTeamRanking)
 			{
 				if(ladderTeam.Ranking != rank)
 				{
-					updateRankingRequests.Add(new UpdateLadderRankRequest { LadderTeamId = ladderTeam.LadderTeamId, NewRank = rank });
+					updateRankingRequests.Add(new UpdateLadderRungRequest { LadderTeamId = ladderTeam.LadderTeamId, CurrentRung = rank });
 				}
 
 				rank++;
@@ -46,7 +47,7 @@ namespace LeagueService.Ladders
 
 			if(updateRankingRequests.Any())
 			{
-				_ladderTeamStore.UpdateLadderRanks(updateRankingRequests);
+				_ladderTeamStore.UpdateLadderRungs(updateRankingRequests);
 			}
 		}
 

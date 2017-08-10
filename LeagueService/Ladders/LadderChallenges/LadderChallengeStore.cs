@@ -8,15 +8,30 @@ namespace LeagueService.Ladders
 {
 	public interface ILadderChallengeStore
 	{
+		void Create(SaveLadderChallengeRequest saveLadderChallengeRequest);
 		IReadOnlyList<ILadderChallenge> FindAll(ILadder ladder);
 		IReadOnlyList<ILadderChallenge> FindAll(ILadderTeam ladderTeam);
 	}
 
-	public class LadderChallengeStore : ILadderChallengeStore
+	internal class LadderChallengeStore : ILadderChallengeStore
 	{
 		public LadderChallengeStore(ILadderChallengeStateAnalyzer ladderChallengeStateAnalyzer = null)
 		{
 			_ladderChallengeStateAnalyzer = ladderChallengeStateAnalyzer ?? new LadderChallengeStateAnalyzer();
+		}
+
+		public void Create(SaveLadderChallengeRequest saveLadderChallengeRequest)
+		{
+			const string sql = @"
+				INSERT INTO svc.ladder_challenge
+				(ladder_id, challenger_ladder_team_id, challenged_ladder_team_id, challenge_time)
+				VALUES 
+				(@LadderId, @ChallengerLadderTeamId, @ChallengedLadderTeamId, @ChallengeTime)";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				connection.Execute(sql, saveLadderChallengeRequest);
+			}
 		}
 
 		public IReadOnlyList<ILadderChallenge> FindAll(ILadder ladder)
@@ -24,13 +39,13 @@ namespace LeagueService.Ladders
 			const string sql = @"
 				SELECT
 					ladder_challenge_id as ladderchallengeid,
-					challenger_team_id as challengerladderteamid,
-					challenged_team_id as challengedladderteamid,
-					match_results as matchresults,
-					challenge_successful as challengesuccessful,
-					match_results_reported_time as matchresultsreportedtime,
 					ladder_id as ladderid,
-					challenge_time as challengetime
+					challenger_ladder_team_id as challengerladderteamid,
+					challenged_ladder_team_id as challengedladderteamid,
+					challenge_time as challengetime,
+					challenge_successful as challengesuccessful,
+					match_results as matchresults,
+					match_results_reported_time as matchresultsreportedtime
 				FROM svc.ladder_challenge
 				WHERE ladder_id = @LadderId";
 
@@ -82,7 +97,7 @@ namespace LeagueService.Ladders
 		private readonly ILadderChallengeStateAnalyzer _ladderChallengeStateAnalyzer;
 	}
 
-	public class LadderChallengeRecord
+	internal class LadderChallengeRecord
 	{
 		public Guid LadderChallengeId { get; set; }
 		public Guid LadderId { get; set; }
@@ -96,5 +111,13 @@ namespace LeagueService.Ladders
 
 		public string MatchResults { get; set; }
 		public DateTime? MatchResultsReportedTime { get; set; }
+	}
+
+	public class SaveLadderChallengeRequest
+	{
+		public Guid LadderId { get; set; }
+		public Guid ChallengerLadderTeamId { get; set; }
+		public Guid ChallengedLadderTeamId { get; set; }
+		public DateTime ChallengedTime { get; set; }
 	}
 }

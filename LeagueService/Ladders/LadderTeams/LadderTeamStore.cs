@@ -9,7 +9,7 @@ namespace LeagueService.Ladders
 	public interface ILadderTeamStore
 	{
 		IReadOnlyList<ILadderTeam> FindAllTeams(ILadder ladder);
-		void UpdateLadderRanks(IReadOnlyList<UpdateLadderRankRequest> updateLadderRankRequests);
+		void UpdateLadderRungs(IReadOnlyList<UpdateLadderRungRequest> updateLadderRankRequests);
 	}
 
 	public class LadderTeamStore : ILadderTeamStore
@@ -34,9 +34,39 @@ namespace LeagueService.Ladders
 			}
 		}
 
-		public void UpdateLadderRanks(IReadOnlyList<UpdateLadderRankRequest> updateLadderRankRequests)
+		public void UpdateLadderRungs(IReadOnlyList<UpdateLadderRungRequest> updateLadderRungsRequests)
 		{
-			throw new NotImplementedException();
+			var sql = $@"
+				START TRANSACTION;
+
+				CREATE TEMP TABLE ladder_team_rungs 
+				(ladder_team_id uuid, current_rung bigint);
+
+				-- elaborate all the parameters in array: @LadderTeamIds @NewRungs
+
+				INSERT INTO ladder_team_rungs
+				(ladder_team_id, current_rung)
+				VALUES
+				{updateLadderRungsRequests.Select((x,i) => $"(@LadderTeamIds{i+1}, @NewRungs{i+1}),")}
+
+				UPDATE svc.ladder_team
+				SET current_rung = ltr.current_rung
+				FROM svc.ladder_team AS lt
+				INNER JOIN ladder_team_rungs AS ltr 
+					ON ltr.ladder_team_id = lt.ladder_team_id;
+
+				ROLLBACK;";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				var sqlParams = new
+					{
+						LadderTeamIds = updateLadderRungsRequests.Select(x => x.LadderTeamId),
+						NewRungs = updateLadderRungsRequests.Select(x => x.CurrentRung)
+					};
+
+				connection.Execute(sql, sqlParams);
+			}
 		}
 
 		public ILadderTeam CreateLadderTeam(LadderTeamRecord record, ITeam team)
@@ -60,9 +90,9 @@ namespace LeagueService.Ladders
 		public Guid CreatedByUserId { get; set; }
 	}
 
-	public class UpdateLadderRankRequest
+	public class UpdateLadderRungRequest
 	{
 		public Guid LadderTeamId { get; set; }
-		public int NewRank { get; set; }
+		public int CurrentRung { get; set; }
 	}
 }

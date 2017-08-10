@@ -1,11 +1,11 @@
 ﻿-- Table: svc.esport
 
--- DROP TABLE svc.esport;
+DROP TABLE IF EXISTS svc.esport;
 
 CREATE TABLE svc.esport
 (
     esport_id uuid NOT NULL DEFAULT uuid_generate_v1(),
-    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    name varchar(255) COLLATE pg_catalog."default" NOT NULL,
     game_id uuid NOT NULL,
     configured_rules jsonb,
     CONSTRAINT esport_pkey PRIMARY KEY (esport_id),
@@ -20,15 +20,15 @@ WITH (
 TABLESPACE pg_default;
 
 ALTER TABLE svc.esport
-    OWNER to postgres;
+    OWNER to leaguesweb;
 
-GRANT ALL ON TABLE svc.esport TO postgres;
+GRANT ALL ON TABLE svc.esport TO leaguesweb;
 
 GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.esport TO leaguesweb;
 
 -- Index: esport_game_id_idx
 
--- DROP INDEX svc.esport_game_id_idx;
+DROP INDEX IF EXISTS svc.esport_game_id_idx;
 
 CREATE INDEX esport_game_id_idx
     ON svc.esport USING btree

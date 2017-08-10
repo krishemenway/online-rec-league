@@ -1,12 +1,12 @@
 ﻿-- Table: svc.game
 
--- DROP TABLE svc.game;
+DROP TABLE IF EXISTS svc.game;
 
 CREATE TABLE svc.game
 (
     game_id uuid NOT NULL DEFAULT uuid_generate_v1(),
-    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
-    uri_path character varying(64) COLLATE pg_catalog."default" NOT NULL,
+    name varchar(255) COLLATE pg_catalog."default" NOT NULL,
+    uri_path varchar(64) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT game_pkey PRIMARY KEY (game_id)
 )
 WITH (
@@ -15,15 +15,15 @@ WITH (
 TABLESPACE pg_default;
 
 ALTER TABLE svc.game
-    OWNER to postgres;
+    OWNER to leaguesweb;
 
-GRANT ALL ON TABLE svc.game TO postgres;
+GRANT ALL ON TABLE svc.game TO leaguesweb;
 
 GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.game TO leaguesweb;
 
 -- Index: game_uri_path_uidx
 
--- DROP INDEX svc.game_uri_path_uidx;
+DROP INDEX IF EXISTS svc.game_uri_path_uidx;
 
 CREATE UNIQUE INDEX game_uri_path_uidx
     ON svc.game USING btree

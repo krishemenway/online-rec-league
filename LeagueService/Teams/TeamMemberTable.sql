@@ -7,8 +7,8 @@ CREATE TABLE svc.team_member
     team_member_id uuid NOT NULL DEFAULT uuid_generate_v1(),
     team_id uuid NOT NULL,
     user_id uuid NOT NULL,
-    nickname character varying(64) COLLATE pg_catalog."default",
-    join_time time with time zone,
+    nickname varchar(64) COLLATE pg_catalog."default",
+    join_time timestamp with time zone,
     CONSTRAINT team_member_pkey PRIMARY KEY (team_member_id),
     CONSTRAINT team_member_team_id_fkey FOREIGN KEY (team_id)
         REFERENCES svc.team (team_id) MATCH SIMPLE
@@ -25,15 +25,15 @@ WITH (
 TABLESPACE pg_default;
 
 ALTER TABLE svc.team_member
-    OWNER to postgres;
+    OWNER to leaguesweb;
 
-GRANT ALL ON TABLE svc.team_member TO postgres;
+GRANT ALL ON TABLE svc.team_member TO leaguesweb;
 
 GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.team_member TO leaguesweb;
 
 -- Index: team_member_team_id_idx
 
-DROP INDEX svc.team_member_team_id_idx;
+DROP INDEX IF EXISTS svc.team_member_team_id_idx;
 
 CREATE INDEX team_member_team_id_idx
     ON svc.team_member USING btree
@@ -42,7 +42,7 @@ CREATE INDEX team_member_team_id_idx
 
 -- Index: team_member_user_id_idx
 
-DROP INDEX svc.team_member_user_id_idx;
+DROP INDEX IF EXISTS svc.team_member_user_id_idx;
 
 CREATE INDEX team_member_user_id_idx
     ON svc.team_member USING btree

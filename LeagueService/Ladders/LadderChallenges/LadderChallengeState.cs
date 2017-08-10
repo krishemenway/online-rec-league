@@ -12,12 +12,12 @@ namespace LeagueService.Ladders.LadderChallenges
 		NotReported
 	}
 
-	public interface ILadderChallengeStateAnalyzer
+	internal interface ILadderChallengeStateAnalyzer
 	{
 		LadderChallengeState Analyze(LadderChallengeRecord record);
 	}
 
-	public class LadderChallengeStateAnalyzer : ILadderChallengeStateAnalyzer
+	internal class LadderChallengeStateAnalyzer : ILadderChallengeStateAnalyzer
 	{
 		public LadderChallengeState Analyze(LadderChallengeRecord record)
 		{
