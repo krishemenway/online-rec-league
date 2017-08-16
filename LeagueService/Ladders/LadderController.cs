@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LeagueService.Users;
+using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace LeagueService.Ladders
 {
+	[Route("api/ladders")]
 	public class LadderController : Controller
 	{
 		[HttpGet("all")]
@@ -11,6 +13,7 @@ namespace LeagueService.Ladders
 			return Json(new LadderRepository().FindAll());
 		}
 
+		[RequiresLoggedInUser]
 		[HttpPost("create")]
 		public IActionResult Create(CreateLadderRequest request)
 		{
@@ -23,5 +26,6 @@ namespace LeagueService.Ladders
 		public string Name { get; set; }
 		public string UriPath { get; set; }
 		public Guid EsportId { get; set; }
+		public string Rules { get; set; }
 	}
 }

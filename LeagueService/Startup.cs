@@ -45,8 +45,6 @@ namespace LeagueService
 			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
 			loggerFactory.AddDebug();
 
-			Console.WriteLine("Pass" + string.Join(",",Configuration.AsEnumerable()));
-
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
@@ -54,18 +52,12 @@ namespace LeagueService
 			}
 			else
 			{
-				app.UseExceptionHandler("/Home/Error");
+				app.UseExceptionHandler();
 			}
 
 			app.UseStaticFiles();
 			app.UseSession();
-
-			app.UseMvc(routes =>
-			{
-				routes.MapRoute(
-					name: "default",
-					template: "{controller=Home}/{action=Index}/{id?}");
-			});
+			app.UseMvc();
 		}
 	}
 }

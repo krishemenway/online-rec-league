@@ -8,7 +8,7 @@ namespace LeagueService.Ladders
 		Guid LadderTeamId { get; }
 		ITeam Team { get; }
 
-		int Ranking { get; }
+		int Rung { get; }
 
 		DateTime CreatedAtTime { get; }
 		Guid CreatedByUserId { get; }
@@ -25,7 +25,7 @@ namespace LeagueService.Ladders
 
 		public ITeam Team { get; set; }
 
-		public int Ranking { get; set; }
+		public int Rung { get; set; }
 
 		public DateTime CreatedAtTime { get; set; }
 		public Guid CreatedByUserId { get; set; }

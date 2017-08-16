@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using LeagueService.CommonDataTypes;
+using LeagueService.CoreExtensions;
 using LeagueService.Users;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace LeagueService.Teams
 			const string sql = @"
 				SELECT
 					team_member_id as teammemberid,
-					team_id as teamid,
+					team_id as teamid,	Try to get player stats from matches to provide cool data back
 					user_id as userid,
 					nickname,
 					joined_time as joinedtime

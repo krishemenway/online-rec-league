@@ -8,9 +8,11 @@ namespace LeagueService.Ladders
 {
 	public interface ILadderChallengeStore
 	{
-		void Create(SaveLadderChallengeRequest saveLadderChallengeRequest);
 		IReadOnlyList<ILadderChallenge> FindAll(ILadder ladder);
 		IReadOnlyList<ILadderChallenge> FindAll(ILadderTeam ladderTeam);
+
+		void Create(SaveLadderChallengeRequest saveLadderChallengeRequest);
+		void SetMatchTime(ILadderChallenge challenge, DateTime matchTime);
 	}
 
 	internal class LadderChallengeStore : ILadderChallengeStore
@@ -18,6 +20,58 @@ namespace LeagueService.Ladders
 		public LadderChallengeStore(ILadderChallengeStateAnalyzer ladderChallengeStateAnalyzer = null)
 		{
 			_ladderChallengeStateAnalyzer = ladderChallengeStateAnalyzer ?? new LadderChallengeStateAnalyzer();
+		}
+
+		public IReadOnlyList<ILadderChallenge> FindAll(ILadder ladder)
+		{
+			const string sql = @"
+				SELECT
+					ladder_challenge_id as ladderchallengeid,
+					ladder_id as ladderid,
+					challenger_ladder_team_id as challengerladderteamid,
+					challenged_ladder_team_id as challengedladderteamid,
+					challenge_time as challengetime,
+					match_time as matchtime,
+					challenge_successful as challengesuccessful,
+					match_results as matchresults,
+					match_results_reported_time as matchresultsreportedtime
+				FROM svc.ladder_challenge
+				WHERE ladder_id = @LadderId";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				var records = connection.Query<LadderChallengeRecord>(sql, new { ladder.LadderId }).ToList();
+				var ladderTeamIds = records.SelectMany(x => new[] { x.ChallengedLadderTeamId, x.ChallengerLadderTeamId }).ToList();
+				var ladderTeamsByLadderTeamId = new LadderTeamStore().Find(ladderTeamIds).ToDictionary(x => x.LadderTeamId, x => x);
+
+				return records.Select(x => Create(x, ladderTeamsByLadderTeamId)).ToList();
+			}
+		}
+
+		public IReadOnlyList<ILadderChallenge> FindAll(ILadderTeam ladderTeam)
+		{
+			const string sql = @"
+				SELECT
+					ladder_challenge_id as ladderchallengeid,
+					challenger_team_id as challengerladderteamid,
+					challenged_team_id as challengedladderteamid,
+					challenge_time as challengetime,
+					match_results as matchresults,
+					match_time as matchtime,
+					challenge_successful as challengesuccessful,
+					match_results_reported_time as matchresultsreportedtime,
+					ladder_id as ladderid
+				FROM svc.ladder_challenge
+				WHERE ladder_team_id = @LadderTeamId";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				var records = connection.Query<LadderChallengeRecord>(sql, new { ladderTeam.LadderTeamId }).ToList();
+				var ladderTeamIds = records.SelectMany(x => new[] { x.ChallengedLadderTeamId, x.ChallengerLadderTeamId }).ToList();
+				var ladderTeamsByLadderTeamId = new LadderTeamStore().Find(ladderTeamIds).ToDictionary(x => x.LadderTeamId, x => x);
+
+				return records.Select(x => Create(x, ladderTeamsByLadderTeamId)).ToList();
+			}
 		}
 
 		public void Create(SaveLadderChallengeRequest saveLadderChallengeRequest)
@@ -34,51 +88,20 @@ namespace LeagueService.Ladders
 			}
 		}
 
-		public IReadOnlyList<ILadderChallenge> FindAll(ILadder ladder)
+		public void SetMatchTime(ILadderChallenge challenge, DateTime matchTime)
 		{
 			const string sql = @"
-				SELECT
-					ladder_challenge_id as ladderchallengeid,
-					ladder_id as ladderid,
-					challenger_ladder_team_id as challengerladderteamid,
-					challenged_ladder_team_id as challengedladderteamid,
-					challenge_time as challengetime,
-					challenge_successful as challengesuccessful,
-					match_results as matchresults,
-					match_results_reported_time as matchresultsreportedtime
-				FROM svc.ladder_challenge
-				WHERE ladder_id = @LadderId";
+				UPDATE svc.ladder_challenge
+				SET match_time = @MatchTime
+				WHERE ladder_challenge_id = @LadderChallengeId";
 
 			using (var connection = AppDataConnection.Create())
 			{
-				var records = connection.Query<LadderChallengeRecord>(sql, new { ladder.LadderId }).ToList();
-				return records.Select(x => Create(x)).ToList();
+				connection.Execute(sql, new { challenge.LadderChallengeId, matchTime });
 			}
 		}
 
-		public IReadOnlyList<ILadderChallenge> FindAll(ILadderTeam ladderTeam)
-		{
-			const string sql = @"
-				SELECT
-					ladder_challenge_id as ladderchallengeid,
-					challenger_team_id as challengerladderteamid,
-					challenged_team_id as challengedladderteamid,
-					match_results as matchresults,
-					challenge_successful as challengesuccessful,
-					match_results_reported_time as matchresultsreportedtime,
-					ladder_id as ladderid,
-					challenge_time as challengetime
-				FROM svc.ladder_challenge
-				WHERE ladder_team_id = @LadderTeamId";
-
-			using (var connection = AppDataConnection.Create())
-			{
-				var records = connection.Query<LadderChallengeRecord>(sql, new { ladderTeam.LadderTeamId }).ToList();
-				return records.Select(x => Create(x)).ToList();
-			}
-		}
-
-		private ILadderChallenge Create(LadderChallengeRecord record)
+		private ILadderChallenge Create(LadderChallengeRecord record, IReadOnlyDictionary<Guid, ILadderTeam> ladderTeamsByLadderTeamId)
 		{
 			return new LadderChallenge
 				{
@@ -86,6 +109,9 @@ namespace LeagueService.Ladders
 					LadderId = record.LadderId,
 
 					ChallengedAtTime = record.ChallengedTime,
+
+					ChallengedLadderTeam = ladderTeamsByLadderTeamId[record.ChallengedLadderTeamId],
+					ChallengerLadderTeam = ladderTeamsByLadderTeamId[record.ChallengerLadderTeamId],
 
 					ChallengeState = _ladderChallengeStateAnalyzer.Analyze(record),
 
@@ -106,6 +132,7 @@ namespace LeagueService.Ladders
 		public Guid ChallengedLadderTeamId { get; set; }
 
 		public DateTime ChallengedTime { get; set; }
+		public DateTime? MatchTime { get; set; }
 
 		public bool ChallengeSuccessful { get; set; }
 

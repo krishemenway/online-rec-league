@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using LeagueService.Ladders.LadderRules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,11 @@ namespace LeagueService.Ladders
 
 	public class LadderStore : ILadderStore
 	{
+		public LadderStore(ILadderRuleStore ladderRuleStore = null)
+		{
+			_ladderRuleStore = ladderRuleStore ?? new LadderRuleStore();
+		}
+
 		public ILadder Find(Guid ladderId)
 		{
 			const string sql = @"
@@ -23,7 +29,7 @@ namespace LeagueService.Ladders
 					name,
 					uri_path as uripath,
 					esport_id,
-					forces_real_names as forcesrealnames
+					rules
 				FROM svc.ladder
 				WHERE ladder_id = @LadderId";
 
@@ -41,7 +47,7 @@ namespace LeagueService.Ladders
 					name,
 					uri_path as uripath,
 					esport_id,
-					forces_real_names as forcesrealnames
+					rules
 				FROM svc.ladder";
 
 			using (var connection = AppDataConnection.Create())
@@ -54,9 +60,9 @@ namespace LeagueService.Ladders
 		{
 			const string sql = @"
 				INSERT INTO svc.ladder
-				(name,uri_path,esport_id)
+				(name, uri_path, esport_id, rules)
 				VALUES
-				(@Name,@UriPath,@EsportId)
+				(@Name, @UriPath, @EsportId @Rules)
 				RETURNING ladder_id;";
 
 			using (var connection = AppDataConnection.Create())
@@ -73,9 +79,11 @@ namespace LeagueService.Ladders
 					Name = record.Name,
 					UriPath = record.UriPath,
 					EsportId = record.EsportId,
-					ForcesRealNames = record.ForcesRealNames
+					Rules = _ladderRuleStore.Create(record)
 				};
 		}
+
+		private ILadderRuleStore _ladderRuleStore;
 	}
 
 	public class LadderRecord
@@ -86,6 +94,6 @@ namespace LeagueService.Ladders
 		public string Name { get; set; }
 		public string UriPath { get; set;  }
 
-		public bool ForcesRealNames { get; set; }
+		public string Rules { get; set; }
 	}
 }

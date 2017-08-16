@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LeagueService.CommonDataTypes
+namespace LeagueService.CoreExtensions
 {
 	public static class TimeZoneInfoExtensions
 	{

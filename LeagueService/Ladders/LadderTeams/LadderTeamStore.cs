@@ -8,13 +8,39 @@ namespace LeagueService.Ladders
 {
 	public interface ILadderTeamStore
 	{
-		IReadOnlyList<ILadderTeam> FindAllTeams(ILadder ladder);
+		IReadOnlyList<ILadderTeam> Find(ILadder ladder);
+
 		void UpdateLadderRungs(IReadOnlyList<UpdateLadderRungRequest> updateLadderRankRequests);
 	}
 
 	public class LadderTeamStore : ILadderTeamStore
 	{
-		public IReadOnlyList<ILadderTeam> FindAllTeams(ILadder ladder)
+		public LadderTeamStore(ITeamStore teamStore = null)
+		{
+			_teamStore = teamStore ?? new TeamStore();
+		}
+
+		public IReadOnlyList<ILadderTeam> Find(IReadOnlyList<Guid> ladderTeamIds)
+		{
+			const string sql = @"
+				SELECT
+					ladder_team_id as ladderteamid,
+					team_id as teamid,
+					ranking,
+					created_at_time as createdattime,
+					created_by_user_id as createdbyuserid
+				FROM svc.ladder_team
+				WHERE ladder_id = @LadderId";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				var records = connection.Query<LadderTeamRecord>(sql, new { ladderTeamIds }).ToList();
+				var teamByTeamId = _teamStore.FindTeams(records.Select(x => x.TeamId).ToList()).ToDictionary(x => x.TeamId, x => x);
+				return records.Select(x => CreateLadderTeam(x, teamByTeamId[x.TeamId])).ToList();
+			}
+		}
+
+		public IReadOnlyList<ILadderTeam> Find(ILadder ladder)
 		{
 			const string sql = @"
 				SELECT
@@ -29,7 +55,7 @@ namespace LeagueService.Ladders
 			using (var connection = AppDataConnection.Create())
 			{
 				var records = connection.Query<LadderTeamRecord>(sql, new { ladder.LadderId }).ToList();
-				var teamByTeamId = new TeamStore().FindTeams(records.Select(x => x.TeamId).ToList()).ToDictionary(x => x.TeamId, x => x);
+				var teamByTeamId = _teamStore.FindTeams(records.Select(x => x.TeamId).ToList()).ToDictionary(x => x.TeamId, x => x);
 				return records.Select(x => CreateLadderTeam(x, teamByTeamId[x.TeamId])).ToList();
 			}
 		}
@@ -75,10 +101,12 @@ namespace LeagueService.Ladders
 				{
 					Team = team,
 					CreatedByUserId = record.CreatedByUserId,
-					Ranking = record.Ranking,
+					Rung = record.Ranking,
 					CreatedAtTime = record.CreatedAtTime
 				};
 		}
+
+		private ITeamStore _teamStore;
 	}
 
 	public class LadderTeamRecord
