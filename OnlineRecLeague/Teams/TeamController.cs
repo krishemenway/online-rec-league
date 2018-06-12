@@ -1,0 +1,23 @@
+﻿using OnlineRecLeague.Users;
+using Microsoft.AspNetCore.Mvc;
+
+namespace OnlineRecLeague.Teams
+{
+	[Route("api/teams")]
+	public class TeamController : Controller
+	{
+		[RequiresLoggedInUser]
+		[HttpPost("create")]
+		public IActionResult CreateTeam(CreateTeamRequest createTeamRequest)
+		{
+			return Json(new TeamRepository().CreateTeam(createTeamRequest, UserFromSession));
+		}
+
+		public IUser UserFromSession => new UserSessionStore().FindUserOrThrow(HttpContext.Session);
+	}
+
+	public class CreateTeamRequest
+	{
+		public string Name { get; set; }
+	}
+}
