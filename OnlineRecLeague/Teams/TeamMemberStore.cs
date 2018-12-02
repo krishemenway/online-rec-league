@@ -20,7 +20,7 @@ namespace OnlineRecLeague.Teams
 			const string sql = @"
 				SELECT
 					team_member_id as teammemberid,
-					team_id as teamid,	Try to get player stats from matches to provide cool data back
+					team_id as teamid,
 					user_id as userid,
 					nickname,
 					joined_time as joinedtime
@@ -29,7 +29,7 @@ namespace OnlineRecLeague.Teams
 				WHERE
 					team_id = any(@TeamIds)";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				return connection
 					.Query<TeamMemberRecord>(sql, new { teamIds })
@@ -46,7 +46,7 @@ namespace OnlineRecLeague.Teams
 				VALUES
 				(@TeamId, @UserId, @NickName, @JoinedTime)";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				connection.Execute(sql, new { user.UserId, user.NickName, team.TeamId, JoinedTime = user.DefaultTimezone.CurrentTime() });
 			}
@@ -54,7 +54,7 @@ namespace OnlineRecLeague.Teams
 
 		private ITeamMember CreateTeamMember(TeamMemberRecord record)
 		{
-			return new TeamMember
+			return new TeamMember(record.TeamMemberId)
 				{
 					TeamId = record.TeamId,
 					UserId = record.UserId,
@@ -62,16 +62,5 @@ namespace OnlineRecLeague.Teams
 					JoinedTime = record.JoinedTime
 				};
 		}
-	}
-
-	public class TeamMemberRecord
-	{
-		public Guid TeamMemberId { get; set; }
-
-		public Guid TeamId { get; set; }
-		public Guid UserId { get; set; }
-
-		public string NickName { get; set; }
-		public DateTime JoinedTime { get; set; }
 	}
 }

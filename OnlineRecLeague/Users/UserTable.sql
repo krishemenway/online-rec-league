@@ -8,6 +8,7 @@ CREATE TABLE svc."user"
     nickname character varying(64) COLLATE pg_catalog."default" NOT NULL,
     realname character varying(128) COLLATE pg_catalog."default",
     email character varying(256) COLLATE pg_catalog."default" NOT NULL,
+	password character varying(256) COLLATE pg_catalog."default" NOT NULL,
     default_timezone character varying(32) COLLATE pg_catalog."default",
     email_validated boolean NOT NULL,
     join_time timestamp with time zone NOT NULL,

@@ -1,24 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using OnlineRecLeague.CommonDataTypes;
 
 namespace OnlineRecLeague.Games
 {
 	[Route("api/games")]
 	public class GameController : Controller
 	{
-		[HttpPost("create")]
-		public IActionResult Create()
+		[HttpPost("Create")]
+		[ProducesResponseType(200, Type = typeof(Result<GameProfile>))]
+		public IActionResult Create([FromBody]CreateGameRequest request)
 		{
-			return Json(new object());
+			return Json(new CreateGameRequestHandler().HandleRequest(request));
 		}
 
-		[HttpGet("thing")]
-		public IActionResult Thing()
+		[HttpGet("FindById")]
+		[ProducesResponseType(200, Type = typeof(Result<GameProfile>))]
+		public IActionResult FindById([FromQuery]FindGameByIdRequest request)
 		{
-			return Json(new object());
+			return Json(new FindGameByIdRequestHandler().HandleRequest(request));
+		}
+
+		[HttpGet("FindByName")]
+		[ProducesResponseType(200, Type = typeof(Result<FindGameByNameResponse>))]
+		public IActionResult FindByName([FromQuery]FindGameByNameRequest request)
+		{
+			return Json(new FindGameByNameRequestHandler().HandleRequest(request));
 		}
 	}
 }

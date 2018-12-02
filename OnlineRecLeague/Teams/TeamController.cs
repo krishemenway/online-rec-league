@@ -8,16 +8,11 @@ namespace OnlineRecLeague.Teams
 	{
 		[RequiresLoggedInUser]
 		[HttpPost("create")]
-		public IActionResult CreateTeam(CreateTeamRequest createTeamRequest)
+		public IActionResult CreateTeam(CreateTeamRequest request)
 		{
-			return Json(new TeamRepository().CreateTeam(createTeamRequest, UserFromSession));
+			return Json(new CreateTeamRequestHandler().CreateTeam(request, UserFromSession));
 		}
 
-		public IUser UserFromSession => new UserSessionStore().FindUserOrThrow(HttpContext.Session);
-	}
-
-	public class CreateTeamRequest
-	{
-		public string Name { get; set; }
+		private IUser UserFromSession => new UserSessionStore().FindUserOrThrow(HttpContext.Session);
 	}
 }

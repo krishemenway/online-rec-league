@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace OnlineRecLeague.Teams
 	{
 		bool TryFindTeam(Guid teamId, out ITeam team);
 		IReadOnlyList<ITeam> FindTeams(IReadOnlyList<Guid> teamIds);
+		ITeam CreateTeam(CreateTeamRequest request, IUser teamCreator);
 	}
 
 	public class TeamStore : ITeamStore
@@ -34,7 +36,7 @@ namespace OnlineRecLeague.Teams
 				WHERE
 					team_id = any(@TeamIds)";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				var teamMembersByTeamId = new Dictionary<Guid, IReadOnlyList<ITeamMember>>();
 
@@ -49,18 +51,18 @@ namespace OnlineRecLeague.Teams
 			}
 		}
 
-		public ITeam CreateTeam(UpsertTeamRequest request)
+		public ITeam CreateTeam(CreateTeamRequest request, IUser teamCreator)
 		{
 			const string sql = @"
 				INSERT INTO svc.team
-				(name)
+				(name, owner_user_id)
 				VALUES
-				(@Name)
+				(@Name, @OwnerUserId)
 				RETURNING team_id;";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
-				var team_id = connection.Query<Guid>(sql, request).Single();
+				var team_id = connection.Query<Guid>(sql, new { request.Name, OwnerUserId = teamCreator.UserId }).Single();
 				return TryFindTeam(team_id, out var team) ? team : throw new Exception("Somehow that team you saved doesn't exist now?");
 			}
 		}
@@ -77,29 +79,12 @@ namespace OnlineRecLeague.Teams
 			}
 		}
 
-		public ITeam CreateTeam(TeamRecord record, Func<IReadOnlyList<ITeamMember>> findTeamMembersFunc)
+		private ITeam CreateTeam(TeamRecord record, Func<IReadOnlyList<ITeamMember>> findTeamMembersFunc)
 		{
-			return new Team(findTeamMembersFunc)
+			return new Team(record.TeamId, findTeamMembersFunc)
 				{
-					TeamId = record.TeamId,
 					Name = record.Name
 				};
 		}
-	}
-
-	public class UpsertTeamRequest
-	{
-		public Guid? TeamId { get; set; }
-		public string Name { get; set; }
-	}
-
-	public class TeamRecord
-	{
-		public Guid TeamId { get; set; }
-		public string Name { get; set; }
-		public string ProfileContent { get; set; }
-		public string UserNamePrefix { get; set; }
-		public Guid OwnerUserId { get; set; }
-		public DateTime CreatedTime { get; set; }
 	}
 }

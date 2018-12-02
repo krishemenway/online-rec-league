@@ -11,8 +11,9 @@ namespace OnlineRecLeague.Ladders
 		IReadOnlyList<ILadderChallenge> FindAll(ILadder ladder);
 		IReadOnlyList<ILadderChallenge> FindAll(ILadderTeam ladderTeam);
 
-		void Create(SaveLadderChallengeRequest saveLadderChallengeRequest);
-		void SetMatchTime(ILadderChallenge challenge, DateTime matchTime);
+		void Create(LadderChallengeRequest saveLadderChallengeRequest);
+		void SetMatchTime(Guid ladderChallengeId, DateTimeOffset matchTime);
+		void ReportResults(ILadderChallenge challenge, bool challengeSuccessful, string matchResults, DateTimeOffset matchResultsReportedTime);
 	}
 
 	internal class LadderChallengeStore : ILadderChallengeStore
@@ -38,13 +39,13 @@ namespace OnlineRecLeague.Ladders
 				FROM svc.ladder_challenge
 				WHERE ladder_id = @LadderId";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				var records = connection.Query<LadderChallengeRecord>(sql, new { ladder.LadderId }).ToList();
 				var ladderTeamIds = records.SelectMany(x => new[] { x.ChallengedLadderTeamId, x.ChallengerLadderTeamId }).ToList();
 				var ladderTeamsByLadderTeamId = new LadderTeamStore().Find(ladderTeamIds).ToDictionary(x => x.LadderTeamId, x => x);
 
-				return records.Select(x => Create(x, ladderTeamsByLadderTeamId)).ToList();
+				return records.Select(record => Create(record, ladderTeamsByLadderTeamId)).ToList();
 			}
 		}
 
@@ -64,17 +65,17 @@ namespace OnlineRecLeague.Ladders
 				FROM svc.ladder_challenge
 				WHERE ladder_team_id = @LadderTeamId";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				var records = connection.Query<LadderChallengeRecord>(sql, new { ladderTeam.LadderTeamId }).ToList();
 				var ladderTeamIds = records.SelectMany(x => new[] { x.ChallengedLadderTeamId, x.ChallengerLadderTeamId }).ToList();
 				var ladderTeamsByLadderTeamId = new LadderTeamStore().Find(ladderTeamIds).ToDictionary(x => x.LadderTeamId, x => x);
 
-				return records.Select(x => Create(x, ladderTeamsByLadderTeamId)).ToList();
+				return records.Select(record => Create(record, ladderTeamsByLadderTeamId)).ToList();
 			}
 		}
 
-		public void Create(SaveLadderChallengeRequest saveLadderChallengeRequest)
+		public void Create(LadderChallengeRequest saveLadderChallengeRequest)
 		{
 			const string sql = @"
 				INSERT INTO svc.ladder_challenge
@@ -82,22 +83,38 @@ namespace OnlineRecLeague.Ladders
 				VALUES 
 				(@LadderId, @ChallengerLadderTeamId, @ChallengedLadderTeamId, @ChallengeTime)";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				connection.Execute(sql, saveLadderChallengeRequest);
 			}
 		}
 
-		public void SetMatchTime(ILadderChallenge challenge, DateTime matchTime)
+		public void SetMatchTime(Guid ladderChallengeId, DateTimeOffset matchTime)
 		{
 			const string sql = @"
 				UPDATE svc.ladder_challenge
 				SET match_time = @MatchTime
 				WHERE ladder_challenge_id = @LadderChallengeId";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
-				connection.Execute(sql, new { challenge.LadderChallengeId, matchTime });
+				connection.Execute(sql, new { ladderChallengeId, matchTime });
+			}
+		}
+
+		public void ReportResults(ILadderChallenge challenge, bool challengeSuccessful, string matchResults, DateTimeOffset matchResultsReportedTime)
+		{
+			const string sql = @"
+				UPDATE svc.ladder_challenge
+				SET
+					challenge_successful = @ChallengeSuccessful,
+					match_results = @MatchResults,
+					match_results_reported_time = @MatchResultsReportedTime
+				WHERE ladder_challenge_id = @LadderChallengeId";
+
+			using (var connection = Database.CreateConnection())
+			{
+				connection.Execute(sql, new { challengeSuccessful, matchResults, matchResultsReportedTime, challenge.LadderChallengeId });
 			}
 		}
 
@@ -121,30 +138,5 @@ namespace OnlineRecLeague.Ladders
 		}
 
 		private readonly ILadderChallengeStateAnalyzer _ladderChallengeStateAnalyzer;
-	}
-
-	internal class LadderChallengeRecord
-	{
-		public Guid LadderChallengeId { get; set; }
-		public Guid LadderId { get; set; }
-
-		public Guid ChallengerLadderTeamId { get; set; }
-		public Guid ChallengedLadderTeamId { get; set; }
-
-		public DateTime ChallengedTime { get; set; }
-		public DateTime? MatchTime { get; set; }
-
-		public bool ChallengeSuccessful { get; set; }
-
-		public string MatchResults { get; set; }
-		public DateTime? MatchResultsReportedTime { get; set; }
-	}
-
-	public class SaveLadderChallengeRequest
-	{
-		public Guid LadderId { get; set; }
-		public Guid ChallengerLadderTeamId { get; set; }
-		public Guid ChallengedLadderTeamId { get; set; }
-		public DateTime ChallengedTime { get; set; }
 	}
 }

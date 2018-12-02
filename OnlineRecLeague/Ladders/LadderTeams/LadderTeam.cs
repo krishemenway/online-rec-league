@@ -10,7 +10,7 @@ namespace OnlineRecLeague.Ladders
 
 		int Rung { get; }
 
-		DateTime CreatedAtTime { get; }
+		DateTimeOffset CreatedAtTime { get; }
 		Guid CreatedByUserId { get; }
 	}
 
@@ -27,13 +27,12 @@ namespace OnlineRecLeague.Ladders
 
 		public int Rung { get; set; }
 
-		public DateTime CreatedAtTime { get; set; }
+		public DateTimeOffset CreatedAtTime { get; set; }
 		public Guid CreatedByUserId { get; set; }
 
-		public override bool Equals(object obj)
+		public override bool Equals(object other)
 		{
-			var objAsLadderTeam = obj as ILadderTeam;
-			return objAsLadderTeam != null && LadderTeamId.Equals(objAsLadderTeam.LadderTeamId);
+			return other is ILadderTeam otherLadderTeam && LadderTeamId.Equals(otherLadderTeam.LadderTeamId);
 		}
 
 		public override int GetHashCode()

@@ -13,20 +13,20 @@ namespace OnlineRecLeague.Teams
 
 	public class Team : ITeam
 	{
-		public Team(Func<IReadOnlyList<ITeamMember>> findTeamMembersFunc = null)
+		public Team(Guid teamId, Func<IReadOnlyList<ITeamMember>> findTeamMembersFunc = null)
 		{
+			TeamId = teamId;
 			_lazyTeamMembers = new Lazy<IReadOnlyList<ITeamMember>>(findTeamMembersFunc ?? (() => new TeamMemberStore().FindTeamMembers(new[]{TeamId})[TeamId]));
 		}
 
-		public Guid TeamId { get; set; }
+		public Guid TeamId { get; }
 		public string Name { get; set; }
 
 		public IReadOnlyList<ITeamMember> TeamMembers => _lazyTeamMembers.Value;
 
-		public override bool Equals(object obj)
+		public override bool Equals(object other)
 		{
-			var objAsTeam = obj as ITeam;
-			return objAsTeam != null && TeamId.Equals(objAsTeam.TeamId);
+			return other is Team otherTeam && TeamId.Equals(otherTeam.TeamId);
 		}
 
 		public override int GetHashCode()

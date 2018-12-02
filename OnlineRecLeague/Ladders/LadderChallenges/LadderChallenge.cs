@@ -11,14 +11,14 @@ namespace OnlineRecLeague.Ladders
 		ILadderTeam ChallengerLadderTeam { get; }
 		ILadderTeam ChallengedLadderTeam { get; }
 
-		DateTime ChallengedAtTime { get; }
+		DateTimeOffset ChallengedAtTime { get; }
 
 		LadderChallengeState ChallengeState { get; }
 		string MatchResults { get; }
-		DateTime? MatchResultsReportedTime { get; }
+		DateTimeOffset? MatchResultsReportedTime { get; }
 	}
 
-	public class LadderChallenge : ILadderChallenge
+	internal class LadderChallenge : ILadderChallenge
 	{
 		public Guid LadderChallengeId { get; set; }
 		public Guid LadderId { get; set; }
@@ -26,16 +26,15 @@ namespace OnlineRecLeague.Ladders
 		public ILadderTeam ChallengerLadderTeam { get; set; }
 		public ILadderTeam ChallengedLadderTeam { get; set; }
 
-		public DateTime ChallengedAtTime { get; set; }
+		public DateTimeOffset ChallengedAtTime { get; set; }
 
 		public LadderChallengeState ChallengeState { get; set; }
 		public string MatchResults { get; set; }
-		public DateTime? MatchResultsReportedTime { get; set; }
+		public DateTimeOffset? MatchResultsReportedTime { get; set; }
 
-		public override bool Equals(object obj)
+		public override bool Equals(object other)
 		{
-			var objAsLadderChallenge = obj as ILadderChallenge;
-			return objAsLadderChallenge != null && LadderChallengeId.Equals(objAsLadderChallenge.LadderChallengeId);
+			return other is LadderChallenge otherLadderChallenge && LadderChallengeId.Equals(otherLadderChallenge.LadderChallengeId);
 		}
 
 		public override int GetHashCode()

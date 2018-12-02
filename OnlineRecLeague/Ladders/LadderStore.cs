@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.Games;
 using OnlineRecLeague.Ladders.LadderRules;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,18 @@ namespace OnlineRecLeague.Ladders
 	public interface ILadderStore
 	{
 		ILadder Find(Guid ladderId);
+
 		IReadOnlyList<ILadder> FindAll();
+		IReadOnlyList<ILadder> FindAll(IGame game);
 
 		ILadder Create(CreateLadderRequest createLadderRequest);
 	}
 
-	public class LadderStore : ILadderStore
+	internal class LadderStore : ILadderStore
 	{
-		public LadderStore(ILadderRuleStore ladderRuleStore = null)
+		public LadderStore(IRulesetFactory rulesetFactory = null)
 		{
-			_ladderRuleStore = ladderRuleStore ?? new LadderRuleStore();
+			_rulesetFactory = rulesetFactory ?? new RulesetFactory();
 		}
 
 		public ILadder Find(Guid ladderId)
@@ -28,12 +31,12 @@ namespace OnlineRecLeague.Ladders
 					ladder_id as ladderid,
 					name,
 					uri_path as uripath,
-					esport_id,
+					sport_id,
 					rules
 				FROM svc.ladder
 				WHERE ladder_id = @LadderId";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				return connection.Query<LadderRecord>(sql, new { ladderId }).Select(Create).Single();
 			}
@@ -46,13 +49,33 @@ namespace OnlineRecLeague.Ladders
 					ladder_id as ladderid,
 					name,
 					uri_path as uripath,
-					esport_id,
+					sport_id,
 					rules
 				FROM svc.ladder";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				return connection.Query<LadderRecord>(sql).Select(Create).ToList();
+			}
+		}
+
+		public IReadOnlyList<ILadder> FindAll(IGame game)
+		{
+			const string sql = @"
+				SELECT
+					ladder_id as ladderid,
+					name,
+					uri_path as uripath,
+					sport_id,
+					rules
+				FROM svc.ladder l
+				INNER JOIN svc.sport s
+					ON l.sport_id = s.sport_id
+				WHERE s.game_id = @GameId";
+
+			using (var connection = Database.CreateConnection())
+			{
+				return connection.Query<LadderRecord>(sql, new { game.GameId }).Select(Create).ToList();
 			}
 		}
 
@@ -60,12 +83,12 @@ namespace OnlineRecLeague.Ladders
 		{
 			const string sql = @"
 				INSERT INTO svc.ladder
-				(name, uri_path, esport_id, rules)
+				(name, uri_path, sport_id, rules)
 				VALUES
-				(@Name, @UriPath, @EsportId @Rules)
+				(@Name, @UriPath, @SportId, @Rules)
 				RETURNING ladder_id;";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				return Find(connection.Query<Guid>(sql, createLadderRequest).Single());
 			}
@@ -78,18 +101,18 @@ namespace OnlineRecLeague.Ladders
 					LadderId = record.LadderId,
 					Name = record.Name,
 					UriPath = record.UriPath,
-					EsportId = record.EsportId,
-					Rules = _ladderRuleStore.Create(record)
+					SportId = record.SportId,
+					Rules = _rulesetFactory.Create(record.Rules),
 				};
 		}
 
-		private ILadderRuleStore _ladderRuleStore;
+		private IRulesetFactory _rulesetFactory;
 	}
 
 	public class LadderRecord
 	{
 		public Guid LadderId { get; set; }
-		public Guid EsportId { get; set; }
+		public Guid SportId { get; set; }
 
 		public string Name { get; set; }
 		public string UriPath { get; set;  }

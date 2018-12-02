@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using OnlineRecLeague.CommonDataTypes;
+using OnlineRecLeague.Users.Profiles;
 
 namespace OnlineRecLeague.Users
 {
@@ -8,29 +9,31 @@ namespace OnlineRecLeague.Users
 	public class UserController : Controller
 	{
 		[HttpPost("join")]
+		[ProducesResponseType(200, Type = typeof(Result<IUserProfile>))]
 		public IActionResult Join([FromBody]CreateNewUserRequest request)
 		{
-			return Json(new UserRepository().CreateUser(request, HttpContext.Session));
+			return Json(new CreateNewUserRequestHandler().HandleRequest(request, HttpContext.Session));
 		}
 
 		[HttpGet("profile")]
-		public IActionResult Profile([FromQuery]Guid userId)
+		[ProducesResponseType(200, Type = typeof(Result<IUserProfile>))]
+		public IActionResult Profile([FromQuery]FindProfileRequest request)
 		{
-			return Json(new UserRepository().FindProfile(userId, UserFromSession));
+			return Json(new FindProfileRequestHandler().HandleRequest(request, HttpContext.Session));
 		}
 
 		[HttpGet("search")]
-		public IActionResult Search([FromQuery]string nickName)
+		[ProducesResponseType(200, Type = typeof(Result<SearchUserResponse>))]
+		public IActionResult Search([FromQuery]SearchUserRequest request)
 		{
-			throw new NotImplementedException();
+			return Json(new SearchUserRequestHandler().HandleRequest(request));
 		}
 
 		[HttpPost("login")]
-		public IActionResult Login([FromQuery]Guid userId)
+		[ProducesResponseType(200, Type = typeof(Result))]
+		public IActionResult Login([FromQuery]LoginRequest request)
 		{
-			throw new NotImplementedException();
+			return Json(new LoginRequestHandler().HandleRequest(request, HttpContext.Session));
 		}
-
-		public IUser UserFromSession => new UserSessionStore().FindUserOrThrow(HttpContext.Session);
 	}
 }

@@ -7,7 +7,8 @@ namespace OnlineRecLeague.Users
 		public string NickName { get; set; }
 		public string RealName { get; set; }
 		public string Email { get; set; }
-		public DateTime JoinTime { get; set; }
+		public DateTimeOffset JoinTime { get; set; }
 		public string DefaultTimezone { get; set; }
+		public string Region { get; set; }
 	}
 }

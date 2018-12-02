@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineRecLeague.Regions;
+using System;
 
 namespace OnlineRecLeague.Users
 {
@@ -11,9 +12,10 @@ namespace OnlineRecLeague.Users
 
 		string Email { get; }
 
-		DateTime JoinTime { get; }
-		DateTime? QuitTime { get; }
+		DateTimeOffset JoinTime { get; }
+		DateTimeOffset? QuitTime { get; }
 
+		IRegion Region { get; }
 		TimeZoneInfo DefaultTimezone { get; }
 	}
 
@@ -31,15 +33,15 @@ namespace OnlineRecLeague.Users
 
 		public string Email { get; set; }
 
-		public DateTime JoinTime { get; set; }
-		public DateTime? QuitTime { get; set; }
-		
+		public DateTimeOffset JoinTime { get; set; }
+		public DateTimeOffset? QuitTime { get; set; }
+
+		public IRegion Region { get; set; }
 		public TimeZoneInfo DefaultTimezone { get; set; }
 
-		public override bool Equals(object obj)
+		public override bool Equals(object other)
 		{
-			var objAsTeam = obj as IUser;
-			return objAsTeam != null && UserId.Equals(objAsTeam.UserId);
+			return other is IUser otherUser && UserId.Equals(otherUser.UserId);
 		}
 
 		public override int GetHashCode()

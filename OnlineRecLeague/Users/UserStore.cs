@@ -1,24 +1,56 @@
 ﻿using Dapper;
+using OnlineRecLeague.Regions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace OnlineRecLeague.Users
 {
-	internal interface IUserStore
+	public interface IUserStore
 	{
-		bool TryFindUserById(Guid userId, out IUser user);
-		IReadOnlyList<IUser> FindUsers(IReadOnlyList<Guid> userIds);
-
 		IUser CreateNewUser(CreateNewUserRequest request);
+
+		bool TryFindUserById(Guid userId, out IUser user);
+		bool TryFindUserByEmail(string emailAddress, out IUser user);
+
+		IReadOnlyList<IUser> FindUsers(IReadOnlyList<Guid> userIds);
 	}
 
 	internal class UserStore : IUserStore
 	{
+		public UserStore(IRegionStore regionStore = null)
+		{
+			_regionStore = regionStore ?? new RegionStore();
+		}
+
 		public bool TryFindUserById(Guid userId, out IUser user)
 		{
 			user = FindUsers(new[] { userId }).FirstOrDefault();
 			return user != null;
+		}
+
+		public bool TryFindUserByEmail(string email, out IUser user)
+		{
+			const string sql = @"
+				SELECT
+					user_id as userid,
+					nickname,
+					realname,
+					email,
+					join_time as jointime,
+					region,
+					default_timezone as defaulttimezone,
+					email_validated as emailvalidated
+				FROM
+					svc.user
+				WHERE
+					email = @Email";
+
+			using (var connection = Database.CreateConnection())
+			{
+				user = connection.Query<UserRecord>(sql, new { email }).Select(Create).SingleOrDefault();
+				return user != null;
+			}
 		}
 
 		public IReadOnlyList<IUser> FindUsers(IReadOnlyList<Guid> userIds)
@@ -30,6 +62,7 @@ namespace OnlineRecLeague.Users
 					realname,
 					email,
 					join_time as jointime,
+					region,
 					default_timezone as defaulttimezone,
 					email_validated as emailvalidated
 				FROM
@@ -37,7 +70,7 @@ namespace OnlineRecLeague.Users
 				WHERE
 					user_id = any(@UserIds)";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				return connection.Query<UserRecord>(sql, new { userIds }).Select(Create).ToList();
 			}
@@ -47,12 +80,12 @@ namespace OnlineRecLeague.Users
 		{
 			const string sql = @"
 				INSERT INTO svc.user
-				(nickname, realname, email, join_time, default_timezone, email_validated)
+				(nickname, realname, email, join_time, default_timezone, region, email_validated)
 				VALUES
-				(@NickName, @RealName, @Email, @JoinTime, @DefaultTimezone, @EmailValidated)
+				(@NickName, @RealName, @Email, @JoinTime, @DefaultTimezone, @Region, @EmailValidated)
 				RETURNING user_id;";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				var sqlParams = new
 					{
@@ -61,6 +94,7 @@ namespace OnlineRecLeague.Users
 						request.Email,
 						request.JoinTime,
 						request.DefaultTimezone,
+						request.Region,
 						EmailValidated = false
 					};
 
@@ -81,23 +115,11 @@ namespace OnlineRecLeague.Users
 					JoinTime = userRecord.JoinTime,
 					QuitTime = userRecord.QuitTime,
 
+					Region = _regionStore.FindRegionOrThrow(userRecord.Region),
 					DefaultTimezone = TimeZoneInfo.FindSystemTimeZoneById(userRecord.DefaultTimezone)
 				};
 		}
-	}
 
-	internal class UserRecord
-	{
-		public Guid UserId { get; set; }
-
-		public string NickName { get; set; }
-		public string RealName { get; set; }
-
-		public string Email { get; set; }
-
-		public DateTime JoinTime { get; set; }
-		public DateTime? QuitTime { get; set; }
-
-		public string DefaultTimezone { get; set; }
+		private readonly IRegionStore _regionStore;
 	}
 }

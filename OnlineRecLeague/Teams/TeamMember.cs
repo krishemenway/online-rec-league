@@ -9,11 +9,18 @@ namespace OnlineRecLeague.Teams
 		ITeam Team { get; }
 
 		string NickName { get; }
-		DateTime JoinedTime { get; }
+		DateTimeOffset JoinedTime { get; }
 	}
 
 	public class TeamMember : ITeamMember
 	{
+		public TeamMember(Guid teamMemberId)
+		{
+			TeamMemberId = teamMemberId;
+		}
+
+		public Guid TeamMemberId { get; }
+
 		public IUser User { get; set; }
 		public ITeam Team { get; set; }
 
@@ -21,6 +28,16 @@ namespace OnlineRecLeague.Teams
 		public Guid UserId { get; set; }
 
 		public string NickName { get; set; }
-		public DateTime JoinedTime { get; set; }
+		public DateTimeOffset JoinedTime { get; set; }
+
+		public override bool Equals(object other)
+		{
+			return other is TeamMember otherTeamMember && TeamMemberId.Equals(otherTeamMember.TeamMemberId);
+		}
+
+		public override int GetHashCode()
+		{
+			return TeamMemberId.GetHashCode();
+		}
 	}
 }

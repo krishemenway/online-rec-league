@@ -8,14 +8,14 @@ namespace OnlineRecLeague.Games
 	public interface IGameStore
 	{
 		IGame Save(CreateGameRequest createGameRequest);
-		IReadOnlyDictionary<Guid, IGame> FindGamesByGameId(IReadOnlyList<Guid> gameIds);
+		IReadOnlyDictionary<Guid, IGame> FindGamesByGameId(params Guid[] gameIds);
 	}
 
-	public class GameStore : IGameStore
+	internal class GameStore : IGameStore
 	{
 		public IGame Save(CreateGameRequest createGameRequest)
 		{
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				const string sql = @"
 					INSERT INTO svc.game
@@ -29,9 +29,9 @@ namespace OnlineRecLeague.Games
 			}
 		}
 
-		public IReadOnlyDictionary<Guid, IGame> FindGamesByGameId(IReadOnlyList<Guid> gameIds)
+		public IReadOnlyDictionary<Guid, IGame> FindGamesByGameId(params Guid[] gameIds)
 		{
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				const string sql = @"
 					SELECT
@@ -55,11 +55,6 @@ namespace OnlineRecLeague.Games
 					Name = gameRecord.Name
 				};
 		}
-	}
-
-	public class CreateGameRequest
-	{
-		public string Name { get; set; }
 	}
 
 	public class GameRecord

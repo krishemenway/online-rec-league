@@ -1,27 +1,24 @@
-﻿using OnlineRecLeague.Users.Profiles;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineRecLeague.Users
+namespace OnlineRecLeague.Users.Profiles
 {
-	public interface IUserProfile
-	{
-		string NickName { get; }
-	}
-
 	public interface IUserProfileFactory
 	{
 		IUserProfile CreateProfile(IUser user, UserProfileType type);
 	}
 
-	public class UserProfileFactory : IUserProfileFactory
+	internal class UserProfileFactory : IUserProfileFactory
 	{
 		public UserProfileFactory()
 		{
 			_profileCreationFunctions = new Dictionary<UserProfileType, Func<IUser, IUserProfile>>
 				{
+					{ UserProfileType.StrangerProfile, (user) => new StrangerProfileFactory().Create(user) },
 					{ UserProfileType.PersonalProfile, (user) => new PersonalProfileFactory().Create(user) },
 					{ UserProfileType.TeammateProfile, (user) => new TeammateProfileFactory().Create(user) },
+					{ UserProfileType.FriendProfile, (user) => throw new NotImplementedException() },
+					{ UserProfileType.PrivateProfile, (user) => throw new NotImplementedException() },
 				};
 		}
 
@@ -31,14 +28,5 @@ namespace OnlineRecLeague.Users
 		}
 
 		private IReadOnlyDictionary<UserProfileType, Func<IUser, IUserProfile>> _profileCreationFunctions;
-	}
-
-	public enum UserProfileType
-	{
-		PersonalProfile,
-		TeammateProfile,
-		FriendProfile,
-		StrangerProfile,
-		PrivateProfile
 	}
 }

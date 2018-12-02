@@ -32,11 +32,12 @@ namespace OnlineRecLeague.Ladders
 				FROM svc.ladder_team
 				WHERE ladder_id = @LadderId";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				var records = connection.Query<LadderTeamRecord>(sql, new { ladderTeamIds }).ToList();
 				var teamByTeamId = _teamStore.FindTeams(records.Select(x => x.TeamId).ToList()).ToDictionary(x => x.TeamId, x => x);
-				return records.Select(x => CreateLadderTeam(x, teamByTeamId[x.TeamId])).ToList();
+
+				return records.Select(record => CreateLadderTeam(record, teamByTeamId[record.TeamId])).ToList();
 			}
 		}
 
@@ -52,11 +53,12 @@ namespace OnlineRecLeague.Ladders
 				FROM svc.ladder_team
 				WHERE ladder_id = @LadderId";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				var records = connection.Query<LadderTeamRecord>(sql, new { ladder.LadderId }).ToList();
 				var teamByTeamId = _teamStore.FindTeams(records.Select(x => x.TeamId).ToList()).ToDictionary(x => x.TeamId, x => x);
-				return records.Select(x => CreateLadderTeam(x, teamByTeamId[x.TeamId])).ToList();
+
+				return records.Select(record => CreateLadderTeam(record, teamByTeamId[record.TeamId])).ToList();
 			}
 		}
 
@@ -83,12 +85,12 @@ namespace OnlineRecLeague.Ladders
 
 				ROLLBACK;";
 
-			using (var connection = AppDataConnection.Create())
+			using (var connection = Database.CreateConnection())
 			{
 				var sqlParams = new
 					{
-						LadderTeamIds = updateLadderRungsRequests.Select(x => x.LadderTeamId),
-						NewRungs = updateLadderRungsRequests.Select(x => x.CurrentRung)
+						LadderTeamIds = updateLadderRungsRequests.Select(rungRequest => rungRequest.LadderTeamId),
+						NewRungs = updateLadderRungsRequests.Select(rungRequest => rungRequest.CurrentRung)
 					};
 
 				connection.Execute(sql, sqlParams);
@@ -114,7 +116,7 @@ namespace OnlineRecLeague.Ladders
 		public Guid LadderTeamId { get; set; }
 		public Guid TeamId { get; set; }
 		public int Ranking { get; set; }
-		public DateTime CreatedAtTime { get; set; }
+		public DateTimeOffset CreatedAtTime { get; set; }
 		public Guid CreatedByUserId { get; set; }
 	}
 

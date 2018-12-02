@@ -1,54 +1,53 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace OnlineRecLeague
 {
 	public class Startup
 	{
-		public Startup(IHostingEnvironment env)
-		{
-			var builder = new ConfigurationBuilder()
-				.SetBasePath(env.ContentRootPath)
-				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-				.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-				.AddEnvironmentVariables();
-
-			Configuration = builder.Build();
-		}
-
-		public static IConfigurationRoot Configuration { get; private set; }
-
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			// Add framework services.
 			services.AddLogging();
-			services.AddMvc();
+			services.AddMvcCore().AddJsonFormatters(FixJsonCamelCasing);
 
 			services.AddDistributedMemoryCache();
+			services.AddLocalization();
 
 			services.AddSession(options =>
 			{
-				// Set a short timeout for easy testing.
-				options.IdleTimeout = TimeSpan.FromSeconds(10);
+				options.IdleTimeout = TimeSpan.FromDays(1);
 				options.Cookie.HttpOnly = true;
+			});
+
+			services.Configure<RequestLocalizationOptions>(options =>
+			{
+				var supportedCultures = new List<CultureInfo>
+					{
+						new CultureInfo("en-US"),
+						new CultureInfo("fr"),
+					};
+
+				options.DefaultRequestCulture = new RequestCulture("en-US");
+				options.SupportedCultures = supportedCultures;
+				options.SupportedUICultures = supportedCultures;
 			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 		{
-			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-			loggerFactory.AddDebug();
-
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
-				app.UseBrowserLink();
 			}
 			else
 			{
@@ -58,6 +57,15 @@ namespace OnlineRecLeague
 			app.UseStaticFiles();
 			app.UseSession();
 			app.UseMvc();
+		}
+
+		private void FixJsonCamelCasing(JsonSerializerSettings settings)
+		{
+			// this unsets the default behavior (camelCase); "what you see is what you get" is now default
+			if (settings.ContractResolver is DefaultContractResolver resolver)
+			{
+				resolver.NamingStrategy = null;
+			}
 		}
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using OnlineRecLeague.Users;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace OnlineRecLeague.Ladders
 {
@@ -10,22 +9,20 @@ namespace OnlineRecLeague.Ladders
 		[HttpGet("all")]
 		public IActionResult All()
 		{
-			return Json(new LadderRepository().FindAll());
+			return Json(new FindAllLaddersRequestHandler().HandleRequest());
+		}
+
+		[HttpGet("find")]
+		public IActionResult Find([FromQuery]FindLadderRequest request)
+		{
+			return Json(new FindLadderRequestHandler().HandleRequest(request));
 		}
 
 		[RequiresLoggedInUser]
 		[HttpPost("create")]
-		public IActionResult Create(CreateLadderRequest request)
+		public IActionResult Create([FromBody]CreateLadderRequest request)
 		{
-			return Json(new LadderRepository().Create(request));
+			return Json(new CreateLadderRequestHandler().HandleRequest(request));
 		}
-	}
-
-	public class CreateLadderRequest
-	{
-		public string Name { get; set; }
-		public string UriPath { get; set; }
-		public Guid EsportId { get; set; }
-		public string Rules { get; set; }
 	}
 }

@@ -1,0 +1,22 @@
+[
+	{
+		"RegionId": "USWest",
+		"Name": "US West"
+	},
+	{
+		"RegionId": "USCentral",
+		"Name": "US Central"
+	},
+	{
+		"RegionId": "USEast",
+		"Name": "US East"
+	},
+	{
+		"RegionId": "EuropeWest",
+		"Name": "Europe West"
+	},
+	{
+		"RegionId": "EuropeEast",
+		"Name": "Europe East"
+	}
+]
