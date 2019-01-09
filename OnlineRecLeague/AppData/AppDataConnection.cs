@@ -1,14 +1,14 @@
 ﻿using Npgsql;
+using System.Data;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 
-namespace OnlineRecLeague
+namespace OnlineRecLeague.AppData
 {
-	public static class Database
+	public class AppDataConnection
 	{
-		public static IDbConnection CreateConnection()
+		public static IDbConnection Create()
 		{
 			var connection = new NpgsqlConnection(ConnectionString.Value);
 			connection.Open();

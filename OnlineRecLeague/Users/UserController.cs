@@ -10,9 +10,9 @@ namespace OnlineRecLeague.Users
 	{
 		[HttpPost("join")]
 		[ProducesResponseType(200, Type = typeof(Result<IUserProfile>))]
-		public IActionResult Join([FromBody]CreateNewUserRequest request)
+		public IActionResult Join([FromBody]CreateUserRequest request)
 		{
-			return Json(new CreateNewUserRequestHandler().HandleRequest(request, HttpContext.Session));
+			return Json(new CreateUserRequestHandler().HandleRequest(request, HttpContext.Session));
 		}
 
 		[HttpGet("profile")]
@@ -42,6 +42,22 @@ namespace OnlineRecLeague.Users
 		public IActionResult Confirm([FromBody]ConfirmEmailRequest request)
 		{
 			return Json(new ConfirmEmailRequestHandler().HandleRequest(request, UserFromSession));
+		}
+
+		[HttpPost("changepassword")]
+		[RequiresUserInSession]
+		[ProducesResponseType(200, Type = typeof(Result))]
+		public IActionResult ChangePassword([FromBody]ChangePasswordRequest request)
+		{
+			return Json(new ChangePasswordRequestHandler().HandleRequest(request, UserFromSession));
+		}
+
+		[HttpPost("sendconfirmemail")]
+		[RequiresUserInSession]
+		[ProducesResponseType(200, Type = typeof(Result))]
+		public IActionResult SendConfirmEmail([FromBody]SendEmailConfirmationRequest request)
+		{
+			return Json(new SendEmailConfirmationRequestHandler().HandleRequest(UserFromSession));
 		}
 
 		private IUser UserFromSession => new UserSessionStore().FindUserOrThrow(this.HttpContext.Session);

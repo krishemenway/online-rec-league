@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.AppData;
 using OnlineRecLeague.CoreExtensions;
 using OnlineRecLeague.Users;
 using System;
@@ -37,7 +38,7 @@ namespace OnlineRecLeague.Teams
 				WHERE
 					team_id = any(@TeamIds)";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				var teamMembersByTeamId = new Dictionary<Guid, IReadOnlyList<ITeamMember>>();
 
@@ -61,7 +62,7 @@ namespace OnlineRecLeague.Teams
 				(@Name, @OwnerUserId, @ProfileContent, @UserNamePrefix, @OwnerUserId, @CreatedAt)
 				RETURNING team_id;";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				var args = new
 					{

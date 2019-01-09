@@ -2,7 +2,7 @@
 
 -- DROP TABLE public.game_server;
 
-CREATE TABLE public.game_server
+CREATE TABLE svc.game_server
 (
     game_server_id uuid NOT NULL DEFAULT uuid_generate_v1(),
     name character varying(128) COLLATE pg_catalog."default" NOT NULL,
@@ -19,7 +19,7 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public.game_server
+ALTER TABLE svc.game_server
     OWNER to postgres;
 
 GRANT ALL ON TABLE public.game_server TO postgres;

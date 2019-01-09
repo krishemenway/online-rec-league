@@ -1,21 +1,18 @@
-﻿using System;
-
-namespace OnlineRecLeague.Teams
+﻿namespace OnlineRecLeague.Teams
 {
-	public interface ITeamProfile
-	{
-	}
-
 	public interface ITeamProfileFactory
 	{
 		ITeamProfile Create(ITeam team);
 	}
 
-	public class TeamProfileFactory : ITeamProfileFactory
+	internal class TeamProfileFactory : ITeamProfileFactory
 	{
 		public ITeamProfile Create(ITeam team)
 		{
-			throw new NotImplementedException();
+			return new TeamProfile
+				{
+					Name = team.Name,
+				};
 		}
 	}
 }

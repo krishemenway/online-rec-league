@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.AppData;
 using OnlineRecLeague.Ladders.LadderChallenges;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace OnlineRecLeague.Ladders
 				FROM svc.ladder_challenge
 				WHERE ladder_id = @LadderId";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				var records = connection.Query<LadderChallengeRecord>(sql, new { ladder.LadderId }).ToList();
 				var ladderTeamIds = records.SelectMany(x => new[] { x.ChallengedLadderTeamId, x.ChallengerLadderTeamId }).ToList();
@@ -65,7 +66,7 @@ namespace OnlineRecLeague.Ladders
 				FROM svc.ladder_challenge
 				WHERE ladder_team_id = @LadderTeamId";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				var records = connection.Query<LadderChallengeRecord>(sql, new { ladderTeam.LadderTeamId }).ToList();
 				var ladderTeamIds = records.SelectMany(x => new[] { x.ChallengedLadderTeamId, x.ChallengerLadderTeamId }).ToList();
@@ -83,7 +84,7 @@ namespace OnlineRecLeague.Ladders
 				VALUES 
 				(@LadderId, @ChallengerLadderTeamId, @ChallengedLadderTeamId, @ChallengeTime)";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				connection.Execute(sql, saveLadderChallengeRequest);
 			}
@@ -96,7 +97,7 @@ namespace OnlineRecLeague.Ladders
 				SET match_time = @MatchTime
 				WHERE ladder_challenge_id = @LadderChallengeId";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				connection.Execute(sql, new { ladderChallengeId, matchTime });
 			}
@@ -112,7 +113,7 @@ namespace OnlineRecLeague.Ladders
 					match_results_reported_time = @MatchResultsReportedTime
 				WHERE ladder_challenge_id = @LadderChallengeId";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				connection.Execute(sql, new { challengeSuccessful, matchResults, matchResultsReportedTime, challenge.LadderChallengeId });
 			}

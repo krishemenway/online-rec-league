@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.AppData;
 using OnlineRecLeague.Games;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace OnlineRecLeague.Sports
 				WHERE
 					sport_id = any(@SportIds)";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				var sportRecords = connection.Query<SportRecord>(sql, new { sportIds }).ToList();
 				var gamesByGameId = _gameStore.FindGamesByGameId(sportRecords.Select(sport => sport.GameId).ToArray());

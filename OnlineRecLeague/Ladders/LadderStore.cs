@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.AppData;
 using OnlineRecLeague.Games;
 using OnlineRecLeague.Rulesets;
 using System;
@@ -36,7 +37,7 @@ namespace OnlineRecLeague.Ladders
 				FROM svc.ladder
 				WHERE ladder_id = @LadderId";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				return connection.Query<LadderRecord>(sql, new { ladderId }).Select(Create).Single();
 			}
@@ -53,7 +54,7 @@ namespace OnlineRecLeague.Ladders
 					rules
 				FROM svc.ladder";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				return connection.Query<LadderRecord>(sql).Select(Create).ToList();
 			}
@@ -73,7 +74,7 @@ namespace OnlineRecLeague.Ladders
 					ON l.sport_id = s.sport_id
 				WHERE s.game_id = @GameId";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				return connection.Query<LadderRecord>(sql, new { game.GameId }).Select(Create).ToList();
 			}
@@ -88,7 +89,7 @@ namespace OnlineRecLeague.Ladders
 				(@Name, @UriPath, @SportId, @Rules)
 				RETURNING ladder_id;";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				return Find(connection.Query<Guid>(sql, createLadderRequest).Single());
 			}

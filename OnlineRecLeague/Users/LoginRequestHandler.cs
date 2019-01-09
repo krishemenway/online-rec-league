@@ -13,21 +13,16 @@ namespace OnlineRecLeague.Users
 		public LoginRequestHandler(
 			IUserSessionStore userSessionStore = null,
 			IUserStore userStore = null,
-			ISettings settings = null)
+			IUserPasswordValidator userPasswordValidator = null)
 		{
 			_userSessionStore = userSessionStore ?? new UserSessionStore();
 			_userStore = userStore ?? new UserStore();
-			_settings = settings ?? Program.Settings;
+			_userPasswordValidator = userPasswordValidator ?? new UserPasswordValidator();
 		}
 
 		public Result HandleRequest(LoginRequest request, ISession session)
 		{
-			if (!_userStore.TryFindUserByEmail(request.EmailAddress, out var user))
-			{
-				return Result.Failure(InvalidLoginRequestMessage);
-			}
-
-			if (BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+			if (!_userStore.TryFindUserByEmail(request.EmailAddress, out var user) || !_userPasswordValidator.Validate(user, request.Password))
 			{
 				return Result.Failure(InvalidLoginRequestMessage);
 			}
@@ -40,6 +35,6 @@ namespace OnlineRecLeague.Users
 
 		private readonly IUserSessionStore _userSessionStore;
 		private readonly IUserStore _userStore;
-		private readonly ISettings _settings;
+		private readonly IUserPasswordValidator _userPasswordValidator;
 	}
 }

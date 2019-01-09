@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.AppData;
 using OnlineRecLeague.Regions;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,10 @@ namespace OnlineRecLeague.Users
 		IReadOnlyList<IUser> FindUsers(IReadOnlyList<Guid> userIds);
 		IReadOnlyList<IUser> FindUsersByQuery(string query);
 
-		IUser CreateNewUser(CreateNewUserRequest request);
+		IUser CreateNewUser(CreateUserRequest request);
+
 		void EmailConfirmed(IUser user, DateTimeOffset emailConfirmationTime);
+		void UpdatePassword(IUser user, string passwordHash);
 	}
 
 	internal class UserStore : IUserStore
@@ -56,7 +59,7 @@ namespace OnlineRecLeague.Users
 				WHERE
 					email = @Email";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				user = connection.Query<UserRecord>(sql, new { email }).Select(Create).SingleOrDefault();
 				return user != null;
@@ -82,7 +85,7 @@ namespace OnlineRecLeague.Users
 				WHERE
 					user_id = any(@UserIds)";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				return connection.Query<UserRecord>(sql, new { userIds }).Select(Create).ToList();
 			}
@@ -107,22 +110,22 @@ namespace OnlineRecLeague.Users
 				WHERE
 					email like @Query OR nickname like @Query";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				return connection.Query<UserRecord>(sql, new { Query = $"%{query}%" }).Select(Create).ToList();
 			}
 		}
 
-		public IUser CreateNewUser(CreateNewUserRequest request)
+		public IUser CreateNewUser(CreateUserRequest request)
 		{
 			const string sql = @"
 				INSERT INTO svc.user
 				(nickname, realname, email, password_hash, join_time, default_timezone, region, email_confirmation_code, email_confirmation_time)
 				VALUES
-				(@NickName, @RealName, @Email, @PasswordHash, @JoinTime, @DefaultTimezone, @Region, @EmailConfirmationCode, null)
+				(@NickName, @RealName, @Email, @PasswordHash, @JoinTime, @DefaultTimezone, '', @EmailConfirmationCode, null)
 				RETURNING user_id;";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				var sqlParams = new
 					{
@@ -132,7 +135,6 @@ namespace OnlineRecLeague.Users
 						PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
 						request.JoinTime,
 						request.DefaultTimezone,
-						request.Region,
 						EmailConfirmationCode = Guid.NewGuid(),
 					};
 
@@ -148,9 +150,22 @@ namespace OnlineRecLeague.Users
 				SET email_confirmation_time = @EmailConfirmationTime
 				WHERE user_id = @UserId;";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				connection.Execute(sql, new { user.UserId, emailConfirmationTime });
+			}
+		}
+
+		public void UpdatePassword(IUser user, string passwordHash)
+		{
+			const string sql = @"
+				UPDATE svc.user
+				SET password_hash = @PasswordHash
+				WHERE user_id = @UserId;";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				connection.Execute(sql, new { user.UserId, passwordHash });
 			}
 		}
 

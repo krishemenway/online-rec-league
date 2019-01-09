@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.AppData;
 using OnlineRecLeague.CoreExtensions;
 using OnlineRecLeague.Users;
 using System;
@@ -29,7 +30,7 @@ namespace OnlineRecLeague.Teams
 				WHERE
 					team_id = any(@TeamIds)";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				return connection
 					.Query<TeamMemberRecord>(sql, new { teamIds })
@@ -46,7 +47,7 @@ namespace OnlineRecLeague.Teams
 				VALUES
 				(@TeamId, @UserId, @NickName, @JoinedTime)";
 
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				connection.Execute(sql, new { user.UserId, user.NickName, team.TeamId, JoinedTime = user.DefaultTimezone.CurrentTime() });
 			}

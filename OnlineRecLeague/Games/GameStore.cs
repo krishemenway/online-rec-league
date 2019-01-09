@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.AppData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace OnlineRecLeague.Games
 	{
 		public IGame Save(CreateGameRequest createGameRequest)
 		{
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				const string sql = @"
 					INSERT INTO svc.game
@@ -31,7 +32,7 @@ namespace OnlineRecLeague.Games
 
 		public IReadOnlyDictionary<Guid, IGame> FindGamesByGameId(params Guid[] gameIds)
 		{
-			using (var connection = Database.CreateConnection())
+			using (var connection = AppDataConnection.Create())
 			{
 				const string sql = @"
 					SELECT
