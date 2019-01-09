@@ -7,6 +7,8 @@
 			_user = user;
 		}
 
+		public UserProfileType ProfileType => UserProfileType.StrangerProfile;
+
 		public string NickName => _user.NickName;
 
 		private readonly IUser _user;

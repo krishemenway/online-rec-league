@@ -7,6 +7,8 @@
 			_user = user;
 		}
 
+		public UserProfileType ProfileType => UserProfileType.TeammateProfile;
+
 		public string NickName => _user.NickName;
 		public string Email => _user.Email;
 

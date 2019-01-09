@@ -13,46 +13,24 @@ namespace OnlineRecLeague.Users
 	{
 		internal FindProfileRequestHandler(
 			IUserStore userStore = null,
-			IUserSessionStore userSessionStore = null,
 			IUserProfileFactory userProfileFactory = null)
 		{
 			_userStore = userStore ?? new UserStore();
-			_userSessionStore = userSessionStore ?? new UserSessionStore();
 			_userProfileFactory = userProfileFactory ?? new UserProfileFactory();
 		}
 
 		public Result<IUserProfile> HandleRequest(FindProfileRequest request, ISession session)
 		{
-			_userSessionStore.TryFindUser(session, out var loggedInUser);
-
-			if (!_userStore.TryFindUserById(request.UserId, out var foundUser))
+			if (!_userStore.TryFindUserById(request.UserId, out var user))
 			{
 				return Result<IUserProfile>.Failure("User does not exist");
 			}
 
-			var profileType = DetermineProfileType(foundUser, loggedInUser);
-			var userProfile = _userProfileFactory.CreateProfile(foundUser, profileType);
-
-			return Result<IUserProfile>.Successful(userProfile);
-		}
-
-		private UserProfileType DetermineProfileType(IUser foundUser, IUser loggedInUser)
-		{
-			if (loggedInUser == null)
-			{
-				return UserProfileType.StrangerProfile;
-			}
-
-			if (foundUser == loggedInUser)
-			{
-				return UserProfileType.PersonalProfile;
-			}
-
-			return UserProfileType.StrangerProfile;
+			var profile = _userProfileFactory.CreateProfile(user, session);
+			return Result<IUserProfile>.Successful(profile);
 		}
 
 		private readonly IUserStore _userStore;
-		private readonly IUserSessionStore _userSessionStore;
 		private readonly IUserProfileFactory _userProfileFactory;
 	}
 }

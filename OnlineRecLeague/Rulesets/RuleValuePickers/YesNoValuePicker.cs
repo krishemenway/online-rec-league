@@ -1,4 +1,4 @@
-﻿namespace OnlineRecLeague.Ruleset.RuleValuePickers
+﻿namespace OnlineRecLeague.Rulesets.RuleValuePickers
 {
 	public class YesNoValuePicker : IRuleValuePicker
 	{

@@ -26,7 +26,7 @@ namespace OnlineRecLeague.Users
 		[ProducesResponseType(200, Type = typeof(Result<SearchUserResponse>))]
 		public IActionResult Search([FromQuery]SearchUserRequest request)
 		{
-			return Json(new SearchUserRequestHandler().HandleRequest(request));
+			return Json(new SearchUserRequestHandler().HandleRequest(request, HttpContext.Session));
 		}
 
 		[HttpPost("login")]
@@ -35,5 +35,15 @@ namespace OnlineRecLeague.Users
 		{
 			return Json(new LoginRequestHandler().HandleRequest(request, HttpContext.Session));
 		}
+
+		[HttpPost("confirm")]
+		[RequiresUserInSession]
+		[ProducesResponseType(200, Type = typeof(Result))]
+		public IActionResult Confirm([FromBody]ConfirmEmailRequest request)
+		{
+			return Json(new ConfirmEmailRequestHandler().HandleRequest(request, UserFromSession));
+		}
+
+		private IUser UserFromSession => new UserSessionStore().FindUserOrThrow(this.HttpContext.Session);
 	}
 }

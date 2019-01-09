@@ -1,6 +1,6 @@
 ﻿using OnlineRecLeague.CommonDataTypes;
 
-namespace OnlineRecLeague.Ruleset.RuleValuePickers
+namespace OnlineRecLeague.Rulesets.RuleValuePickers
 {
 	public class AgeValuePicker : IRuleValuePicker
 	{

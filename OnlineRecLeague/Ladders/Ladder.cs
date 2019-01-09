@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using OnlineRecLeague.Ladders.LadderRules;
+using OnlineRecLeague.Rulesets;
 using OnlineRecLeague.Sports;
 
 namespace OnlineRecLeague.Ladders

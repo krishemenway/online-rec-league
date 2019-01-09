@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace OnlineRecLeague.Ladders.LadderRules
+namespace OnlineRecLeague.Rulesets
 {
 	public interface IRulesetFactory
 	{

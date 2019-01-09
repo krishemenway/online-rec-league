@@ -11,12 +11,20 @@ namespace OnlineRecLeague.Users
 		string RealName { get; }
 
 		string Email { get; }
+		string PasswordHash { get; }
+
+		DateTimeOffset? DateOfBirth { get; }
+
+		Guid EmailConfirmationCode { get; }
+		DateTimeOffset? EmailConfirmedTime { get; }
 
 		DateTimeOffset JoinTime { get; }
 		DateTimeOffset? QuitTime { get; }
 
 		IRegion Region { get; }
 		TimeZoneInfo DefaultTimezone { get; }
+
+		bool IsSuperAdmin { get; }
 	}
 
 	public class User : IUser
@@ -32,12 +40,20 @@ namespace OnlineRecLeague.Users
 		public string RealName { get; set; }
 
 		public string Email { get; set; }
+		public string PasswordHash { get; set; }
+
+		public DateTimeOffset? DateOfBirth { get; set; }
+
+		public Guid EmailConfirmationCode { get; set; }
+		public DateTimeOffset? EmailConfirmedTime { get; set; }
 
 		public DateTimeOffset JoinTime { get; set; }
 		public DateTimeOffset? QuitTime { get; set; }
 
 		public IRegion Region { get; set; }
 		public TimeZoneInfo DefaultTimezone { get; set; }
+
+		public bool IsSuperAdmin { get; set; }
 
 		public override bool Equals(object other)
 		{

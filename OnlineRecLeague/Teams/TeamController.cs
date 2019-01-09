@@ -6,8 +6,8 @@ namespace OnlineRecLeague.Teams
 	[Route("api/teams")]
 	public class TeamController : Controller
 	{
-		[RequiresLoggedInUser]
 		[HttpPost("create")]
+		[RequiresUserInSession]
 		public IActionResult CreateTeam(CreateTeamRequest request)
 		{
 			return Json(new CreateTeamRequestHandler().CreateTeam(request, UserFromSession));

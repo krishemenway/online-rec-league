@@ -17,7 +17,7 @@ namespace OnlineRecLeague.Regions
 	{
 		public RegionStore(IReadOnlyDictionary<string, IRegion> regionsByRegionId = null)
 		{
-			_regionsByRegionId = regionsByRegionId ?? _lazyRegionsByRegionId.Value;
+			_regionsByRegionId = regionsByRegionId ?? _lazyStaticRegionsByRegionId.Value;
 		}
 
 		public IRegion FindRegionOrThrow(string regionId)
@@ -47,6 +47,6 @@ namespace OnlineRecLeague.Regions
 
 		private readonly IReadOnlyDictionary<string, IRegion> _regionsByRegionId;
 
-		private static readonly Lazy<IReadOnlyDictionary<string, IRegion>> _lazyRegionsByRegionId = new Lazy<IReadOnlyDictionary<string, IRegion>>(() => LoadRegionsFromEmbeddedResource());
+		private static readonly Lazy<IReadOnlyDictionary<string, IRegion>> _lazyStaticRegionsByRegionId = new Lazy<IReadOnlyDictionary<string, IRegion>>(() => LoadRegionsFromEmbeddedResource());
 	}
 }

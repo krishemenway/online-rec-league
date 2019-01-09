@@ -1,4 +1,4 @@
-﻿namespace OnlineRecLeague.Ruleset
+﻿namespace OnlineRecLeague.Rulesets
 {
 	public interface IRuleValuePicker
 	{

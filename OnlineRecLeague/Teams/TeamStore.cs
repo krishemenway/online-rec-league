@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using OnlineRecLeague.CoreExtensions;
 using OnlineRecLeague.Users;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace OnlineRecLeague.Teams
 					profile_content as profilecontent,
 					user_name_prefix as usernameprefix,
 					owner_user_id as owneruserid,
-					created_time as createdtime
+					created_at as createdat
 				FROM
 					svc.team
 				WHERE
@@ -55,14 +56,23 @@ namespace OnlineRecLeague.Teams
 		{
 			const string sql = @"
 				INSERT INTO svc.team
-				(name, owner_user_id)
+				(name, owner_user_id, profile_content, user_name_prefix, owner_user_id, created_at)
 				VALUES
-				(@Name, @OwnerUserId)
+				(@Name, @OwnerUserId, @ProfileContent, @UserNamePrefix, @OwnerUserId, @CreatedAt)
 				RETURNING team_id;";
 
 			using (var connection = Database.CreateConnection())
 			{
-				var team_id = connection.Query<Guid>(sql, new { request.Name, OwnerUserId = teamCreator.UserId }).Single();
+				var args = new
+					{
+						request.Name,
+						request.ProfileContent,
+						request.UserNamePrefix,
+						OwnerUserId = teamCreator.UserId,
+						CreatedAt = teamCreator.DefaultTimezone.CurrentTime(),
+					};
+
+				var team_id = connection.Query<Guid>(sql, args).Single();
 				return TryFindTeam(team_id, out var team) ? team : throw new Exception("Somehow that team you saved doesn't exist now?");
 			}
 		}
@@ -83,7 +93,11 @@ namespace OnlineRecLeague.Teams
 		{
 			return new Team(record.TeamId, findTeamMembersFunc)
 				{
-					Name = record.Name
+					Name = record.Name,
+					ProfileContent = record.ProfileContent,
+					UserNamePrefix = record.UserNamePrefix,
+					OwnerUserId = record.OwnerUserId,
+					CreatedAt = record.CreatedTime,
 				};
 		}
 	}

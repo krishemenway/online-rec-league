@@ -7,7 +7,7 @@ namespace OnlineRecLeague.Users
 	{
 		IUser FindUserOrThrow(ISession session);
 		bool TryFindUser(ISession session, out IUser user);
-		void SetLoggedInUser(ISession session, IUser user);
+		void SetUserInSession(ISession session, IUser user);
 	}
 
 	internal class UserSessionStore : IUserSessionStore
@@ -26,7 +26,7 @@ namespace OnlineRecLeague.Users
 				return false;
 			}
 
-			if(_threadCachedUser?.UserId != userId || !_userStore.TryFindUserById(userId, out _threadCachedUser))
+			if (_threadCachedUser?.UserId != userId || !_userStore.TryFindUserById(userId, out _threadCachedUser))
 			{
 				return false;
 			}
@@ -35,14 +35,14 @@ namespace OnlineRecLeague.Users
 			return true;
 		}
 
-		public void SetLoggedInUser(ISession session, IUser user)
+		public void SetUserInSession(ISession session, IUser user)
 		{
 			session.SetString("LoggedInUser", user.UserId.ToString());
 		}
 
 		public IUser FindUserOrThrow(ISession session)
 		{
-			if(!TryFindUser(session, out var user))
+			if (!TryFindUser(session, out var user))
 			{
 				throw new InvalidUserSessionException();
 			}

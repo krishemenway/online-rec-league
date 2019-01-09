@@ -1,5 +1,5 @@
 ﻿{
-	"WebPort":  8001,
+	"WebPort": 8001,
 
 	"AppDataHost": "localhost",
 	"AppDataPort": 5433,
@@ -7,6 +7,9 @@
 	"AppDatabaseName": "notconfigured",
 	"AppDataUser": "notconfigured",
 	"AppDataPassword": "notconfigured",
+
+	"SuperadminUsername": "superadmin",
+	"SuperadminPassword":  "",
 
 	"Logging": {
 		"IncludeScopes": false,

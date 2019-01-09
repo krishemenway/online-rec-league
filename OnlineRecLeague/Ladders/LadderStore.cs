@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using OnlineRecLeague.Games;
-using OnlineRecLeague.Ladders.LadderRules;
+using OnlineRecLeague.Rulesets;
 using System;
 using System.Collections.Generic;
 using System.Linq;

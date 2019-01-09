@@ -19,9 +19,9 @@ namespace OnlineRecLeague.Games
 			{
 				const string sql = @"
 					INSERT INTO svc.game
-					(name)
+					(name, release_date)
 					VALUES
-					(@Name)
+					(@Name, @ReleaseDate)
 					RETURNING game_id;";
 
 				var gameId = connection.Query<Guid>(sql, createGameRequest).Single();
@@ -36,7 +36,8 @@ namespace OnlineRecLeague.Games
 				const string sql = @"
 					SELECT
 						game_id as gameid,
-						name
+						name,
+						release_date as releasedate,
 					FROM svc.game
 					WHERE svc.game_id = any(@GameIds)";
 
@@ -47,19 +48,14 @@ namespace OnlineRecLeague.Games
 			}
 		}
 
-		public IGame CreateGame(GameRecord gameRecord)
+		private IGame CreateGame(GameRecord gameRecord)
 		{
 			return new Game
 				{
 					GameId = gameRecord.GameId,
-					Name = gameRecord.Name
+					Name = gameRecord.Name,
+					ReleaseDate = gameRecord.ReleaseDate,
 				};
 		}
-	}
-
-	public class GameRecord
-	{
-		public Guid GameId { get; set; }
-		public string Name { get; set; }
 	}
 }

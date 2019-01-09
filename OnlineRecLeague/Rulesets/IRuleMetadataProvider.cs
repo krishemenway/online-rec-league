@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OnlineRecLeague.Ruleset
+namespace OnlineRecLeague.Rulesets
 {
 	public interface IRuleMetadataProvider
 	{

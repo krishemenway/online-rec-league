@@ -1,7 +1,7 @@
-﻿using OnlineRecLeague.Ruleset.RuleValuePickers;
+﻿using OnlineRecLeague.Rulesets.RuleValuePickers;
 using System.Collections.Generic;
 
-namespace OnlineRecLeague.Ruleset
+namespace OnlineRecLeague.Rulesets
 {
 	public class GeneralRuleMetadataProvider : IRuleMetadataProvider
 	{

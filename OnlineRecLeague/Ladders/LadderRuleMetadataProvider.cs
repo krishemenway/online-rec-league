@@ -1,6 +1,6 @@
 ﻿using OnlineRecLeague.CommonDataTypes;
-using OnlineRecLeague.Ruleset;
-using OnlineRecLeague.Ruleset.RuleValuePickers;
+using OnlineRecLeague.Rulesets;
+using OnlineRecLeague.Rulesets.RuleValuePickers;
 using System.Collections.Generic;
 
 namespace OnlineRecLeague.Ladders

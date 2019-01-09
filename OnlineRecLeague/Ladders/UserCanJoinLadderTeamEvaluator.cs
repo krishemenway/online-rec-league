@@ -1,5 +1,5 @@
 ﻿using OnlineRecLeague.CommonDataTypes;
-using OnlineRecLeague.Ruleset;
+using OnlineRecLeague.Rulesets;
 using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.Ladders

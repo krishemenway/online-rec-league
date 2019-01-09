@@ -16,11 +16,13 @@ namespace OnlineRecLeague.Users
 		internal CreateNewUserRequestHandler(
 			IUserStore userStore = null,
 			IUserSessionStore userSessionStore = null,
-			IUserProfileFactory userProfileFactory = null)
+			IUserProfileFactory userProfileFactory = null,
+			IConfirmEmailSender confirmEmailSender = null)
 		{
 			_userStore = userStore ?? new UserStore();
 			_userSessionStore = userSessionStore ?? new UserSessionStore();
 			_userProfileFactory = userProfileFactory ?? new UserProfileFactory();
+			_confirmEmailSender = confirmEmailSender ?? new ConfirmEmailSender();
 		}
 
 		public Result<IUserProfile> HandleRequest(CreateNewUserRequest request, ISession session)
@@ -28,14 +30,16 @@ namespace OnlineRecLeague.Users
 			request.JoinTime = TimeZoneInfo.FindSystemTimeZoneById(request.DefaultTimezone).CurrentTime();
 
 			var newUser = _userStore.CreateNewUser(request);
-			_userSessionStore.SetLoggedInUser(session, newUser);
+			_userSessionStore.SetUserInSession(session, newUser);
+			_confirmEmailSender.SendConfirmEmail(newUser);
 
-			var userProfile = _userProfileFactory.CreateProfile(newUser, UserProfileType.PersonalProfile);
-			return Result<IUserProfile>.Successful(userProfile);
+			var profile = _userProfileFactory.CreateProfile(newUser, session);
+			return Result<IUserProfile>.Successful(profile);
 		}
 
 		private readonly IUserStore _userStore;
 		private readonly IUserSessionStore _userSessionStore;
 		private readonly IUserProfileFactory _userProfileFactory;
+		private readonly IConfirmEmailSender _confirmEmailSender;
 	}
 }

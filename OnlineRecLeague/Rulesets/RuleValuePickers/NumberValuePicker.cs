@@ -1,10 +1,10 @@
 ﻿using OnlineRecLeague.CommonDataTypes;
 
-namespace OnlineRecLeague.Ruleset.RuleValuePickers
+namespace OnlineRecLeague.Rulesets.RuleValuePickers
 {
 	public class NumberValuePicker : IRuleValuePicker
 	{
-		public NumberValuePicker(int defaultValue, Range<int> allowedRange = null)
+		public NumberValuePicker(int defaultValue, Range<int> allowedRange)
 		{
 			DefaultValue = defaultValue.ToString();
 			AllowedRange = allowedRange;

@@ -8,6 +8,12 @@ namespace OnlineRecLeague.Teams
 		Guid TeamId { get; }
 		string Name { get; }
 
+		DateTimeOffset CreatedAt { get; }
+		Guid OwnerUserId { get; }
+
+		string UserNamePrefix { get; }
+		string ProfileContent { get; }
+
 		IReadOnlyList<ITeamMember> TeamMembers { get; }
 	}
 
@@ -22,7 +28,13 @@ namespace OnlineRecLeague.Teams
 		public Guid TeamId { get; }
 		public string Name { get; set; }
 
+		public DateTimeOffset CreatedAt { get; set; }
+		public Guid OwnerUserId { get; set; }
+
 		public IReadOnlyList<ITeamMember> TeamMembers => _lazyTeamMembers.Value;
+
+		public string UserNamePrefix { get; set; }
+		public string ProfileContent { get; set; }
 
 		public override bool Equals(object other)
 		{

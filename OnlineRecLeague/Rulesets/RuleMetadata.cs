@@ -1,6 +1,4 @@
-﻿using OnlineRecLeague.Ladders.LadderRules;
-
-namespace OnlineRecLeague.Ruleset
+﻿namespace OnlineRecLeague.Rulesets
 {
 	public interface IRuleMetadata
 	{

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace OnlineRecLeague.Users
 {
-	public class RequiresLoggedInUserAttribute : ActionFilterAttribute
+	public class RequiresUserInSessionAttribute : ActionFilterAttribute
 	{
 		public override void OnActionExecuting(ActionExecutingContext context)
 		{

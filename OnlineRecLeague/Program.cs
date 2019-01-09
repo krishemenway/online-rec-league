@@ -19,7 +19,6 @@ namespace OnlineRecLeague
 				.Build();
 
 			Settings = new Settings(configuration);
-
 			SetupLogging();
 
 			try
@@ -52,7 +51,7 @@ namespace OnlineRecLeague
 			WebHost = new WebHostBuilder()
 				.UseKestrel()
 				.UseConfiguration(configuration)
-				.UseStartup<Startup>()
+				.UseStartup<Service>()
 				.UseSerilog()
 				.UseUrls($"http://*:{Settings.WebPort}")
 				.Build();

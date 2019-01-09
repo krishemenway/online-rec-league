@@ -8,12 +8,14 @@ namespace OnlineRecLeague.Users
 {
 	public interface IUserStore
 	{
-		IUser CreateNewUser(CreateNewUserRequest request);
-
 		bool TryFindUserById(Guid userId, out IUser user);
 		bool TryFindUserByEmail(string emailAddress, out IUser user);
 
 		IReadOnlyList<IUser> FindUsers(IReadOnlyList<Guid> userIds);
+		IReadOnlyList<IUser> FindUsersByQuery(string query);
+
+		IUser CreateNewUser(CreateNewUserRequest request);
+		void EmailConfirmed(IUser user, DateTimeOffset emailConfirmationTime);
 	}
 
 	internal class UserStore : IUserStore
@@ -31,16 +33,24 @@ namespace OnlineRecLeague.Users
 
 		public bool TryFindUserByEmail(string email, out IUser user)
 		{
+			if (email == SuperAdmin.Email)
+			{
+				user = SuperAdmin;
+				return true;
+			}
+
 			const string sql = @"
 				SELECT
 					user_id as userid,
 					nickname,
 					realname,
 					email,
+					password_hash as passwordhash,
+					email_confirmation_code as emailconfirmationcode,
+					email_confirmation_time as emailconfirmationtime,
 					join_time as jointime,
 					region,
-					default_timezone as defaulttimezone,
-					email_validated as emailvalidated
+					default_timezone as defaulttimezone
 				FROM
 					svc.user
 				WHERE
@@ -61,10 +71,12 @@ namespace OnlineRecLeague.Users
 					nickname,
 					realname,
 					email,
+					password_hash as passwordhash,
+					email_confirmation_code as emailconfirmationcode,
+					email_confirmation_time as emailconfirmationtime,
 					join_time as jointime,
 					region,
-					default_timezone as defaulttimezone,
-					email_validated as emailvalidated
+					default_timezone as defaulttimezone
 				FROM
 					svc.user
 				WHERE
@@ -76,13 +88,38 @@ namespace OnlineRecLeague.Users
 			}
 		}
 
+		public IReadOnlyList<IUser> FindUsersByQuery(string query)
+		{
+			const string sql = @"
+				SELECT
+					user_id as userid,
+					nickname,
+					realname,
+					email,
+					password_hash as passwordhash,
+					email_confirmation_code as emailconfirmationcode,
+					email_confirmation_time as emailconfirmationtime,
+					join_time as jointime,
+					region,
+					default_timezone as defaulttimezone
+				FROM
+					svc.user
+				WHERE
+					email like @Query OR nickname like @Query";
+
+			using (var connection = Database.CreateConnection())
+			{
+				return connection.Query<UserRecord>(sql, new { Query = $"%{query}%" }).Select(Create).ToList();
+			}
+		}
+
 		public IUser CreateNewUser(CreateNewUserRequest request)
 		{
 			const string sql = @"
 				INSERT INTO svc.user
-				(nickname, realname, email, join_time, default_timezone, region, email_validated)
+				(nickname, realname, email, password_hash, join_time, default_timezone, region, email_confirmation_code, email_confirmation_time)
 				VALUES
-				(@NickName, @RealName, @Email, @JoinTime, @DefaultTimezone, @Region, @EmailValidated)
+				(@NickName, @RealName, @Email, @PasswordHash, @JoinTime, @DefaultTimezone, @Region, @EmailConfirmationCode, null)
 				RETURNING user_id;";
 
 			using (var connection = Database.CreateConnection())
@@ -92,10 +129,11 @@ namespace OnlineRecLeague.Users
 						request.NickName,
 						request.RealName,
 						request.Email,
+						PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
 						request.JoinTime,
 						request.DefaultTimezone,
 						request.Region,
-						EmailValidated = false
+						EmailConfirmationCode = Guid.NewGuid(),
 					};
 
 				var userId = connection.QuerySingle<Guid>(sql, sqlParams);
@@ -103,7 +141,20 @@ namespace OnlineRecLeague.Users
 			}
 		}
 
-		public IUser Create(UserRecord userRecord)
+		public void EmailConfirmed(IUser user, DateTimeOffset emailConfirmationTime)
+		{
+			const string sql = @"
+				UPDATE svc.user
+				SET email_confirmation_time = @EmailConfirmationTime
+				WHERE user_id = @UserId;";
+
+			using (var connection = Database.CreateConnection())
+			{
+				connection.Execute(sql, new { user.UserId, emailConfirmationTime });
+			}
+		}
+
+		private IUser Create(UserRecord userRecord)
 		{
 			return new User(userRecord.UserId)
 				{
@@ -111,14 +162,22 @@ namespace OnlineRecLeague.Users
 					RealName = userRecord.RealName,
 
 					Email = userRecord.Email,
+					PasswordHash = userRecord.PasswordHash,
+
+					EmailConfirmationCode = userRecord.EmailConfirmationCode,
+					EmailConfirmedTime = userRecord.EmailConfirmationTime,
 
 					JoinTime = userRecord.JoinTime,
 					QuitTime = userRecord.QuitTime,
+
+					IsSuperAdmin = false,
 
 					Region = _regionStore.FindRegionOrThrow(userRecord.Region),
 					DefaultTimezone = TimeZoneInfo.FindSystemTimeZoneById(userRecord.DefaultTimezone)
 				};
 		}
+
+		private static IUser SuperAdmin => new User(Guid.Empty) { NickName = "SuperAdmin", Email = "superadmin", IsSuperAdmin = true, PasswordHash = BCrypt.Net.BCrypt.HashPassword(Program.Settings.SuperadminPassword) };
 
 		private readonly IRegionStore _regionStore;
 	}

@@ -2,7 +2,6 @@
 {
 	public class SearchUserRequest
 	{
-		public string EmailAddress { get; set; }
-		public string Nickname { get; set; }
+		public string Query { get; set; }
 	}
 }
