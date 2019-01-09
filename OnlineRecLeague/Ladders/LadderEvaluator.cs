@@ -19,9 +19,12 @@ namespace OnlineRecLeague.Ladders
 		public void Evaluate(ILadder ladder)
 		{
 			var allLadderTeams = ladder.AllLadderTeams.OrderBy(x => x.CreatedAtTime);
-
 			var ladderTeamsInLadderOrder = new LinkedList<ILadderTeam>(allLadderTeams);
-			var successfulLadderChallenges = FindAllSuccessfulLadderChallenges(ladder);
+
+			var successfulLadderChallenges = ladder.AllLadderChallenges
+				.Where(x => x.ChallengeState == LadderChallengeState.Succeeded)
+				.OrderBy(x => x.MatchResultsReportedTime)
+				.ToList();
 
 			foreach (var ladderChallenge in successfulLadderChallenges)
 			{
@@ -36,14 +39,6 @@ namespace OnlineRecLeague.Ladders
 			{
 				_ladderTeamStore.UpdateLadderRungs(updateRequests);
 			}
-		}
-
-		private static IReadOnlyList<ILadderChallenge> FindAllSuccessfulLadderChallenges(ILadder ladder)
-		{
-			return ladder.AllLadderChallenges
-				.Where(x => x.ChallengeState == LadderChallengeState.Succeeded)
-				.OrderBy(x => x.MatchResultsReportedTime)
-				.ToList();
 		}
 
 		private static IEnumerable<UpdateLadderRungRequest> FindAllLadderRungRequests(IEnumerable<ILadderTeam> ladderTeamRanking)
