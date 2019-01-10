@@ -1,13 +1,16 @@
 ﻿#if DEBUG
 using FluentAssertions;
 using Moq;
+using NUnit.Framework;
 using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.Leagues
 {
+	[TestFixture]
 	public class CreateLeagueRequestHandlerTests
 	{
+		[SetUp]
 		public void SetUp()
 		{
 			GivenRequest = new CreateLeagueRequest();
@@ -17,6 +20,7 @@ namespace OnlineRecLeague.Leagues
 			_createLeagueRequestHandler = new CreateLeagueRequestHandler(_leagueStore.Object);
 		}
 		
+		[Test]
 		public void Test()
 		{
 			WhenHandlingRequest();
@@ -30,7 +34,7 @@ namespace OnlineRecLeague.Leagues
 
 		private CreateLeagueRequest GivenRequest { get; set; }
 		private UserBuilder GivenUser { get; set; }
-		private Result ThenResult { get; set; }
+		private Result<LeagueViewModel> ThenResult { get; set; }
 
 		private Mock<ILeagueStore> _leagueStore;
 		private CreateLeagueRequestHandler _createLeagueRequestHandler;
