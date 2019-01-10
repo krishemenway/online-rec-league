@@ -15,9 +15,13 @@ namespace OnlineRecLeague.TeamMembers
 
 	public class TeamMember : ITeamMember
 	{
-		public TeamMember(Guid teamMemberId)
+		public TeamMember(TeamMemberRecord record)
 		{
-			TeamMemberId = teamMemberId;
+			TeamMemberId = record.TeamMemberId;
+			TeamId = record.TeamId;
+			UserId = record.UserId;
+			NickName = record.NickName;
+			JoinedTime = record.JoinedTime;
 		}
 
 		public Guid TeamMemberId { get; }

@@ -56,13 +56,7 @@ namespace OnlineRecLeague.TeamMembers
 
 		private ITeamMember CreateTeamMember(TeamMemberRecord record)
 		{
-			return new TeamMember(record.TeamMemberId)
-				{
-					TeamId = record.TeamId,
-					UserId = record.UserId,
-					NickName = record.NickName,
-					JoinedTime = record.JoinedTime
-				};
+			return new TeamMember(record);
 		}
 	}
 }
