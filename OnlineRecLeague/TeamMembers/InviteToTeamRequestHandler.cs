@@ -1,8 +1,9 @@
 ﻿using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Email;
+using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
 
-namespace OnlineRecLeague.Teams
+namespace OnlineRecLeague.TeamMembers
 {
 	internal class InviteToTeamRequestHandler
 	{

@@ -1,7 +1,8 @@
 ﻿using System;
+using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
 
-namespace OnlineRecLeague.Teams
+namespace OnlineRecLeague.TeamMembers
 {
 	public interface ITeamMember
 	{

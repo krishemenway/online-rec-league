@@ -15,22 +15,6 @@ namespace OnlineRecLeague.Teams
 			return Json(new CreateTeamRequestHandler().CreateTeam(request, UserFromSession));
 		}
 
-		[HttpPost("invite")]
-		[RequiresUserInSession]
-		[ProducesResponseType(200, Type = typeof(Result))]
-		public IActionResult Invite(InviteToTeamRequest request)
-		{
-			return Json(new InviteToTeamRequestHandler().HandleRequest(request, UserFromSession));
-		}
-
-		[HttpPost("join")]
-		[RequiresUserInSession]
-		[ProducesResponseType(200, Type = typeof(Result))]
-		public IActionResult Join(JoinTeamRequest request)
-		{
-			return Json(new JoinTeamRequestHandler().HandleRequest(request, UserFromSession));
-		}
-
 		private IUser UserFromSession => new UserSessionStore().FindUserOrThrow(HttpContext.Session);
 	}
 }

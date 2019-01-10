@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineRecLeague.Teams
+namespace OnlineRecLeague.TeamMembers
 {
 	public class InviteToTeamRequest
 	{

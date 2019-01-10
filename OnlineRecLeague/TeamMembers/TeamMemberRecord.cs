@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineRecLeague.Teams
+namespace OnlineRecLeague.TeamMembers
 {
 	public class TeamMemberRecord
 	{

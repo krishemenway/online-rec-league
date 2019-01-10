@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
 
-namespace OnlineRecLeague.Teams
+namespace OnlineRecLeague.TeamMembers
 {
 	internal class JoinTeamRequestHandler
 	{

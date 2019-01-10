@@ -1,11 +1,12 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
+using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OnlineRecLeague.Teams
+namespace OnlineRecLeague.TeamMembers
 {
 	public interface IInviteToTeamStore
 	{
