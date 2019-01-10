@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Configuration;
 using OnlineRecLeague.AppData;
 using OnlineRecLeague.Regions;
 using System;
@@ -118,7 +117,7 @@ namespace OnlineRecLeague.Users
 				INSERT INTO svc.user
 				(nickname, realname, email, password_hash, is_admin, join_time, default_timezone, region, email_confirmation_code, email_confirmation_time)
 				VALUES
-				(@NickName, @RealName, @Email, @PasswordHash, @IsAdmin, @JoinTime, @DefaultTimezone, '', @EmailConfirmationCode, null)
+				(@NickName, @RealName, @Email, @Password, @IsAdmin, @JoinTime, @DefaultTimezone, '', @EmailConfirmationCode, null)
 				RETURNING user_id;";
 
 			using (var connection = AppDataConnection.Create())
@@ -128,7 +127,7 @@ namespace OnlineRecLeague.Users
 						request.NickName,
 						request.RealName,
 						request.Email,
-						PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+						request.Password,
 						request.JoinTime,
 						request.DefaultTimezone,
 						EmailConfirmationCode = Guid.NewGuid(),
