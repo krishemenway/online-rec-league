@@ -1,6 +1,6 @@
 ﻿using OnlineRecLeague.Users;
 using Microsoft.AspNetCore.Mvc;
-using OnlineRecLeague.CommonDataTypes;
+using OnlineRecLeague.DataTypes;
 
 namespace OnlineRecLeague.Teams
 {

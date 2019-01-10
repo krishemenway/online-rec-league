@@ -1,4 +1,4 @@
-﻿using OnlineRecLeague.CommonDataTypes;
+﻿using OnlineRecLeague.DataTypes;
 
 namespace OnlineRecLeague.Ladders
 {

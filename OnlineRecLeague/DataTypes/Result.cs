@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OnlineRecLeague.CommonDataTypes
+namespace OnlineRecLeague.DataTypes
 {
 	public class Result
 	{

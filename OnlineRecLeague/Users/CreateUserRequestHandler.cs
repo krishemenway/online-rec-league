@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using OnlineRecLeague.CommonDataTypes;
+using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.CoreExtensions;
 using System;
 

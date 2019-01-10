@@ -1,4 +1,4 @@
-﻿using OnlineRecLeague.CommonDataTypes;
+﻿using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Email;
 using OnlineRecLeague.Users;
 

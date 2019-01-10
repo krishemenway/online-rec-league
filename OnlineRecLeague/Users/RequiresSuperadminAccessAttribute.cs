@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using OnlineRecLeague.CommonDataTypes;
+using OnlineRecLeague.DataTypes;
 
 namespace OnlineRecLeague.Users
 {

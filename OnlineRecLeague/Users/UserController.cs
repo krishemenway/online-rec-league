@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OnlineRecLeague.CommonDataTypes;
+using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Users.Profiles;
 
 namespace OnlineRecLeague.Users

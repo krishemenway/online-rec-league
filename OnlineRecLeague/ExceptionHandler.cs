@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using OnlineRecLeague.CommonDataTypes;
+using OnlineRecLeague.DataTypes;
 using Serilog;
 using System;
 using System.Net;

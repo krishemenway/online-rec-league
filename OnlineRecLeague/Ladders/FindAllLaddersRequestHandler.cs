@@ -1,4 +1,4 @@
-﻿using OnlineRecLeague.CommonDataTypes;
+﻿using OnlineRecLeague.DataTypes;
 using System.Collections.Generic;
 using System.Linq;
 

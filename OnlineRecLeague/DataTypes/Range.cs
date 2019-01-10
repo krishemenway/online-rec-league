@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineRecLeague.CommonDataTypes
+namespace OnlineRecLeague.DataTypes
 {
 	public struct Range<T> where T : IComparable<T>
 	{

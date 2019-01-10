@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using OnlineRecLeague.CommonDataTypes;
+using OnlineRecLeague.DataTypes;
 
 namespace OnlineRecLeague.Users
 {
