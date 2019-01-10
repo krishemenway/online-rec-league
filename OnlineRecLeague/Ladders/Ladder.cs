@@ -23,18 +23,24 @@ namespace OnlineRecLeague.Ladders
 
 	public class Ladder : ILadder
 	{
-		public Ladder()
+		internal Ladder(LadderRecord record)
 		{
+			LadderId = record.LadderId;
+			Name = record.Name;
+			UriPath = record.UriPath;
+			SportId = record.SportId;
+
 			_lazyAllLadderChallenges = new Lazy<IReadOnlyList<ILadderChallenge>>(() => new LadderChallengeStore().FindAll(this));
 			_lazyAllLadderTeams = new Lazy<IReadOnlyList<ILadderTeam>>(() => new LadderTeamStore().Find(this));
 			_lazySport = new Lazy<ISport>(() => new SportStore().FindById(SportId)[SportId]);
+			_lazyRules = new Lazy<IRuleset>(() => new RulesetFactory().Create(record.Rules));
 		}
 
-		public Guid LadderId { get; set; }
-		public string Name { get; set; }
-		public string UriPath { get; set; }
+		public Guid LadderId { get; }
+		public string Name { get; }
+		public string UriPath { get; }
 
-		public Guid SportId { get; set; }
+		public Guid SportId { get; }
 		public ISport Sport => _lazySport.Value;
 
 		public IReadOnlyList<ILadderTeam> AllLadderTeams => _lazyAllLadderTeams.Value;
@@ -55,5 +61,6 @@ namespace OnlineRecLeague.Ladders
 		private readonly Lazy<IReadOnlyList<ILadderChallenge>> _lazyAllLadderChallenges;
 		private readonly Lazy<IReadOnlyList<ILadderTeam>> _lazyAllLadderTeams;
 		private readonly Lazy<ISport> _lazySport;
+		private readonly Lazy<IRuleset> _lazyRules;
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
 using OnlineRecLeague.Games;
-using OnlineRecLeague.Rulesets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +19,6 @@ namespace OnlineRecLeague.Ladders
 
 	internal class LadderStore : ILadderStore
 	{
-		public LadderStore(IRulesetFactory rulesetFactory = null)
-		{
-			_rulesetFactory = rulesetFactory ?? new RulesetFactory();
-		}
-
 		public ILadder Find(Guid ladderId)
 		{
 			const string sql = @"
@@ -39,7 +33,7 @@ namespace OnlineRecLeague.Ladders
 
 			using (var connection = AppDataConnection.Create())
 			{
-				return connection.Query<LadderRecord>(sql, new { ladderId }).Select(Create).Single();
+				return connection.Query<LadderRecord>(sql, new { ladderId }).Select((record) => new Ladder(record)).Single();
 			}
 		}
 
@@ -56,7 +50,7 @@ namespace OnlineRecLeague.Ladders
 
 			using (var connection = AppDataConnection.Create())
 			{
-				return connection.Query<LadderRecord>(sql).Select(Create).ToList();
+				return connection.Query<LadderRecord>(sql).Select((record) => new Ladder(record)).ToList();
 			}
 		}
 
@@ -76,7 +70,7 @@ namespace OnlineRecLeague.Ladders
 
 			using (var connection = AppDataConnection.Create())
 			{
-				return connection.Query<LadderRecord>(sql, new { game.GameId }).Select(Create).ToList();
+				return connection.Query<LadderRecord>(sql, new { game.GameId }).Select((record) => new Ladder(record)).ToList();
 			}
 		}
 
@@ -94,20 +88,6 @@ namespace OnlineRecLeague.Ladders
 				return Find(connection.Query<Guid>(sql, createLadderRequest).Single());
 			}
 		}
-
-		private ILadder Create(LadderRecord record)
-		{
-			return new Ladder
-				{
-					LadderId = record.LadderId,
-					Name = record.Name,
-					UriPath = record.UriPath,
-					SportId = record.SportId,
-					Rules = _rulesetFactory.Create(record.Rules),
-				};
-		}
-
-		private IRulesetFactory _rulesetFactory;
 	}
 
 	public class LadderRecord
