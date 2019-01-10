@@ -1,7 +1,7 @@
-﻿using OnlineRecLeague.Ladders.LadderChallenges;
+﻿using OnlineRecLeague.LadderTeams;
 using System;
 
-namespace OnlineRecLeague.Ladders
+namespace OnlineRecLeague.LadderChallenges
 {
 	public interface ILadderChallenge
 	{

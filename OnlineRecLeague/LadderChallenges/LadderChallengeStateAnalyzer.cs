@@ -1,4 +1,4 @@
-﻿namespace OnlineRecLeague.Ladders.LadderChallenges
+﻿namespace OnlineRecLeague.LadderChallenges
 {
 	public interface ILadderChallengeStateAnalyzer
 	{

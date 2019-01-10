@@ -1,11 +1,12 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
-using OnlineRecLeague.Ladders.LadderChallenges;
+using OnlineRecLeague.Ladders;
+using OnlineRecLeague.LadderTeams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OnlineRecLeague.Ladders
+namespace OnlineRecLeague.LadderChallenges
 {
 	public interface ILadderChallengeStore
 	{

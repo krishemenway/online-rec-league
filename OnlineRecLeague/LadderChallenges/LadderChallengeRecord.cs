@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineRecLeague.Ladders
+namespace OnlineRecLeague.LadderChallenges
 {
 	public class LadderChallengeRecord
 	{

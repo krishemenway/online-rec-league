@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineRecLeague.Ladders.LadderChallenges
+namespace OnlineRecLeague.LadderChallenges
 {
 	public enum LadderChallengeState
 	{

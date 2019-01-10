@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineRecLeague.Ladders.LadderTeams
+namespace OnlineRecLeague.LadderTeams
 {
 	public class LadderTeamViewModel
 	{

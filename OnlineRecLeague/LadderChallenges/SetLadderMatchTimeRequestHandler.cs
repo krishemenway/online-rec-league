@@ -1,7 +1,8 @@
 ﻿using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Ladders;
 using OnlineRecLeague.Users;
 
-namespace OnlineRecLeague.Ladders.LadderChallenges
+namespace OnlineRecLeague.LadderChallenges
 {
 	public class SetLadderMatchTimeRequestHandler
 	{

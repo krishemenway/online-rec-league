@@ -1,11 +1,12 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
+using OnlineRecLeague.Ladders;
 using OnlineRecLeague.Teams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OnlineRecLeague.Ladders
+namespace OnlineRecLeague.LadderTeams
 {
 	public interface ILadderTeamStore
 	{

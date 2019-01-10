@@ -1,4 +1,4 @@
-﻿using OnlineRecLeague.Ladders.LadderTeams;
+﻿using OnlineRecLeague.LadderTeams;
 using System;
 using System.Collections.Generic;
 

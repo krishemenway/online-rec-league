@@ -1,4 +1,4 @@
-﻿namespace OnlineRecLeague.Ladders.LadderTeams
+﻿namespace OnlineRecLeague.LadderTeams
 {
 	public interface ILadderTeamViewModelFactory
 	{
