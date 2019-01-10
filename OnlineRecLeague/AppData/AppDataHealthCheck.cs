@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Microsoft.Extensions.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 using System.Linq;
 using System.Threading;
@@ -9,7 +9,7 @@ namespace OnlineRecLeague.AppData
 {
 	public class AppDataHealthCheck : IHealthCheck
 	{
-		public ValueTask<IHealthCheckResult> CheckAsync(CancellationToken cancellationToken = default(CancellationToken))
+		public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			try
 			{
@@ -18,11 +18,11 @@ namespace OnlineRecLeague.AppData
 					connection.Execute(string.Join(" ", AppDataSchema.Tables.Select(x => $"SELECT 1 from {x.Key};")));
 				}
 
-				return new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Everything is good, nothing to see here"));
+				return Task.FromResult(HealthCheckResult.Healthy("Everything is good, how are you?"));
 			}
 			catch (Exception exception)
 			{
-				return new ValueTask<IHealthCheckResult>(HealthCheckResult.Unhealthy($"AppData failed: {exception.Message}"));
+				return Task.FromResult(HealthCheckResult.Unhealthy($"AppData failed: {exception.Message}"));
 			}
 		}
 	}

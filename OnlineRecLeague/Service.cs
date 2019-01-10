@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.HealthChecks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using OnlineRecLeague.AppData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -18,6 +20,10 @@ namespace OnlineRecLeague
 		{
 			services.AddLogging();
 			services.AddMvcCore().AddJsonFormatters(FixJsonCamelCasing);
+
+			services
+				.AddHealthChecks()
+				.AddCheck<AppDataHealthCheck>("AppData");
 
 			services.AddDistributedMemoryCache();
 			services.AddLocalization();
@@ -49,6 +55,7 @@ namespace OnlineRecLeague
 			app.UseSession();
 			app.UseMiddleware(typeof(ExceptionHandler));
 			app.UseMvc();
+			app.UseHealthChecks("/api/health");
 		}
 
 		private void FixJsonCamelCasing(JsonSerializerSettings settings)
