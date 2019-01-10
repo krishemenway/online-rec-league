@@ -22,7 +22,7 @@ namespace OnlineRecLeague.Users.Profiles
 		public TimeZoneInfo DefaultTimezone => _user.DefaultTimezone;
 		public IRegion Region => _user.Region;
 
-		public bool IsSuperAdmin => _user.IsSuperAdmin;
+		public bool IsAdmin => _user.IsAdmin;
 
 		private readonly IUser _user;
 	}

@@ -12,12 +12,7 @@ namespace OnlineRecLeague.Users
 
 		public Result HandleRequest(ConfirmEmailRequest request, IUser userFromSession)
 		{
-			if (!request.EmailConfirmationCode.HasValue)
-			{
-				return Result.Failure("Missing email confirmation code");
-			}
-
-			if (request.EmailConfirmationCode.Value != userFromSession.EmailConfirmationCode)
+			if (!request.EmailConfirmationCode.HasValue || request.EmailConfirmationCode.Value != userFromSession.EmailConfirmationCode)
 			{
 				return Result.Failure("Invalid email confirmation code");
 			}

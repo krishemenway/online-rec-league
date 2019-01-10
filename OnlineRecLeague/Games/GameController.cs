@@ -5,11 +5,11 @@ using OnlineRecLeague.Users;
 namespace OnlineRecLeague.Games
 {
 	[Route("api/games")]
-	[RequiresSuperadminAccess]
+	[RequiresAdminAccess]
 	public class GameController : Controller
 	{
 		[HttpPost("Create")]
-		[RequiresSuperadminAccess]
+		[RequiresAdminAccess]
 		[ProducesResponseType(200, Type = typeof(Result<GameProfile>))]
 		public IActionResult Create([FromBody]CreateGameRequest request)
 		{

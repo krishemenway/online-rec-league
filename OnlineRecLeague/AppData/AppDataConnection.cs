@@ -3,6 +3,7 @@ using System.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace OnlineRecLeague.AppData
 {
@@ -19,11 +20,11 @@ namespace OnlineRecLeague.AppData
 		{
 			var connectionParams = new Dictionary<string, string>
 				{
-					{ "Host", Program.Settings.DatabaseHost },
-					{ "Port", Program.Settings.DatabasePort.ToString() },
-					{ "Username", Program.Settings.DatabaseUser },
-					{ "Password", Program.Settings.DatabasePassword },
-					{ "Database", Program.Settings.DatabaseName },
+					{ "Host", Program.Settings.GetValue<string>("AppDataHost") },
+					{ "Port", Program.Settings.GetValue<int>("AppDataPort").ToString() },
+					{ "Username", Program.Settings.GetValue<string>("AppDataUser") },
+					{ "Password", Program.Settings.GetValue<string>("AppDataPassword") },
+					{ "Database", Program.Settings.GetValue<string>("AppDatabaseName") },
 				};
 
 			return string.Join(";", connectionParams.Select(param => $"{param.Key}={param.Value}"));

@@ -24,7 +24,7 @@ namespace OnlineRecLeague.Users
 		IRegion Region { get; }
 		TimeZoneInfo DefaultTimezone { get; }
 
-		bool IsSuperAdmin { get; }
+		bool IsAdmin { get; }
 	}
 
 	public class User : IUser
@@ -53,7 +53,7 @@ namespace OnlineRecLeague.Users
 		public IRegion Region { get; set; }
 		public TimeZoneInfo DefaultTimezone { get; set; }
 
-		public bool IsSuperAdmin { get; set; }
+		public bool IsAdmin { get; set; }
 
 		public override bool Equals(object other)
 		{

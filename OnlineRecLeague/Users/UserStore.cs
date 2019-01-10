@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Configuration;
 using OnlineRecLeague.AppData;
 using OnlineRecLeague.Regions;
 using System;
@@ -19,6 +20,7 @@ namespace OnlineRecLeague.Users
 
 		void EmailConfirmed(IUser user, DateTimeOffset emailConfirmationTime);
 		void UpdatePassword(IUser user, string passwordHash);
+		void MakeUserAdmin(IUser user, bool isAdmin);
 	}
 
 	internal class UserStore : IUserStore
@@ -36,12 +38,6 @@ namespace OnlineRecLeague.Users
 
 		public bool TryFindUserByEmail(string email, out IUser user)
 		{
-			if (email == SuperAdmin.Email)
-			{
-				user = SuperAdmin;
-				return true;
-			}
-
 			const string sql = @"
 				SELECT
 					user_id as userid,
@@ -120,9 +116,9 @@ namespace OnlineRecLeague.Users
 		{
 			const string sql = @"
 				INSERT INTO svc.user
-				(nickname, realname, email, password_hash, join_time, default_timezone, region, email_confirmation_code, email_confirmation_time)
+				(nickname, realname, email, password_hash, is_admin, join_time, default_timezone, region, email_confirmation_code, email_confirmation_time)
 				VALUES
-				(@NickName, @RealName, @Email, @PasswordHash, @JoinTime, @DefaultTimezone, '', @EmailConfirmationCode, null)
+				(@NickName, @RealName, @Email, @PasswordHash, @IsAdmin, @JoinTime, @DefaultTimezone, '', @EmailConfirmationCode, null)
 				RETURNING user_id;";
 
 			using (var connection = AppDataConnection.Create())
@@ -169,6 +165,19 @@ namespace OnlineRecLeague.Users
 			}
 		}
 
+		public void MakeUserAdmin(IUser user, bool isAdmin)
+		{
+			const string sql = @"
+				UPDATE svc.user
+				SET is_admin = @IsAdmin
+				WHERE user_id = @UserId;";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				connection.Execute(sql, new { user.UserId, isAdmin });
+			}
+		}
+
 		private IUser Create(UserRecord userRecord)
 		{
 			return new User(userRecord.UserId)
@@ -185,14 +194,12 @@ namespace OnlineRecLeague.Users
 					JoinTime = userRecord.JoinTime,
 					QuitTime = userRecord.QuitTime,
 
-					IsSuperAdmin = false,
+					IsAdmin = false,
 
 					Region = _regionStore.FindRegionOrThrow(userRecord.Region),
 					DefaultTimezone = TimeZoneInfo.FindSystemTimeZoneById(userRecord.DefaultTimezone)
 				};
 		}
-
-		private static IUser SuperAdmin => new User(Guid.Empty) { NickName = "SuperAdmin", Email = "superadmin", IsSuperAdmin = true, PasswordHash = BCrypt.Net.BCrypt.HashPassword(Program.Settings.SuperadminPassword) };
 
 		private readonly IRegionStore _regionStore;
 	}

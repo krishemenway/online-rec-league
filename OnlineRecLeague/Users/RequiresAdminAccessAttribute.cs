@@ -4,11 +4,11 @@ using OnlineRecLeague.DataTypes;
 
 namespace OnlineRecLeague.Users
 {
-	public class RequiresSuperadminAccessAttribute : ActionFilterAttribute
+	public class RequiresAdminAccessAttribute : ActionFilterAttribute
 	{
 		public override void OnActionExecuting(ActionExecutingContext context)
 		{
-			if (!new UserSessionStore().TryFindUser(context.HttpContext.Session, out var user) || !user.IsSuperAdmin)
+			if (!new UserSessionStore().TryFindUser(context.HttpContext.Session, out var user) || !user.IsAdmin)
 			{
 				context.Result = new JsonResult(Result.Failure("You must be logged in as superadmin to perform this action"));
 			}

@@ -11,19 +11,18 @@ namespace OnlineRecLeague
 	{
 		public static void Main(string[] args)
 		{
-			var configuration = new ConfigurationBuilder()
+			Settings = new ConfigurationBuilder()
 				.SetBasePath(Directory.GetCurrentDirectory())
 				.AddJsonFile("Settings.json", optional: false, reloadOnChange: true)
 				.AddEnvironmentVariables()
 				.AddCommandLine(args)
 				.Build();
 
-			Settings = new Settings(configuration);
 			SetupLogging();
 
 			try
 			{
-				StartWebHost(configuration);
+				StartWebHost();
 			}
 			catch (Exception exception)
 			{
@@ -42,24 +41,24 @@ namespace OnlineRecLeague
 				.MinimumLevel.Override("Microsoft", LogEventLevel.Information)
 				.Enrich.FromLogContext()
 				.WriteTo.Console()
-				.WriteTo.RollingFile(Settings.LogFile)
+				.WriteTo.RollingFile(Settings.GetValue<string>("LogFile") ?? "app.log")
 				.CreateLogger();
 		}
 
-		private static void StartWebHost(IConfigurationRoot configuration)
+		private static void StartWebHost()
 		{
 			WebHost = new WebHostBuilder()
 				.UseKestrel()
-				.UseConfiguration(configuration)
+				.UseConfiguration(Settings)
 				.UseStartup<Service>()
 				.UseSerilog()
-				.UseUrls($"http://*:{Settings.WebPort}")
+				.UseUrls($"http://*:{Settings.GetValue<int>("WebPort")}")
 				.Build();
 
 			WebHost.Run();
 		}
 
-		public static Settings Settings { get; internal set; }
-		public static IWebHost WebHost { get; internal set; }
+		public static IConfigurationRoot Settings { get; private set; }
+		public static IWebHost WebHost { get; private set; }
 	}
 }

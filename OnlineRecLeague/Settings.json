@@ -8,9 +8,6 @@
 	"AppDataUser": "notconfigured",
 	"AppDataPassword": "notconfigured",
 
-	"SuperadminUsername": "superadmin",
-	"SuperadminPassword":  "",
-
 	"Logging": {
 		"IncludeScopes": false,
 		"LogLevel": {
