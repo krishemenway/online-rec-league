@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Ladders\LadderChallenges\LadderChallengeTable.sql" />
-    <Content Include="Users\UserTable.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.5" />
     <PackageReference Include="FluentAssertions" Version="5.5.3" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />

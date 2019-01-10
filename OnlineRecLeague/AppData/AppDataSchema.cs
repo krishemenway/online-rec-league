@@ -21,13 +21,17 @@ namespace OnlineRecLeague.AppData
 			}
 		}
 
+		// List should be ordered with dependencies in mind
 		public static IReadOnlyDictionary<string, string> Tables = new Dictionary<string, string>
 			{
-				// { "svc.league", "./Leagues/League.sql" },
-				{ "svc.invite_to_team", "./Teams/InviteToTeam.sql" },
-				{ "svc.team_member", "./Teams/TeamMember.sql" },
-				{ "svc.team", "./Teams/Team.sql" },
 				{ "svc.user", "./Users/User.sql" },
+				{ "svc.team", "./Teams/Team.sql" },
+				{ "svc.team_member", "./TeamMembers/TeamMember.sql" },
+				{ "svc.invite_to_team", "./TeamMembers/InviteToTeam.sql" },
+				{ "svc.ladder", "./Ladders/Ladder.sql" },
+				{ "svc.ladder_challenge", "./Ladders/LadderChallenges/LadderChallenge.sql" },
+				{ "svc.ladder_team", "./Ladders/LadderTeams/LadderTeam.sql" },
+				{ "svc.league", "./Leagues/League.sql" },
 			};
 	}
 }
