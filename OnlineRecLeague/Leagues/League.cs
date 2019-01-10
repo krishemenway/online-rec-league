@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineRecLeague.Rulesets;
+using System;
 
 namespace OnlineRecLeague.Leagues
 {
@@ -9,7 +10,14 @@ namespace OnlineRecLeague.Leagues
 
 	public class League : ILeague
 	{
-		public Guid LeagueId { get; set; }
+		internal League(LeagueRecord record)
+		{
+			LeagueId = record.LeagueId;
+			_lazyRuleSet = new Lazy<IRuleset>(() => new RulesetFactory().Create(record.Rules));
+		}
+
+		public Guid LeagueId { get; }
+		public IRuleset Ruleset => _lazyRuleSet.Value;
 
 		public override bool Equals(object other)
 		{
@@ -20,5 +28,7 @@ namespace OnlineRecLeague.Leagues
 		{
 			return LeagueId.GetHashCode();
 		}
+
+		private readonly Lazy<IRuleset> _lazyRuleSet;
 	}
 }
