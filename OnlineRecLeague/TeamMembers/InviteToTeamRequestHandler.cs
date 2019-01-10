@@ -22,7 +22,11 @@ namespace OnlineRecLeague.TeamMembers
 				return Result.Failure("Unable to find team to invite into.");
 			}
 
-			_emailSender.SendEmail("Invite to Team", "Invite to Team Body");
+			foreach (var email in request.Emails)
+			{
+				_emailSender.SendEmail(email, "Invite to Team", "Invite to Team Body");
+			}
+			
 			return Result.Successful();
 		}
 
