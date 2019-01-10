@@ -20,7 +20,7 @@ namespace OnlineRecLeague.Users
 
 		public Result HandleRequest(IUser userFromSession)
 		{
-			_emailSender.SendEmail("Email Confirmation for OnlineRecLeague", $"{userFromSession.EmailConfirmationCode}");
+			_emailSender.SendEmail(userFromSession.Email, "Email Confirmation for OnlineRecLeague", $"{userFromSession.EmailConfirmationCode}");
 			return Result.Successful();
 		}
 
