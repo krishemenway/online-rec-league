@@ -7,7 +7,7 @@ namespace OnlineRecLeague.Ladders
 		Result<LadderViewModel> HandleRequest(CreateLadderRequest request);
 	}
 
-	public class CreateLadderRequestHandler : ICreateLadderRequestHandler
+	internal class CreateLadderRequestHandler : ICreateLadderRequestHandler
 	{
 		public CreateLadderRequestHandler(
 			ILadderStore ladderStore = null,

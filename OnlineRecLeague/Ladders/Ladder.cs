@@ -23,7 +23,7 @@ namespace OnlineRecLeague.Ladders
 		IReadOnlyList<ILadderChallenge> AllLadderChallenges { get; }
 	}
 
-	public class Ladder : ILadder
+	internal class Ladder : ILadder
 	{
 		internal Ladder(LadderRecord record)
 		{

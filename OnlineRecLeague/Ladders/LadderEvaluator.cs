@@ -10,7 +10,7 @@ namespace OnlineRecLeague.Ladders
 		void Evaluate(ILadder ladder);
 	}
 
-	public class LadderEvaluator : ILadderEvaluator
+	internal class LadderEvaluator : ILadderEvaluator
 	{
 		public LadderEvaluator(ILadderTeamStore ladderTeamStore = null)
 		{

@@ -9,7 +9,7 @@ namespace OnlineRecLeague.Ladders
 		Result Evaluate(ILadder ladder, IUser user);
 	}
 
-	public class UserCanJoinLadderTeamEvaluator : IUserCanJoinLadderTeamEvaluator
+	internal class UserCanJoinLadderTeamEvaluator : IUserCanJoinLadderTeamEvaluator
 	{
 		public Result Evaluate(ILadder ladder, IUser user)
 		{

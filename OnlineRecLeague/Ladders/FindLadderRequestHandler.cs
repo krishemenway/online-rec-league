@@ -2,7 +2,7 @@
 
 namespace OnlineRecLeague.Ladders
 {
-	public class FindLadderRequestHandler
+	internal class FindLadderRequestHandler
 	{
 		public FindLadderRequestHandler(
 			ILadderStore ladderStore = null,

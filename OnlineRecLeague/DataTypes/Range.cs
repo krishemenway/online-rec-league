@@ -2,9 +2,9 @@
 
 namespace OnlineRecLeague.DataTypes
 {
-	public struct Range<T> where T : IComparable<T>
+	internal struct Range<T> where T : IComparable<T>
 	{
-		public Range(T start, T end)
+		internal Range(T start, T end)
 		{
 			Start = start;
 			End = end;

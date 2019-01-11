@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OnlineRecLeague.AppData
 {
-	public class AppDataHealthCheck : IHealthCheck
+	internal class AppDataHealthCheck : IHealthCheck
 	{
 		public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default(CancellationToken))
 		{

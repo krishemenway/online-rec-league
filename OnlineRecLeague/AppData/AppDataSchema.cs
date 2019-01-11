@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace OnlineRecLeague.AppData
 {
-	public class AppDataSchema
+	internal class AppDataSchema
 	{
 		public static string CreateSchemaScript()
 		{

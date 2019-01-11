@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace OnlineRecLeague.AppData
 {
-	public class AppDataConnection
+	internal class AppDataConnection
 	{
-		public static IDbConnection Create()
+		internal static IDbConnection Create()
 		{
 			var connection = new NpgsqlConnection(ConnectionString.Value);
 			connection.Open();

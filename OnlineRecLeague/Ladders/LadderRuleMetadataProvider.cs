@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace OnlineRecLeague.Ladders
 {
-	public class LadderRuleMetadataProvider : IRuleMetadataProvider
+	internal class LadderRuleMetadataProvider : IRuleMetadataProvider
 	{
 		public IEnumerable<IRuleMetadata> CreateRuleMetadatas()
 		{
