@@ -2,7 +2,7 @@
 
 namespace OnlineRecLeague.Rulesets.RuleValuePickers
 {
-	public class NumberValuePicker : IRuleValuePicker
+	internal class NumberValuePicker : IRuleValuePicker
 	{
 		public NumberValuePicker(int defaultValue, Range<int> allowedRange)
 		{

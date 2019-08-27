@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineRecLeague.CoreExtensions
+namespace OnlineRecLeague
 {
 	internal static class TimeZoneInfoExtensions
 	{
