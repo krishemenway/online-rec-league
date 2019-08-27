@@ -1,0 +1,12 @@
+stages:
+    build
+
+build:service:
+    image: mcr.microsoft.com/dotnet/core/sdk:2.2
+    stage: build
+    script:
+        - "dotnet publish OnlineRecLeague.Service -o ../service"
+    artifacts:
+        name: "$CI_JOB_NAME"
+        paths:
+            - service
