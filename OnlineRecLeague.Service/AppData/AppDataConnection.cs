@@ -30,6 +30,6 @@ namespace OnlineRecLeague.AppData
 			return string.Join(";", connectionParams.Select(param => $"{param.Key}={param.Value}"));
 		}
 
-		private static Lazy<string> ConnectionString = new Lazy<string>(() => CreateConnectionString());
+		private static readonly Lazy<string> ConnectionString = new Lazy<string>(() => CreateConnectionString());
 	}
 }
