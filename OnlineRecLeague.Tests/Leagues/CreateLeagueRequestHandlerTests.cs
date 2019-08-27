@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using OnlineRecLeague.DataTypes;
@@ -40,4 +39,3 @@ namespace OnlineRecLeague.Leagues
 		private CreateLeagueRequestHandler _createLeagueRequestHandler;
 	}
 }
-#endif

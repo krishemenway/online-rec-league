@@ -1,5 +1,6 @@
 stages:
     - build
+    - test
 
 build:service:
     image: mcr.microsoft.com/dotnet/core/sdk:2.2
@@ -10,3 +11,9 @@ build:service:
         name: "$CI_JOB_NAME"
         paths:
             - service
+
+test:
+    image: mcr.microsoft.com/dotnet/core/sdk:2.2
+    stage: test
+    script:
+        - "dotnet test OnlineRecLeague.Tests"
