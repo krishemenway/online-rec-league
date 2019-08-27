@@ -25,7 +25,7 @@ namespace OnlineRecLeague.DataTypes
 
 		public override int GetHashCode()
 		{
-			return ObjectExtensions.GetHashCode(Start, End);
+			return HashCode.Combine(Start, End);
 		}
 
 		public override string ToString()

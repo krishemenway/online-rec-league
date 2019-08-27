@@ -1,5 +1,4 @@
 ﻿using OnlineRecLeague.DataTypes;
-using OnlineRecLeague.CoreExtensions;
 
 namespace OnlineRecLeague.Users
 {

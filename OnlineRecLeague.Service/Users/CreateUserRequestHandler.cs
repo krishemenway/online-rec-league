@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using OnlineRecLeague.DataTypes;
-using OnlineRecLeague.CoreExtensions;
 using System;
 
 namespace OnlineRecLeague.Users
