@@ -50,7 +50,7 @@ namespace OnlineRecLeague
 			WebHost = new WebHostBuilder()
 				.UseKestrel()
 				.UseConfiguration(Settings)
-				.UseStartup<Service>()
+				.UseStartup<ProgramSetup>()
 				.UseSerilog()
 				.UseUrls($"http://*:{Settings.GetValue<int>("WebPort")}")
 				.Build();
