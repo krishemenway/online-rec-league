@@ -1,12 +1,14 @@
-﻿using OnlineRecLeague.DataTypes;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Ladders;
-using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.LadderChallenges
 {
-	public class SetLadderMatchTimeRequestHandler
+	[ApiController]
+	[Route("api/ladders")]
+	public class SetLadderMatchTimeController : ControllerBase
 	{
-		public SetLadderMatchTimeRequestHandler(
+		public SetLadderMatchTimeController(
 			ILadderStore ladderStore = null,
 			ILadderChallengeStore ladderChallengeStore = null)
 		{
@@ -14,7 +16,9 @@ namespace OnlineRecLeague.LadderChallenges
 			_ladderChallengeStore = ladderChallengeStore ?? new LadderChallengeStore();
 		}
 
-		public Result HandleRequest(SetLadderMatchTimeRequest request, IUser loggedInUser)
+		[HttpPost(nameof(SetLadderMatchTime))]
+		[ProducesResponseType(200, Type = typeof(Result))]
+		public ActionResult<Result> SetLadderMatchTime([FromBody] SetLadderMatchTimeRequest request)
 		{
 			// TODO: validate user can set match time
 			_ladderChallengeStore.SetMatchTime(request.LadderChallengeId, request.MatchTime);
