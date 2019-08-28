@@ -6,7 +6,7 @@ namespace OnlineRecLeague.Users
 {
 	public interface ISendEmailConfirmation
 	{
-		Result SendEmailConfirmation();
+		ActionResult<Result> SendEmailConfirmation();
 	}
 
 	[ApiController]
@@ -26,7 +26,7 @@ namespace OnlineRecLeague.Users
 
 		[HttpPost(nameof(SendEmailConfirmation))]
 		[ProducesResponseType(200, Type = typeof(Result))]
-		public Result SendEmailConfirmation()
+		public ActionResult<Result> SendEmailConfirmation()
 		{
 			var userFromSession = _userSessionStore.FindUserOrThrow(HttpContext.Session);
 
