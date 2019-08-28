@@ -4,7 +4,9 @@ using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.Leagues
 {
+	[ApiController]
 	[Route("api/leagues")]
+	[RequiresUserInSession]
 	public class CreateLeagueController : ControllerBase
 	{
 		public CreateLeagueController(
@@ -18,10 +20,10 @@ namespace OnlineRecLeague.Leagues
 		}
 
 		[HttpPost(nameof(Create))]
-		[RequiresUserInSession]
+		[ProducesResponseType(200, Type = typeof(Result<LeagueViewModel>))]
 		public ActionResult<Result<LeagueViewModel>> Create([FromBody] CreateLeagueRequest request)
 		{
-			var userFromSession = _userSessionStore.FindUserOrThrow(HttpContext.Session);
+			var userFromSession = _userSessionStore.FindUserOrThrow(ControllerContext.HttpContext.Session);
 			var league = _leagueStore.Create(request);
 			var viewModel = _leagueViewModelFactory.Create(league, userFromSession);
 
