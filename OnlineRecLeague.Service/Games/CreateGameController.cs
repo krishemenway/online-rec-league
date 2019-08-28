@@ -1,15 +1,15 @@
-﻿using OnlineRecLeague.DataTypes;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.Games
 {
-	public interface ICreateGameRequestHandler
+	[ApiController]
+	[Route("api/games")]
+	[RequiresAdminAccess]
+	public class CreateGameController : ControllerBase
 	{
-		Result<GameProfile> HandleRequest(CreateGameRequest request);
-	}
-
-	public class CreateGameRequestHandler : ICreateGameRequestHandler
-	{
-		public CreateGameRequestHandler(
+		public CreateGameController(
 			IGameStore gameStore = null,
 			IGameProfileFactory gameProfileFactory = null)
 		{
@@ -17,7 +17,9 @@ namespace OnlineRecLeague.Games
 			_gameProfileFactory = gameProfileFactory ?? new GameProfileFactory();
 		}
 
-		public Result<GameProfile> HandleRequest(CreateGameRequest request)
+		[HttpPost(nameof(Create))]
+		[ProducesResponseType(200, Type = typeof(Result<GameProfile>))]
+		public ActionResult<Result<GameProfile>> Create([FromBody] CreateGameRequest request)
 		{
 			var game = _gameStore.Save(request);
 			var gameProfile = _gameProfileFactory.Create(game);
