@@ -1,15 +1,15 @@
-﻿using OnlineRecLeague.DataTypes;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.Ladders
 {
-	public interface ICreateLadderRequestHandler
+	[ApiController]
+	[Route("api/ladders")]
+	[RequiresUserInSession]
+	public class CreateLadderController : ControllerBase
 	{
-		Result<LadderViewModel> HandleRequest(CreateLadderRequest request);
-	}
-
-	internal class CreateLadderRequestHandler : ICreateLadderRequestHandler
-	{
-		public CreateLadderRequestHandler(
+		public CreateLadderController(
 			ILadderStore ladderStore = null,
 			ILadderViewModelFactory ladderViewModelFactory = null)
 		{
@@ -17,7 +17,9 @@ namespace OnlineRecLeague.Ladders
 			_ladderViewModelFactory = ladderViewModelFactory ?? new LadderViewModelFactory();
 		}
 
-		public Result<LadderViewModel> HandleRequest(CreateLadderRequest request)
+		[HttpPost(nameof(Create))]
+		[ProducesResponseType(200, Type = typeof(Result<LadderViewModel>))]
+		public ActionResult<Result<LadderViewModel>> Create([FromBody] CreateLadderRequest request)
 		{
 			var ladder = _ladderStore.Create(request);
 			var viewModel = _ladderViewModelFactory.CreateDetailedViewModel(ladder);

@@ -1,17 +1,15 @@
-﻿using OnlineRecLeague.DataTypes;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnlineRecLeague.DataTypes;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace OnlineRecLeague.Ladders
 {
-	public interface IFindAllLaddersRequestHandler
+	[ApiController]
+	[Route("api/ladders")]
+	public class FindAllLaddersController : ControllerBase
 	{
-		Result<IReadOnlyList<LadderViewModel>> HandleRequest();
-	}
-
-	internal class FindAllLaddersRequestHandler : IFindAllLaddersRequestHandler
-	{
-		public FindAllLaddersRequestHandler(
+		public FindAllLaddersController(
 			ILadderStore ladderStore = null,
 			ILadderViewModelFactory ladderViewModelFactory = null)
 		{
@@ -19,7 +17,9 @@ namespace OnlineRecLeague.Ladders
 			_ladderViewModelFactory = ladderViewModelFactory ?? new LadderViewModelFactory();
 		}
 
-		public Result<IReadOnlyList<LadderViewModel>> HandleRequest()
+		[HttpGet(nameof(All))]
+		[ProducesResponseType(200, Type = typeof(IReadOnlyList<LadderViewModel>))]
+		public ActionResult<Result<IReadOnlyList<LadderViewModel>>> All()
 		{
 			var ladders = _ladderStore.FindAll();
 			var viewModels = ladders.Select(ladder => _ladderViewModelFactory.CreateBriefViewModel(ladder)).ToList();

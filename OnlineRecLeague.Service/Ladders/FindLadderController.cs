@@ -1,10 +1,13 @@
-﻿using OnlineRecLeague.DataTypes;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnlineRecLeague.DataTypes;
 
 namespace OnlineRecLeague.Ladders
 {
-	internal class FindLadderRequestHandler
+	[ApiController]
+	[Route("api/ladders")]
+	public class FindLadderController : ControllerBase
 	{
-		public FindLadderRequestHandler(
+		public FindLadderController(
 			ILadderStore ladderStore = null,
 			ILadderViewModelFactory ladderViewModelFactory = null)
 		{
@@ -12,10 +15,13 @@ namespace OnlineRecLeague.Ladders
 			_ladderViewModelFactory = ladderViewModelFactory ?? new LadderViewModelFactory();
 		}
 
-		public Result<LadderViewModel> HandleRequest(FindLadderRequest request)
+		[HttpGet(nameof(Find))]
+		[ProducesResponseType(200, Type = typeof(Result<LadderViewModel>))]
+		public ActionResult<Result<LadderViewModel>> Find([FromQuery] FindLadderRequest request)
 		{
 			var ladder = _ladderStore.Find(request.LadderId);
 			var ladderViewModel = _ladderViewModelFactory.CreateDetailedViewModel(ladder);
+
 			return Result<LadderViewModel>.Successful(ladderViewModel);
 		}
 
