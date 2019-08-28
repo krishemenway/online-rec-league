@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Ladders;
+using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.LadderChallenges
 {
 	[ApiController]
 	[Route("api/ladders")]
+	[RequiresUserInSession]
 	public class SetLadderMatchTimeController : ControllerBase
 	{
 		public SetLadderMatchTimeController(
