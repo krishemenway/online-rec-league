@@ -4,10 +4,10 @@ namespace OnlineRecLeague.Leagues
 {
 	public class CreateLeagueRequest
 	{
-		string Name { get; }
-		string UriPath { get; }
+		public string Name { get; set; }
+		public string UriPath { get; set; }
 
-		Guid GameId { get; }
-		Guid CreatedByUserId { get; }
+		public Guid GameId { get; set; }
+		public Guid CreatedByUserId { get; set; }
 	}
 }
