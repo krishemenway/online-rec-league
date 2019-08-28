@@ -53,7 +53,7 @@ namespace OnlineRecLeague
 		{
 			app.UseStaticFiles();
 			app.UseSession();
-			app.UseMiddleware(typeof(ExceptionHandler));
+			app.UseMiddleware(typeof(ServiceRequestExceptionHandler));
 			app.UseMvc();
 			app.UseHealthChecks("/api/health");
 		}

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace OnlineRecLeague
 {
-	public class ExceptionHandler
+	public class ServiceRequestExceptionHandler
 	{
-		public ExceptionHandler(RequestDelegate next)
+		public ServiceRequestExceptionHandler(RequestDelegate next)
 		{
 			this.next = next;
 		}
