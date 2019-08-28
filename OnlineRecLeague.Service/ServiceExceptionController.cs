@@ -5,20 +5,13 @@ using System;
 namespace OnlineRecLeague
 {
 	[Route("api/service")]
-	public class ServiceController : Controller
+	public class ServiceExceptionController : ControllerBase
 	{
 		[HttpGet("exception")]
 		[ProducesResponseType(500, Type = typeof(Result))]
-		public IActionResult Exception()
+		public ActionResult Exception()
 		{
 			throw new StatusException();
-		}
-
-		[HttpGet("")]
-		[ProducesResponseType(200, Type = typeof(Result))]
-		public IActionResult Status()
-		{
-			return Json(Result.Successful());
 		}
 
 		private class StatusException : Exception
