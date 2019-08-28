@@ -1,13 +1,17 @@
-﻿using OnlineRecLeague.DataTypes;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Email;
 using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.TeamMembers
 {
-	internal class InviteToTeamRequestHandler
+	[ApiController]
+	[Route("api/teams")]
+	[RequiresUserInSession]
+	public class InviteToTeamController : ControllerBase
 	{
-		public InviteToTeamRequestHandler(
+		public InviteToTeamController(
 			ITeamStore teamStore = null,
 			IEmailSender emailSender = null)
 		{
@@ -15,7 +19,9 @@ namespace OnlineRecLeague.TeamMembers
 			_emailSender = emailSender ?? new EmailSender();
 		}
 
-		public Result HandleRequest(InviteToTeamRequest request, IUser loggedInUser)
+		[HttpPost(nameof(Invite))]
+		[ProducesResponseType(200, Type = typeof(Result))]
+		public ActionResult<Result> Invite(InviteToTeamRequest request)
 		{
 			if (!_teamStore.TryFindTeam(request.TeamId, out var team))
 			{

@@ -1,25 +1,34 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.TeamMembers
 {
-	internal class JoinTeamRequestHandler
+	[ApiController]
+	[Route("api/teams")]
+	[RequiresUserInSession]
+	public class JoinTeamController : ControllerBase
 	{
-		public JoinTeamRequestHandler(
+		public JoinTeamController(
 			ITeamStore teamStore = null,
 			IInviteToTeamStore inviteToTeamStore = null,
-			ITeamMemberStore teamMemberStore = null)
+			ITeamMemberStore teamMemberStore = null,
+			IUserSessionStore userSessionStore = null)
 		{
 			_teamStore = teamStore ?? new TeamStore();
 			_inviteToTeamStore = inviteToTeamStore ?? new InviteToTeamStore();
 			_teamMemberStore = teamMemberStore ?? new TeamMemberStore();
+			_userSessionStore = userSessionStore ?? new UserSessionStore();
 		}
 
-		public Result HandleRequest(JoinTeamRequest joinTeamRequest, IUser userFromSession)
+		[HttpPost(nameof(JoinTeam))]
+		[ProducesResponseType(200, Type = typeof(Result))]
+		public ActionResult<Result> JoinTeam([FromBody] JoinTeamRequest joinTeamRequest)
 		{
+			var userFromSession = _userSessionStore.FindUserOrThrow(HttpContext.Session);
 			if (!_teamStore.TryFindTeam(joinTeamRequest.TeamId, out var team))
 			{
 				return Result.Failure("Unable to find team to join");
@@ -40,5 +49,6 @@ namespace OnlineRecLeague.TeamMembers
 		private readonly ITeamStore _teamStore;
 		private readonly IInviteToTeamStore _inviteToTeamStore;
 		private readonly ITeamMemberStore _teamMemberStore;
+		private readonly IUserSessionStore _userSessionStore;
 	}
 }
