@@ -1,26 +1,32 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Users.Profiles;
 using System;
 
 namespace OnlineRecLeague.Users
 {
-	internal class CreateUserRequestHandler
+	[ApiController]
+	[Route("api/users")]
+	public class CreateUserController : ControllerBase
 	{
-		public CreateUserRequestHandler(
+		public CreateUserController(
 			IUserStore userStore = null,
 			IUserSessionStore userSessionStore = null,
 			IUserPasswordValidator userPasswordValidator = null,
 			ICreateUserRequestValidator createUserRequestValidator = null,
-			ISendEmailConfirmationRequestHandler sendEmailConfirmationRequestHandler = null)
+			ISendEmailConfirmation sendEmailConfirmation = null)
 		{
 			_userStore = userStore ?? new UserStore();
 			_userSessionStore = userSessionStore ?? new UserSessionStore();
 			_userPasswordValidator = userPasswordValidator ?? new UserPasswordValidator();
 			_createUserRequestValidator = createUserRequestValidator ?? new CreateUserRequestValidator();
-			_sendEmailConfirmationRequestHandler = sendEmailConfirmationRequestHandler ?? new SendEmailConfirmationRequestHandler();
+			_sendEmailConfirmation = sendEmailConfirmation ?? new SendEmailConfirmationController();
 		}
 
-		public Result HandleRequest(CreateUserRequest request, ISession session)
+		[HttpPost(nameof(Join))]
+		[ProducesResponseType(200, Type = typeof(Result<IUserProfile>))]
+		public ActionResult<Result> Join([FromBody] CreateUserRequest request)
 		{
 			var validationResult = _createUserRequestValidator.Validate(request);
 			if (!validationResult.Success)
@@ -32,8 +38,8 @@ namespace OnlineRecLeague.Users
 			request.Password = _userPasswordValidator.CreatePassword(request.Email, request.Password);
 
 			var newUser = _userStore.CreateNewUser(request);
-			_userSessionStore.SetUserInSession(session, newUser);
-			_sendEmailConfirmationRequestHandler.HandleRequest(newUser);
+			_userSessionStore.SetUserInSession(HttpContext.Session, newUser);
+			_sendEmailConfirmation.SendEmailConfirmation();
 
 			return Result.Successful();
 		}
@@ -42,6 +48,6 @@ namespace OnlineRecLeague.Users
 		private readonly IUserSessionStore _userSessionStore;
 		private readonly IUserPasswordValidator _userPasswordValidator;
 		private readonly ICreateUserRequestValidator _createUserRequestValidator;
-		private readonly ISendEmailConfirmationRequestHandler _sendEmailConfirmationRequestHandler;
+		private readonly ISendEmailConfirmation _sendEmailConfirmation;
 	}
 }

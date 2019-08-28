@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Users.Profiles;
 
 namespace OnlineRecLeague.Users
 {
-	public interface IFindProfileRequestHandler
+	[ApiController]
+	[Route("api/users")]
+	public class FindProfileController : ControllerBase
 	{
-		Result<IUserProfile> HandleRequest(FindProfileRequest request, ISession session);
-	}
-
-	internal class FindProfileRequestHandler : IFindProfileRequestHandler
-	{
-		internal FindProfileRequestHandler(
+		public FindProfileController(
 			IUserStore userStore = null,
 			IUserProfileFactory userProfileFactory = null)
 		{
@@ -19,14 +16,16 @@ namespace OnlineRecLeague.Users
 			_userProfileFactory = userProfileFactory ?? new UserProfileFactory();
 		}
 
-		public Result<IUserProfile> HandleRequest(FindProfileRequest request, ISession session)
+		[HttpGet(nameof(Profile))]
+		[ProducesResponseType(200, Type = typeof(Result<IUserProfile>))]
+		public ActionResult<Result<IUserProfile>> Profile([FromQuery] FindProfileRequest request)
 		{
 			if (!_userStore.TryFindUserById(request.UserId, out var user))
 			{
 				return Result<IUserProfile>.Failure("User does not exist");
 			}
 
-			var profile = _userProfileFactory.CreateProfile(user, session);
+			var profile = _userProfileFactory.CreateProfile(user, HttpContext.Session);
 			return Result<IUserProfile>.Successful(profile);
 		}
 

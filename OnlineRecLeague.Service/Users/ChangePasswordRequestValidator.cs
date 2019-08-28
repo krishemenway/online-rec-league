@@ -2,7 +2,7 @@
 
 namespace OnlineRecLeague.Users
 {
-	internal interface IChangePasswordRequestValidator
+	public interface IChangePasswordRequestValidator
 	{
 		Result Validate(ChangePasswordRequest request, IUser user);
 	}

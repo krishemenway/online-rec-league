@@ -3,7 +3,7 @@ using OnlineRecLeague.DataTypes;
 
 namespace OnlineRecLeague.Users
 {
-	internal interface IUserPasswordValidator
+	public interface IUserPasswordValidator
 	{
 		string CreatePassword(string email, string password);
 		bool Validate(IUser user, string password);

@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Users.Profiles;
 using System.Linq;
 
 namespace OnlineRecLeague.Users
 {
-	public interface ISearchUserRequestHandler
+	[ApiController]
+	[Route("api/users")]
+	public class SearchUserController : ControllerBase
 	{
-		Result<SearchUserResponse> HandleRequest(SearchUserRequest request, ISession session);
-	}
-
-	public class SearchUserRequestHandler : ISearchUserRequestHandler
-	{
-		public SearchUserRequestHandler(
+		public SearchUserController(
 			IUserStore userStore = null,
 			IUserProfileFactory userProfileFactory = null)
 		{
@@ -20,7 +18,9 @@ namespace OnlineRecLeague.Users
 			_userProfileFactory = userProfileFactory ?? new UserProfileFactory();
 		}
 
-		public Result<SearchUserResponse> HandleRequest(SearchUserRequest request, ISession session)
+		[HttpPost(nameof(Search))]
+		[ProducesResponseType(200, Type = typeof(Result<SearchUserResponse>))]
+		public ActionResult<Result<SearchUserResponse>> Search([FromBody] SearchUserRequest request)
 		{
 			if (string.IsNullOrWhiteSpace(request.Query))
 			{
@@ -31,7 +31,7 @@ namespace OnlineRecLeague.Users
 				{
 					Users = _userStore
 						.FindUsersByQuery(request.Query)
-						.Select(user => _userProfileFactory.CreateProfile(user, session))
+						.Select(user => _userProfileFactory.CreateProfile(user, HttpContext.Session))
 						.ToList(),
 				};
 
