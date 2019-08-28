@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace OnlineRecLeague.Email
 {
@@ -11,8 +13,14 @@ namespace OnlineRecLeague.Email
 	{
 		public void SendEmail(string emailAddress, string subject, string body)
 		{
-			new LoggerFactory().CreateLogger<EmailSender>().LogInformation($@"Email Sent to {emailAddress} \nSubject: {subject} \nBody: {body}");
-			// TODO: implement real email sending
+			if (Program.Settings.GetValue<bool>("SupportsSendingEmails"))
+			{
+				throw new NotImplementedException("Gotta get some smtp information from the config and then find a library or something to send some emails, ya know?");
+			}
+			else
+			{
+				new LoggerFactory().CreateLogger<EmailSender>().LogInformation($@"Email Sent to {emailAddress} \nSubject: {subject} \nBody: {body}");
+			}
 		}
 	}
 }

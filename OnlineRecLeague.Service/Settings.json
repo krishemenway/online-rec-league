@@ -8,6 +8,8 @@
 	"AppDataUser": "notconfigured",
 	"AppDataPassword": "notconfigured",
 
+	"SupportsSendingEmails": false,
+
 	"Logging": {
 		"IncludeScopes": false,
 		"LogLevel": {
