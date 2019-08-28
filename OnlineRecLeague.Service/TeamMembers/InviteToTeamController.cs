@@ -21,7 +21,7 @@ namespace OnlineRecLeague.TeamMembers
 
 		[HttpPost(nameof(Invite))]
 		[ProducesResponseType(200, Type = typeof(Result))]
-		public ActionResult<Result> Invite(InviteToTeamRequest request)
+		public ActionResult<Result> Invite([FromBody] InviteToTeamRequest request)
 		{
 			if (!_teamStore.TryFindTeam(request.TeamId, out var team))
 			{
