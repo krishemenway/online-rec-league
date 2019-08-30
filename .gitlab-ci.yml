@@ -2,6 +2,17 @@ stages:
     - build
     - test
 
+build:web:
+    image: node:10.13.0
+    stage: build
+    script:
+        - "cd OnlineRecLeague.Web"
+        - "npm ci"
+        - "npm run build"
+    artifacts:
+        paths:
+            - OnlineRecLeague.Web/dist
+
 build:service:
     image: mcr.microsoft.com/dotnet/core/sdk:2.2
     stage: build
