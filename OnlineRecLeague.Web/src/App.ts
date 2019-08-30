@@ -1,6 +1,6 @@
 import * as ko from "knockout";
-import * as ComponentCleaner from "./KnockoutHelpers/ComponentCleaner";
-import * as AppStyles from "./AppStyles";
+import * as ComponentCleaner from "KnockoutHelpers/ComponentCleaner";
+import * as AppStyles from "AppStyles";
 
 ComponentCleaner.AddComponentCleaner();
 
