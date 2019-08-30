@@ -10,6 +10,9 @@ using OnlineRecLeague.AppData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
+using System.Reflection;
 
 namespace OnlineRecLeague
 {
@@ -51,7 +54,7 @@ namespace OnlineRecLeague
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 		{
-			app.UseStaticFiles();
+			app.UseStaticFiles(StaticFileOptions);
 			app.UseSession();
 			app.UseMiddleware(typeof(ServiceRequestExceptionHandler));
 			app.UseMvc();
@@ -66,5 +69,12 @@ namespace OnlineRecLeague
 				resolver.NamingStrategy = null;
 			}
 		}
+
+		private static string ProgramDirectory { get; } = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName;
+		private static StaticFileOptions StaticFileOptions = new StaticFileOptions
+		{
+			FileProvider = new PhysicalFileProvider(Path.Combine(ProgramDirectory, "Assets")),
+			RequestPath = "/assets",
+		};
 	}
 }

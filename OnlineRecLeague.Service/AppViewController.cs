@@ -21,8 +21,7 @@ namespace OnlineRecLeague.Service.Leagues
 					<head></head>
 					<body>
 						<div id=""app"" />
-						<script src=""/vendor.js""></script>
-						<script src=""/scripts.js""></script>
+						<script src=""/assets/app.js""></script>
 						<script type=""text/javascript"">
 							window.initializeApp();
 						</script>
