@@ -21,9 +21,14 @@ namespace OnlineRecLeague.Service.Leagues
 					<head></head>
 					<body>
 						<div id=""app"" />
+						<script type=""text/javascript"" src=""///cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js""></script>
+						<script type=""text/javascript"" src=""///unpkg.com/jss@9.8.7/dist/jss.min.js""></script>
+						<script type=""text/javascript"" src=""///unpkg.com/jss-preset-default@4.5.0/dist/jss-preset-default.min.js""></script>
+						<script type=""text/javascript"">jss.default.setup(jssPreset.default())</script>
+
 						<script src=""/assets/app.js""></script>
 						<script type=""text/javascript"">
-							window.initializeApp();
+							window.initializeApp(document.getElementById(""app""));
 						</script>
 					</body>
 				</html>";

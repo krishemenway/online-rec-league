@@ -1,0 +1,29 @@
+{
+  "name": "online-rec-league",
+  "version": "1.0.0",
+  "private": true,
+  "description": "web project for the online rec league",
+  "scripts": {
+    "build": "npm run build-prod",
+    "build-dev": "webpack --mode development --output-path ../OnlineRecLeague.Service/bin/Debug/netcoreapp2.2/Assets",
+    "build-prod": "webpack --mode production",
+    "watch": "webpack --mode development --watch --output-path ../OnlineRecLeague.Service/bin/Debug/netcoreapp2.2/Assets"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Kris Hemenway",
+    "url": "https://github.com/krishemenway/online-rec-league"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jquery": "3.3.29",
+    "@types/jss": "9.5.8",
+    "csstype": "2.6.6",
+    "knockout": "3.5.0",
+    "ts-loader": "6.0.4",
+    "typescript": "3.6.2",
+    "webpack": "4.39.3",
+    "webpack-cli": "3.3.7"
+  }
+}
