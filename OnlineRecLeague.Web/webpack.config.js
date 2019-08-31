@@ -32,7 +32,7 @@ module.exports = {
 	},
 	externals: {
 		knockout: "ko",
-		jQuery: "jquery",
+		jquery: "$",
 		jss: "jss"
 	}
 }
