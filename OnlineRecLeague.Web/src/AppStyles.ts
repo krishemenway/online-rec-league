@@ -1,6 +1,13 @@
 import * as jss from "jss";
 import * as CSS from 'csstype';
 
+let currentStylesheetCount: number = 0;
+function generateClassNameFunc(styleSheetName: string) {
+	return (rule: any) => {
+		return `${styleSheetName}-${rule.key}-c${currentStylesheetCount++}`;
+	};
+}
+
 export interface CSSProperties extends CSS.Properties<number | string> {
 	// Allow pseudo selectors and media queries
 	[k: string]: CSS.Properties<number | string>[keyof CSS.Properties] | CSSProperties;
@@ -8,19 +15,19 @@ export interface CSSProperties extends CSS.Properties<number | string> {
 
 export type StyleRules<ClassKey extends string = string> = Record<ClassKey, CSSProperties>;
 
-export function createStyles<Name extends string>(styles: StyleRules<Name>): jss.StyleSheet<Name> {
-	return jss.default.createStyleSheet<Name>(styles as any);
+export function createStyles<Name extends string>(styleSheetName: string, styles: StyleRules<Name>): jss.Classes<Name> {
+	return jss.default.createStyleSheet<Name>(styles as any, { generateClassName: generateClassNameFunc(styleSheetName) }).attach().classes;
 }
 
-export const background = createStyles({
+export const background = createStyles("background", {
 	bgAlternateDarken: {
 		"& li:nth-child(even), & tr:nth-child(even)": {
 			backgroundColor: "rgba(50,50,50,0.15)",
 		},
 	},
-}).attach().classes;
+});
 
-export const events = createStyles({
+export const events = createStyles("events", {
 	clickable: {
 		cursor: "pointer",
 
@@ -28,9 +35,9 @@ export const events = createStyles({
 			background: "rgba(50,50,50,.3) !important",
 		},
 	},
-}).attach().classes;
+});
 
-export const layout = createStyles({
+export const layout = createStyles("layout", {
 	invisible: {
 		opacity: 0,
 		cursor: "default",
@@ -78,16 +85,16 @@ export const layout = createStyles({
 	width25: { width: "25%" },
 	width15: { width: "15%" },
 	width10: { width: "10%" },
-}).attach().classes;
+});
 
-export const textColor = createStyles({
+export const textColor = createStyles("textColor", {
 	white: { color: "#E8E8E8" },
 	gray: { color: "#555555" },
 	gray9f: { color: "#9F9F9F" },
 	graye8: { color: "#E8E8E8" },
-}).attach().classes;
+});
 
-export const margin = createStyles({
+export const margin = createStyles("margin", {
 	all: { margin: "10px", },
 	half: { margin: "5px", },
 
@@ -112,9 +119,9 @@ export const margin = createStyles({
 	bottom : { marginBottom: "10px", },
 	bottomHalf: { marginBottom: "5px", },
 	bottomDouble: { marginBottom: "20px", },
-}).attach().classes;
+});
 
-export const padding = createStyles({
+export const padding = createStyles("padding", {
 	all: { padding: "10px", },
 	half: { padding: "5px", },
 
@@ -139,9 +146,9 @@ export const padding = createStyles({
 	bottom : { paddingBottom: "10px", },
 	bottomHalf: { paddingBottom: "5px", },
 	bottomDouble: { paddingBottom: "20px", },
-}).attach().classes;
+});
 
-export const text = createStyles({
+export const text = createStyles("text", {
 	light: { fontWeight: 100 },
 	bold: { fontWeight: "bold" },
 
@@ -190,4 +197,4 @@ export const text = createStyles({
 		textTransform: "uppercase",
 		letterSpacing: "5px",
 	},
-}).attach().classes;
+});
