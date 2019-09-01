@@ -10,6 +10,7 @@ namespace OnlineRecLeague.Ladders
 	public interface ILadderStore
 	{
 		ILadder Find(Guid ladderId);
+		ILadder FindByPath(string path);
 
 		IReadOnlyList<ILadder> FindAll();
 		IReadOnlyList<ILadder> FindAll(IGame game);
@@ -34,6 +35,24 @@ namespace OnlineRecLeague.Ladders
 			using (var connection = AppDataConnection.Create())
 			{
 				return connection.Query<LadderRecord>(sql, new { ladderId }).Select((record) => new Ladder(record)).Single();
+			}
+		}
+
+		public ILadder FindByPath(string path)
+		{
+			const string sql = @"
+				SELECT
+					ladder_id as ladderid,
+					name,
+					uri_path as uripath,
+					sport_id,
+					rules
+				FROM svc.ladder
+				WHERE uri_path = @Path";
+
+			using (var connection = AppDataConnection.Create())
+			{
+				return connection.Query<LadderRecord>(sql, new { path }).Select((record) => new Ladder(record)).Single();
 			}
 		}
 
