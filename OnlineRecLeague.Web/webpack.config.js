@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = {
 	entry: {
 		app: "./src/App.ts"
@@ -23,11 +25,14 @@ module.exports = {
 		]
 	},
 	resolve: {
-		extensions: ['.ts'],
+		modules: [
+			path.resolve(__dirname, "src")
+		],
+		extensions: ['.ts']
 	},
 	externals: {
 		knockout: "ko",
-		jQuery: "jquery",
+		jquery: "$",
 		jss: "jss"
 	}
 }
