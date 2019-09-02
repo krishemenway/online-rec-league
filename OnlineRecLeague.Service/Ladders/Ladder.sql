@@ -6,6 +6,7 @@ CREATE TABLE svc.ladder
     name varchar(255) COLLATE pg_catalog."default" NOT NULL,
     uri_path varchar(128) COLLATE pg_catalog."default" NOT NULL,
     sport_id uuid NOT NULL,
+	created_by_user_id uuid NOT NULL,
     CONSTRAINT ladder_pkey PRIMARY KEY (ladder_id),
     CONSTRAINT ladder_game_id_fkey FOREIGN KEY (game_id)
         REFERENCES svc.game (game_id) MATCH SIMPLE

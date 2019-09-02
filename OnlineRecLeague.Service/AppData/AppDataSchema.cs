@@ -32,7 +32,6 @@ namespace OnlineRecLeague.AppData
 				{ "svc.ladder", "./Ladders/Ladder.sql" },
 				{ "svc.ladder_challenge", "./LadderChallenges/LadderChallenge.sql" },
 				{ "svc.ladder_team", "./LadderTeams/LadderTeam.sql" },
-				{ "svc.league", "./Leagues/League.sql" },
 			};
 	}
 }
