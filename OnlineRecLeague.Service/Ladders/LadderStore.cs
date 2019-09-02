@@ -31,7 +31,7 @@ namespace OnlineRecLeague.Ladders
 					sport_id,
 					created_by_user_id as createdbyuserid,
 					rules
-				FROM svc.ladder
+				FROM public.ladder
 				WHERE ladder_id = @LadderId";
 
 			using (var connection = AppDataConnection.Create())
@@ -50,7 +50,7 @@ namespace OnlineRecLeague.Ladders
 					sport_id,
 					created_by_user_id as createdbyuserid,
 					rules
-				FROM svc.ladder
+				FROM public.ladder
 				WHERE uri_path = @Path";
 
 			using (var connection = AppDataConnection.Create())
@@ -69,7 +69,7 @@ namespace OnlineRecLeague.Ladders
 					sport_id,
 					created_by_user_id as createdbyuserid,
 					rules
-				FROM svc.ladder";
+				FROM public.ladder";
 
 			using (var connection = AppDataConnection.Create())
 			{
@@ -87,8 +87,8 @@ namespace OnlineRecLeague.Ladders
 					sport_id,
 					created_by_user_id as createdbyuserid,
 					rules
-				FROM svc.ladder l
-				INNER JOIN svc.sport s
+				FROM public.ladder l
+				INNER JOIN public.sport s
 					ON l.sport_id = s.sport_id
 				WHERE s.game_id = @GameId";
 
@@ -101,7 +101,7 @@ namespace OnlineRecLeague.Ladders
 		public ILadder Create(CreateLadderRequest createLadderRequest, IUser createdByUser)
 		{
 			const string sql = @"
-				INSERT INTO svc.ladder
+				INSERT INTO public.ladder
 				(name, uri_path, sport_id, rules, created_by_user_id)
 				VALUES
 				(@Name, @UriPath, @SportId, @Rules, @CreatedByUserId)

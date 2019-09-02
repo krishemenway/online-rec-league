@@ -27,7 +27,7 @@ namespace OnlineRecLeague.Sports
 					name,
 					game_id as gameid
 				FROM
-					svc.sport
+					public.sport
 				WHERE
 					sport_id = any(@SportIds)";
 
