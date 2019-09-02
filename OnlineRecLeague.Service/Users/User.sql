@@ -14,7 +14,7 @@
 )
 WITH ( OIDS = FALSE ) TABLESPACE pg_default;
 
-ALTER TABLE svc.user OWNER to leaguesweb;
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.user TO leaguesweb;
+ALTER TABLE svc.user OWNER to onlinerecleague_dbuser;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.user TO onlinerecleague_dbuser;
 
 CREATE UNIQUE INDEX user_email_uidx ON svc.user USING btree (email COLLATE pg_catalog."default") TABLESPACE pg_default;

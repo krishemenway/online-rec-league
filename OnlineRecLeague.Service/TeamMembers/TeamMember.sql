@@ -11,8 +11,8 @@
 )
 WITH ( OIDS = FALSE ) TABLESPACE pg_default;
 
-ALTER TABLE svc.team_member OWNER to leaguesweb;
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.team_member TO leaguesweb;
+ALTER TABLE svc.team_member OWNER to onlinerecleague_dbuser;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.team_member TO onlinerecleague_dbuser;
 
 CREATE INDEX team_member_team_id_idx ON svc.team_member USING btree (team_id) TABLESPACE pg_default;
 CREATE INDEX team_member_user_id_idx ON svc.team_member USING btree (user_id) TABLESPACE pg_default;

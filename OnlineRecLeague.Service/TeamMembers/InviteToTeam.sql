@@ -10,7 +10,7 @@
 WITH ( OIDS = FALSE )
 TABLESPACE pg_default;
 
-ALTER TABLE svc.invite_to_team OWNER to leaguesweb;
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.invite_to_team TO leaguesweb;
+ALTER TABLE svc.invite_to_team OWNER to onlinerecleague_dbuser;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.invite_to_team TO onlinerecleague_dbuser;
 
 CREATE INDEX team_email_idx ON svc.team USING btree (email) TABLESPACE pg_default;

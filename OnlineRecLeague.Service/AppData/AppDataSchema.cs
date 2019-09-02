@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -9,8 +10,18 @@ namespace OnlineRecLeague.AppData
 		public static string CreateSchemaScript()
 		{
 			return $@"
-				{string.Join("\n", Tables.Select(x => $"DROP TABLE IF EXISTS {x.Key};"))}
-				{string.Join("\n\n", Tables.Reverse().Select(x => GetSchemaContentFromFile(x.Value)))}";
+{RenderDropStatementForEachTable()}
+{RenderCreateStatementsForEachTable()}";
+		}
+
+		private static object RenderCreateStatementsForEachTable()
+		{
+			return string.Join("\n\n", Tables.Reverse().Select(x => GetSchemaContentFromFile(x.Value)));
+		}
+
+		private static string RenderDropStatementForEachTable()
+		{
+			return string.Join("\n", Tables.Select(x => $"DROP TABLE IF EXISTS {x.Key};"));
 		}
 
 		private static string GetSchemaContentFromFile(string path)

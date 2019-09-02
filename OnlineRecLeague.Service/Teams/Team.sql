@@ -1,8 +1,4 @@
-﻿-- Table: svc.team
-
--- DROP TABLE svc.team;
-
-CREATE TABLE svc.team
+﻿CREATE TABLE svc.team
 (
     team_id uuid NOT NULL DEFAULT uuid_generate_v1(),
     name varchar(256) COLLATE pg_catalog."default" NOT NULL,
@@ -21,10 +17,10 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE svc.team OWNER to leaguesweb;
-GRANT ALL ON TABLE svc.team TO leaguesweb;
+ALTER TABLE svc.team OWNER to onlinerecleague_dbuser;
+GRANT ALL ON TABLE svc.team TO onlinerecleague_dbuser;
 
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.team TO leaguesweb;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.team TO onlinerecleague_dbuser;
 
 -- Index: team_owner_user_id_idx
 

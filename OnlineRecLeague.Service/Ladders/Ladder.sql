@@ -1,6 +1,4 @@
-﻿DROP TABLE IF EXISTS svc.ladder;
-
-CREATE TABLE svc.ladder
+﻿CREATE TABLE svc.ladder
 (
     ladder_id uuid NOT NULL DEFAULT uuid_generate_v1(),
     name varchar(255) COLLATE pg_catalog."default" NOT NULL,
@@ -15,10 +13,10 @@ CREATE TABLE svc.ladder
 ) WITH ( OIDS = FALSE )
 TABLESPACE pg_default;
 
-ALTER TABLE svc.ladder OWNER to leaguesweb;
+ALTER TABLE svc.ladder OWNER to onlinerecleague_dbuser;
 
-GRANT ALL ON TABLE svc.ladder TO leaguesweb;
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.ladder TO leaguesweb;
+GRANT ALL ON TABLE svc.ladder TO onlinerecleague_dbuser;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.ladder TO onlinerecleague_dbuser;
 
 DROP INDEX IF EXISTS svc.ladder_esport_id_idx;
 CREATE INDEX ladder_game_id_idx ON svc.ladder USING btree (sport_id) TABLESPACE pg_default;

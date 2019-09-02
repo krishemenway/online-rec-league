@@ -1,8 +1,4 @@
-﻿-- Table: svc.ladder_challenge
-
-DROP TABLE IF EXISTS svc.ladder_challenge;
-
-CREATE TABLE svc.ladder_challenge
+﻿CREATE TABLE svc.ladder_challenge
 (
     ladder_challenge_id uuid NOT NULL DEFAULT uuid_generate_v1(),
     ladder_id uuid NOT NULL,
@@ -39,11 +35,11 @@ WITH (
 TABLESPACE pg_default;
 
 ALTER TABLE svc.ladder_challenge
-    OWNER to leaguesweb;
+    OWNER to onlinerecleague_dbuser;
 
-GRANT ALL ON TABLE svc.ladder_challenge TO leaguesweb;
+GRANT ALL ON TABLE svc.ladder_challenge TO onlinerecleague_dbuser;
 
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.ladder_challenge TO leaguesweb;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.ladder_challenge TO onlinerecleague_dbuser;
 
 -- Index: ladder_challenge_challenged_team_id_idx
 

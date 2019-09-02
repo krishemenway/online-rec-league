@@ -1,8 +1,4 @@
-﻿-- Table: svc.ladder_team
-
-DROP TABLE IF EXISTS svc.ladder_team;
-
-CREATE TABLE svc.ladder_team
+﻿CREATE TABLE svc.ladder_team
 (
     ladder_team_id uuid NOT NULL DEFAULT uuid_generate_v1(),
     team_id uuid NOT NULL,
@@ -20,11 +16,11 @@ WITH (
 TABLESPACE pg_default;
 
 ALTER TABLE svc.ladder_team
-    OWNER to leaguesweb;
+    OWNER to onlinerecleague_dbuser;
 
-GRANT ALL ON TABLE svc.ladder_team TO leaguesweb;
+GRANT ALL ON TABLE svc.ladder_team TO onlinerecleague_dbuser;
 
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.ladder_team TO leaguesweb;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.ladder_team TO onlinerecleague_dbuser;
 
 -- Index: ladder_team_team_id_idx
 

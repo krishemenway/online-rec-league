@@ -1,8 +1,4 @@
-﻿-- Table: public.game_server
-
--- DROP TABLE public.game_server;
-
-CREATE TABLE svc.game_server
+﻿CREATE TABLE svc.game_server
 (
     game_server_id uuid NOT NULL DEFAULT uuid_generate_v1(),
     name character varying(128) COLLATE pg_catalog."default" NOT NULL,
@@ -24,7 +20,7 @@ ALTER TABLE svc.game_server
 
 GRANT ALL ON TABLE public.game_server TO postgres;
 
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE public.game_server TO leaguesweb;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE public.game_server TO onlinerecleague_dbuser;
 
 -- Index: game_server_owning_team_id_idx
 
