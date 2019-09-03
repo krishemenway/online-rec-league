@@ -5,20 +5,20 @@ import { JsonRequestProxy, IJsonRequestProxy } from "JsonRequestProxy";
 export const RoutedComponent: UrlRouterComponent.RoutedComponent = {
 	ComponentName: "LadderHome",
 	CreateComponentParams: (matches) => ({ Path: matches[0] }),
-	MatchRegex: /^\/ladder\/([^\/]+)$/i,
+	MatchRegex: /^\/l\/([^\/]+)$/i,
 };
 
-interface LadderResponse {
+interface LeagueResponse {
 	Name: string;
 	Path: string;
 }
 
-interface Params {
+interface LeagueParams {
 	Path: string;
 }
 
-class LadderHome {
-	constructor(params: Params, jsonRequest?: IJsonRequestProxy) {
+class LeagueHome {
+	constructor(params: LeagueParams, jsonRequest?: IJsonRequestProxy) {
 		this.JsonRequest = jsonRequest || new JsonRequestProxy();
 
 		this.Path = params.Path;
@@ -32,11 +32,11 @@ class LadderHome {
 	public Path: string;
 	public IsLoading: ko.Observable<boolean>;
 	public LoadError: ko.Observable<string>;
-	public Ladder: ko.Observable<LadderResponse|null>;
+	public Ladder: ko.Observable<LeagueResponse|null>;
 
 	private TryLoadLadder() {
 		this.JsonRequest
-			.Get<LadderResponse>(`/api/ladders/find?path=${this.Path}`, this.IsLoading)
+			.Get<LeagueResponse>(`/api/leagues/find?path=${this.Path}`, this.IsLoading)
 			.OnSuccess((response) => this.Ladder(response))
 			.OnFailure((error) => this.LoadError(error));
 	}
@@ -45,7 +45,7 @@ class LadderHome {
 }
 
 ko.components.register(RoutedComponent.ComponentName, {
-	viewModel: LadderHome,
+	viewModel: LeagueHome,
 	template: `
 	<div>
 		<div>Ladder Home</div>

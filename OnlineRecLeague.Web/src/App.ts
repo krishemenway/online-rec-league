@@ -4,7 +4,6 @@ import * as ComponentCleaner from "KnockoutHelpers/ComponentCleaner";
 import * as AppStyles from "AppStyles";
 import * as UrlRouterComponent from "UrlRouter/UrlRouterComponent";
 import * as LeagueHomeComponent from "Leagues/LeagueHomeComponent";
-import * as LadderHomeComponent from "Ladders/LadderHomeComponent";
 import * as HomeComponent from "Home/HomeComponent";
 
 ComponentCleaner.AddComponentCleaner();
@@ -15,7 +14,6 @@ let currentPathObservable = ko.observable<string>(window.location.pathname);
 class AppViewModel {
 	public RoutedComponents: UrlRouterComponent.RoutedComponent[] = [
 		LeagueHomeComponent.RoutedComponent,
-		LadderHomeComponent.RoutedComponent,
 		HomeComponent.RoutedComponent,
 	];
 
