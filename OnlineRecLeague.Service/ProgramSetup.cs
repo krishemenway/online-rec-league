@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
-using System.Reflection;
 
 namespace OnlineRecLeague
 {
@@ -70,10 +69,9 @@ namespace OnlineRecLeague
 			}
 		}
 
-		private static string ProgramDirectory { get; } = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName;
 		private static StaticFileOptions StaticFileOptions = new StaticFileOptions
 		{
-			FileProvider = new PhysicalFileProvider(Path.Combine(ProgramDirectory, "Assets")),
+			FileProvider = new PhysicalFileProvider(Path.Combine(Program.Directory, "Assets")),
 			RequestPath = "/assets",
 		};
 	}

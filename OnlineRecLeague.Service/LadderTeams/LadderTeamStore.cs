@@ -31,7 +31,7 @@ namespace OnlineRecLeague.LadderTeams
 					ranking,
 					created_at_time as createdattime,
 					created_by_user_id as createdbyuserid
-				FROM svc.ladder_team
+				FROM public.ladder_team
 				WHERE ladder_id = @LadderId";
 
 			using (var connection = AppDataConnection.Create())
@@ -52,7 +52,7 @@ namespace OnlineRecLeague.LadderTeams
 					ranking,
 					created_at_time as createdattime,
 					created_by_user_id as createdbyuserid
-				FROM svc.ladder_team
+				FROM public.ladder_team
 				WHERE ladder_id = @LadderId";
 
 			using (var connection = AppDataConnection.Create())
@@ -79,9 +79,9 @@ namespace OnlineRecLeague.LadderTeams
 				VALUES
 				{updateLadderRungsRequests.Select((x,i) => $"(@LadderTeamIds{i+1}, @NewRungs{i+1}),")}
 
-				UPDATE svc.ladder_team
+				UPDATE public.ladder_team
 				SET current_rung = ltr.current_rung
-				FROM svc.ladder_team AS lt
+				FROM public.ladder_team AS lt
 				INNER JOIN ladder_team_rungs AS ltr 
 					ON ltr.ladder_team_id = lt.ladder_team_id;
 

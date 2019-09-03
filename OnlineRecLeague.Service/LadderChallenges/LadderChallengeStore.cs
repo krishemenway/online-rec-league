@@ -38,7 +38,7 @@ namespace OnlineRecLeague.LadderChallenges
 					challenge_successful as challengesuccessful,
 					match_results as matchresults,
 					match_results_reported_time as matchresultsreportedtime
-				FROM svc.ladder_challenge
+				FROM public.ladder_challenge
 				WHERE ladder_id = @LadderId";
 
 			using (var connection = AppDataConnection.Create())
@@ -64,7 +64,7 @@ namespace OnlineRecLeague.LadderChallenges
 					challenge_successful as challengesuccessful,
 					match_results_reported_time as matchresultsreportedtime,
 					ladder_id as ladderid
-				FROM svc.ladder_challenge
+				FROM public.ladder_challenge
 				WHERE ladder_team_id = @LadderTeamId";
 
 			using (var connection = AppDataConnection.Create())
@@ -80,7 +80,7 @@ namespace OnlineRecLeague.LadderChallenges
 		public void Create(LadderChallengeRequest saveLadderChallengeRequest)
 		{
 			const string sql = @"
-				INSERT INTO svc.ladder_challenge
+				INSERT INTO public.ladder_challenge
 				(ladder_id, challenger_ladder_team_id, challenged_ladder_team_id, challenge_time)
 				VALUES 
 				(@LadderId, @ChallengerLadderTeamId, @ChallengedLadderTeamId, @ChallengeTime)";
@@ -94,7 +94,7 @@ namespace OnlineRecLeague.LadderChallenges
 		public void SetMatchTime(Guid ladderChallengeId, DateTimeOffset matchTime)
 		{
 			const string sql = @"
-				UPDATE svc.ladder_challenge
+				UPDATE public.ladder_challenge
 				SET match_time = @MatchTime
 				WHERE ladder_challenge_id = @LadderChallengeId";
 
@@ -107,7 +107,7 @@ namespace OnlineRecLeague.LadderChallenges
 		public void ReportResults(ILadderChallenge challenge, bool challengeSuccessful, string matchResults, DateTimeOffset matchResultsReportedTime)
 		{
 			const string sql = @"
-				UPDATE svc.ladder_challenge
+				UPDATE public.ladder_challenge
 				SET
 					challenge_successful = @ChallengeSuccessful,
 					match_results = @MatchResults,

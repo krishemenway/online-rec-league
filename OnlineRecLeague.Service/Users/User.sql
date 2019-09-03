@@ -1,4 +1,4 @@
-﻿CREATE TABLE svc.user
+﻿CREATE TABLE public.user
 (
 	user_id uuid NOT NULL DEFAULT uuid_generate_v1(),
 	nickname character varying(64) COLLATE pg_catalog."default" NOT NULL,
@@ -14,7 +14,7 @@
 )
 WITH ( OIDS = FALSE ) TABLESPACE pg_default;
 
-ALTER TABLE svc.user OWNER to leaguesweb;
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.user TO leaguesweb;
+ALTER TABLE public.user OWNER to onlinerecleague_dbuser;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE public.user TO onlinerecleague_dbuser;
 
-CREATE UNIQUE INDEX user_email_uidx ON svc.user USING btree (email COLLATE pg_catalog."default") TABLESPACE pg_default;
+CREATE UNIQUE INDEX user_email_uidx ON public.user USING btree (email COLLATE pg_catalog."default") TABLESPACE pg_default;

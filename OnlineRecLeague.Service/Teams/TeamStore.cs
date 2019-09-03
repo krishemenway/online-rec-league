@@ -34,7 +34,7 @@ namespace OnlineRecLeague.Teams
 					owner_user_id as owneruserid,
 					created_at as createdat
 				FROM
-					svc.team
+					public.team
 				WHERE
 					team_id = any(@TeamIds)";
 
@@ -56,7 +56,7 @@ namespace OnlineRecLeague.Teams
 		public ITeam CreateTeam(CreateTeamRequest request, IUser teamCreator)
 		{
 			const string sql = @"
-				INSERT INTO svc.team
+				INSERT INTO public.team
 				(name, owner_user_id, profile_content, user_name_prefix, owner_user_id, created_at)
 				VALUES
 				(@Name, @OwnerUserId, @ProfileContent, @UserNamePrefix, @OwnerUserId, @CreatedAt)

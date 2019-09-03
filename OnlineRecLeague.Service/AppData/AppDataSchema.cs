@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -9,8 +10,18 @@ namespace OnlineRecLeague.AppData
 		public static string CreateSchemaScript()
 		{
 			return $@"
-				{string.Join("\n", Tables.Select(x => $"DROP TABLE IF EXISTS {x.Key};"))}
-				{string.Join("\n\n", Tables.Reverse().Select(x => GetSchemaContentFromFile(x.Value)))}";
+{RenderDropStatementForEachTable()}
+{RenderCreateStatementsForEachTable()}";
+		}
+
+		private static object RenderCreateStatementsForEachTable()
+		{
+			return string.Join("\n\n", Tables.Reverse().Select(x => GetSchemaContentFromFile(x.Value)));
+		}
+
+		private static string RenderDropStatementForEachTable()
+		{
+			return string.Join("\n", Tables.Select(x => $"DROP TABLE IF EXISTS {x.Key};"));
 		}
 
 		private static string GetSchemaContentFromFile(string path)
@@ -24,15 +35,14 @@ namespace OnlineRecLeague.AppData
 		// List should be ordered with dependencies in mind
 		public static IReadOnlyDictionary<string, string> Tables = new Dictionary<string, string>
 			{
-				{ "svc.game", "./Games/Game.sql" },
-				{ "svc.user", "./Users/User.sql" },
-				{ "svc.team", "./Teams/Team.sql" },
-				{ "svc.team_member", "./TeamMembers/TeamMember.sql" },
-				{ "svc.invite_to_team", "./TeamMembers/InviteToTeam.sql" },
-				{ "svc.ladder", "./Ladders/Ladder.sql" },
-				{ "svc.ladder_challenge", "./LadderChallenges/LadderChallenge.sql" },
-				{ "svc.ladder_team", "./LadderTeams/LadderTeam.sql" },
-				{ "svc.league", "./Leagues/League.sql" },
+				{ "public.game", "./Games/Game.sql" },
+				{ "public.user", "./Users/User.sql" },
+				{ "public.team", "./Teams/Team.sql" },
+				{ "public.team_member", "./TeamMembers/TeamMember.sql" },
+				{ "public.invite_to_team", "./TeamMembers/InviteToTeam.sql" },
+				{ "public.ladder", "./Ladders/Ladder.sql" },
+				{ "public.ladder_challenge", "./LadderChallenges/LadderChallenge.sql" },
+				{ "public.ladder_team", "./LadderTeams/LadderTeam.sql" },
 			};
 	}
 }

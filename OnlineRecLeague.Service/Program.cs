@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using OnlineRecLeague.AppData;
 using Serilog;
 using Serilog.Events;
 
@@ -12,7 +14,7 @@ namespace OnlineRecLeague
 		public static void Main(string[] args)
 		{
 			Settings = new ConfigurationBuilder()
-				.SetBasePath(Directory.GetCurrentDirectory())
+				.SetBasePath(Directory)
 				.AddJsonFile("Settings.json", optional: false, reloadOnChange: true)
 				.AddEnvironmentVariables()
 				.AddCommandLine(args)
@@ -20,17 +22,22 @@ namespace OnlineRecLeague
 
 			SetupLogging();
 
-			try
+
+			if (Settings.GetValue<bool>("CreateSchema"))
+			{
+				CreateSchema();
+			}
+			else
 			{
 				StartWebHost();
 			}
-			catch (Exception exception)
+		}
+
+		private static void CreateSchema()
+		{
+			using (var streamWriter = new StreamWriter(Path.Combine(System.IO.Directory.GetCurrentDirectory(), Settings.GetValue<string>("SchemaOutput"), "schema.sql")))
 			{
-				Log.Fatal(exception, "Service terminated unexpectedly");
-			}
-			finally
-			{
-				Log.CloseAndFlush();
+				streamWriter.Write(AppDataSchema.CreateSchemaScript());
 			}
 		}
 
@@ -47,16 +54,29 @@ namespace OnlineRecLeague
 
 		private static void StartWebHost()
 		{
-			WebHost = new WebHostBuilder()
-				.UseKestrel()
-				.UseConfiguration(Settings)
-				.UseStartup<ProgramSetup>()
-				.UseSerilog()
-				.UseUrls($"http://*:{Settings.GetValue<int>("WebPort")}")
-				.Build();
+			try
+			{
+				WebHost = new WebHostBuilder()
+					.UseKestrel()
+					.UseConfiguration(Settings)
+					.UseStartup<ProgramSetup>()
+					.UseSerilog()
+					.UseUrls($"http://*:{Settings.GetValue<int>("WebPort")}")
+					.Build();
 
-			WebHost.Run();
+				WebHost.Run();
+			}
+			catch (Exception exception)
+			{
+				Log.Fatal(exception, "Service terminated unexpectedly");
+			}
+			finally
+			{
+				Log.CloseAndFlush();
+			}
 		}
+
+		public static string Directory { get; } = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName;
 
 		public static IConfigurationRoot Settings { get; private set; }
 		public static IWebHost WebHost { get; private set; }

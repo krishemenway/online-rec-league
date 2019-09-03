@@ -26,7 +26,7 @@ namespace OnlineRecLeague.TeamMembers
 					nickname,
 					joined_time as joinedtime
 				FROM
-					svc.team_member
+					public.team_member
 				WHERE
 					team_id = any(@TeamIds)";
 
@@ -42,7 +42,7 @@ namespace OnlineRecLeague.TeamMembers
 		public void JoinTeam(IUser user, ITeam team)
 		{
 			const string sql = @"
-				INSERT INTO svc.team_member
+				INSERT INTO public.team_member
 				(team_id, user_id, nickname, joined_time)
 				VALUES
 				(@TeamId, @UserId, @NickName, @JoinedTime)";

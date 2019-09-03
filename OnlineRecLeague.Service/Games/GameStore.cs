@@ -19,7 +19,7 @@ namespace OnlineRecLeague.Games
 			using (var connection = AppDataConnection.Create())
 			{
 				const string sql = @"
-					INSERT INTO svc.game
+					INSERT INTO public.game
 					(name, release_date)
 					VALUES
 					(@Name, @ReleaseDate)
@@ -39,8 +39,8 @@ namespace OnlineRecLeague.Games
 						game_id as gameid,
 						name,
 						release_date as releasedate,
-					FROM svc.game
-					WHERE svc.game_id = any(@GameIds)";
+					FROM public.game
+					WHERE public.game_id = any(@GameIds)";
 
 				return connection
 					.Query<GameRecord>(sql, new { gameIds })

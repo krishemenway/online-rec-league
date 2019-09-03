@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
 using OnlineRecLeague.Games;
+using OnlineRecLeague.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace OnlineRecLeague.Ladders
 		IReadOnlyList<ILadder> FindAll();
 		IReadOnlyList<ILadder> FindAll(IGame game);
 
-		ILadder Create(CreateLadderRequest createLadderRequest);
+		ILadder Create(CreateLadderRequest createLadderRequest, IUser createdByUser);
 	}
 
 	internal class LadderStore : ILadderStore
@@ -28,8 +29,9 @@ namespace OnlineRecLeague.Ladders
 					name,
 					uri_path as uripath,
 					sport_id,
+					created_by_user_id as createdbyuserid,
 					rules
-				FROM svc.ladder
+				FROM public.ladder
 				WHERE ladder_id = @LadderId";
 
 			using (var connection = AppDataConnection.Create())
@@ -46,8 +48,9 @@ namespace OnlineRecLeague.Ladders
 					name,
 					uri_path as uripath,
 					sport_id,
+					created_by_user_id as createdbyuserid,
 					rules
-				FROM svc.ladder
+				FROM public.ladder
 				WHERE uri_path = @Path";
 
 			using (var connection = AppDataConnection.Create())
@@ -64,8 +67,9 @@ namespace OnlineRecLeague.Ladders
 					name,
 					uri_path as uripath,
 					sport_id,
+					created_by_user_id as createdbyuserid,
 					rules
-				FROM svc.ladder";
+				FROM public.ladder";
 
 			using (var connection = AppDataConnection.Create())
 			{
@@ -81,9 +85,10 @@ namespace OnlineRecLeague.Ladders
 					name,
 					uri_path as uripath,
 					sport_id,
+					created_by_user_id as createdbyuserid,
 					rules
-				FROM svc.ladder l
-				INNER JOIN svc.sport s
+				FROM public.ladder l
+				INNER JOIN public.sport s
 					ON l.sport_id = s.sport_id
 				WHERE s.game_id = @GameId";
 
@@ -93,18 +98,28 @@ namespace OnlineRecLeague.Ladders
 			}
 		}
 
-		public ILadder Create(CreateLadderRequest createLadderRequest)
+		public ILadder Create(CreateLadderRequest createLadderRequest, IUser createdByUser)
 		{
 			const string sql = @"
-				INSERT INTO svc.ladder
-				(name, uri_path, sport_id, rules)
+				INSERT INTO public.ladder
+				(name, uri_path, sport_id, rules, created_by_user_id)
 				VALUES
-				(@Name, @UriPath, @SportId, @Rules)
+				(@Name, @UriPath, @SportId, @Rules, @CreatedByUserId)
 				RETURNING ladder_id;";
 
 			using (var connection = AppDataConnection.Create())
 			{
-				return Find(connection.Query<Guid>(sql, createLadderRequest).Single());
+				var sqlParams = new
+				{
+					createLadderRequest.Name,
+					createLadderRequest.UriPath,
+					createLadderRequest.SportId,
+					createLadderRequest.Rules,
+					createdByUser.UserId,
+				};
+
+				var ladderId = connection.Query<Guid>(sql, sqlParams).Single();
+				return Find(ladderId);
 			}
 		}
 	}
@@ -118,5 +133,7 @@ namespace OnlineRecLeague.Ladders
 		public string UriPath { get; set;  }
 
 		public string Rules { get; set; }
+
+		public Guid CreatedByUserId { get; set; }
 	}
 }

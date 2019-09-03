@@ -21,7 +21,7 @@ namespace OnlineRecLeague.TeamMembers
 		{
 			const string sql = @"
 				SELECT team_id
-				FROM svc.invite_to_team
+				FROM public.invite_to_team
 				WHERE email = @Email";
 
 			using (var connection = AppDataConnection.Create())
@@ -33,7 +33,7 @@ namespace OnlineRecLeague.TeamMembers
 		public void SaveInviteToTeam(ITeam team, string email)
 		{
 			const string sql = @"
-				INSERT INTO svc.invite_to_team
+				INSERT INTO public.invite_to_team
 				(team_id, email)
 				VALUES
 				(@TeamId, @Email)";
@@ -47,7 +47,7 @@ namespace OnlineRecLeague.TeamMembers
 		public void RemoveInviteToTeam(ITeam team, string email)
 		{
 			const string sql = @"
-				DELETE FROM svc.invite_to_team
+				DELETE FROM public.invite_to_team
 				WHERE team_id = @TeamId AND Email = @Email";
 
 			using (var connection = AppDataConnection.Create())

@@ -50,7 +50,7 @@ namespace OnlineRecLeague.Users
 					region,
 					default_timezone as defaulttimezone
 				FROM
-					svc.user
+					public.user
 				WHERE
 					email = @Email";
 
@@ -76,7 +76,7 @@ namespace OnlineRecLeague.Users
 					region,
 					default_timezone as defaulttimezone
 				FROM
-					svc.user
+					public.user
 				WHERE
 					user_id = any(@UserIds)";
 
@@ -101,7 +101,7 @@ namespace OnlineRecLeague.Users
 					region,
 					default_timezone as defaulttimezone
 				FROM
-					svc.user
+					public.user
 				WHERE
 					email like @Query OR nickname like @Query";
 
@@ -114,7 +114,7 @@ namespace OnlineRecLeague.Users
 		public IUser CreateNewUser(CreateUserRequest request)
 		{
 			const string sql = @"
-				INSERT INTO svc.user
+				INSERT INTO public.user
 				(nickname, realname, email, password_hash, is_admin, join_time, default_timezone, region, email_confirmation_code, email_confirmation_time)
 				VALUES
 				(@NickName, @RealName, @Email, @Password, @IsAdmin, @JoinTime, @DefaultTimezone, '', @EmailConfirmationCode, null)
@@ -141,7 +141,7 @@ namespace OnlineRecLeague.Users
 		public void EmailConfirmed(IUser user, DateTimeOffset emailConfirmationTime)
 		{
 			const string sql = @"
-				UPDATE svc.user
+				UPDATE public.user
 				SET email_confirmation_time = @EmailConfirmationTime
 				WHERE user_id = @UserId;";
 
@@ -154,7 +154,7 @@ namespace OnlineRecLeague.Users
 		public void UpdatePassword(IUser user, string passwordHash)
 		{
 			const string sql = @"
-				UPDATE svc.user
+				UPDATE public.user
 				SET password_hash = @PasswordHash
 				WHERE user_id = @UserId;";
 
@@ -167,7 +167,7 @@ namespace OnlineRecLeague.Users
 		public void MakeUserAdmin(IUser user, bool isAdmin)
 		{
 			const string sql = @"
-				UPDATE svc.user
+				UPDATE public.user
 				SET is_admin = @IsAdmin
 				WHERE user_id = @UserId;";
 

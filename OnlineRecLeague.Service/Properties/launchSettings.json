@@ -1,4 +1,4 @@
-﻿{
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
@@ -17,6 +17,7 @@
     },
     "OnlineRecLeague": {
       "commandName": "Project",
+      "commandLineArgs": "--Schema",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

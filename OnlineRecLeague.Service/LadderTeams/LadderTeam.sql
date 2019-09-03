@@ -1,8 +1,4 @@
-﻿-- Table: svc.ladder_team
-
-DROP TABLE IF EXISTS svc.ladder_team;
-
-CREATE TABLE svc.ladder_team
+﻿CREATE TABLE public.ladder_team
 (
     ladder_team_id uuid NOT NULL DEFAULT uuid_generate_v1(),
     team_id uuid NOT NULL,
@@ -10,7 +6,7 @@ CREATE TABLE svc.ladder_team
     current_rung bigint,
     CONSTRAINT ladder_team_pkey PRIMARY KEY (ladder_team_id),
     CONSTRAINT ladder_team_id_fkey FOREIGN KEY (team_id)
-        REFERENCES svc.team (team_id) MATCH SIMPLE
+        REFERENCES public.team (team_id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -19,18 +15,18 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE svc.ladder_team
-    OWNER to leaguesweb;
+ALTER TABLE public.ladder_team
+    OWNER to onlinerecleague_dbuser;
 
-GRANT ALL ON TABLE svc.ladder_team TO leaguesweb;
+GRANT ALL ON TABLE public.ladder_team TO onlinerecleague_dbuser;
 
-GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE svc.ladder_team TO leaguesweb;
+GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE public.ladder_team TO onlinerecleague_dbuser;
 
 -- Index: ladder_team_team_id_idx
 
-DROP INDEX IF EXISTS svc.ladder_team_team_id_idx;
+DROP INDEX IF EXISTS public.ladder_team_team_id_idx;
 
 CREATE INDEX ladder_team_team_id_idx
-    ON svc.ladder_team USING btree
+    ON public.ladder_team USING btree
     (team_id)
     TABLESPACE pg_default;
