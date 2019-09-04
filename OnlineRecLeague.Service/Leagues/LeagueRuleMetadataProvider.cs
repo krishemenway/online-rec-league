@@ -3,9 +3,9 @@ using OnlineRecLeague.Rulesets;
 using OnlineRecLeague.Rulesets.RuleValuePickers;
 using System.Collections.Generic;
 
-namespace OnlineRecLeague.Ladders
+namespace OnlineRecLeague.Leagues
 {
-	internal class LadderRuleMetadataProvider : IRuleMetadataProvider
+	internal class LeagueRuleMetadataProvider : IRuleMetadataProvider
 	{
 		public IEnumerable<IRuleMetadata> CreateRuleMetadatas()
 		{
@@ -19,7 +19,7 @@ namespace OnlineRecLeague.Ladders
 
 		internal static readonly RuleMetadata<int> PlayersAllowedOnTeamRoster = new RuleMetadata<int>
 			{
-				Path = "Ladder/PlayersAllowedOnTeamRoster",
+				Path = "League/PlayersAllowedOnTeamRoster",
 				Name = "Players allowed on team roster",
 				ValuePicker = new NumberValuePicker(5, new Range<int>(1, 64)),
 			};

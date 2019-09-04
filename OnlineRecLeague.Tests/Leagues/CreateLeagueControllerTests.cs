@@ -5,17 +5,17 @@ using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Users;
 using System;
 
-namespace OnlineRecLeague.Ladders
+namespace OnlineRecLeague.Leagues
 {
 	[TestFixture]
-	public class CreateLadderControllerTests
+	public class CreateLeagueControllerTests
 	{
 		[SetUp]
 		public void SetUp()
 		{
-			GivenRequest = new CreateLadderRequest
+			GivenRequest = new CreateLeagueRequest
 			{
-				Name = "Ladder Name",
+				Name = "League Name",
 				UriPath = "UriPath",
 				SportId = Guid.NewGuid(),
 			};
@@ -24,13 +24,13 @@ namespace OnlineRecLeague.Ladders
 
 			var controllerContext = new MockControllerContext();
 
-			_leagueStore = new Mock<ILadderStore>();
-			_leagueViewModelFactory = new Mock<ILadderViewModelFactory>();
+			_leagueStore = new Mock<ILeagueStore>();
+			_leagueViewModelFactory = new Mock<ILeagueViewModelFactory>();
 
 			_userSessionStore = new Mock<IUserSessionStore>();
 			_userSessionStore.Setup(x => x.FindUserOrThrow(controllerContext.HttpContext.Session)).Returns(GivenUser.Instance);
 
-			_createLadderController = new CreateLadderController(_leagueStore.Object, _leagueViewModelFactory.Object, _userSessionStore.Object)
+			_createLeagueController = new CreateLeagueController(_leagueStore.Object, _leagueViewModelFactory.Object, _userSessionStore.Object)
 			{
 				ControllerContext = controllerContext
 			};
@@ -45,17 +45,17 @@ namespace OnlineRecLeague.Ladders
 
 		private void WhenHandlingRequest()
 		{
-			ThenResult = _createLadderController.Create(GivenRequest).Value;
+			ThenResult = _createLeagueController.Create(GivenRequest).Value;
 		}
 
-		private CreateLadderRequest GivenRequest { get; set; }
+		private CreateLeagueRequest GivenRequest { get; set; }
 		private UserBuilder GivenUser { get; set; }
-		private Result<LadderViewModel> ThenResult { get; set; }
+		private Result<LeagueViewModel> ThenResult { get; set; }
 
-		private Mock<ILadderStore> _leagueStore;
+		private Mock<ILeagueStore> _leagueStore;
 		private Mock<IUserSessionStore> _userSessionStore;
-		private Mock<ILadderViewModelFactory> _leagueViewModelFactory;
+		private Mock<ILeagueViewModelFactory> _leagueViewModelFactory;
 
-		private CreateLadderController _createLadderController;
+		private CreateLeagueController _createLeagueController;
 	}
 }

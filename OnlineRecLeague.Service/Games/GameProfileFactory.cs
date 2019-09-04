@@ -1,4 +1,4 @@
-﻿using OnlineRecLeague.Ladders;
+﻿using OnlineRecLeague.Leagues;
 using System.Linq;
 
 namespace OnlineRecLeague.Games
@@ -10,19 +10,19 @@ namespace OnlineRecLeague.Games
 
 	public class GameProfileFactory : IGameProfileFactory
 	{
-		public GameProfileFactory(ILadderViewModelFactory ladderViewModelFactory = null)
+		public GameProfileFactory(ILeagueViewModelFactory leagueViewModelFactory = null)
 		{
-			_ladderViewModelFactory = ladderViewModelFactory ?? new LadderViewModelFactory();
+			_leagueViewModelFactory = leagueViewModelFactory ?? new LeagueViewModelFactory();
 		}
 
 		public GameProfile Create(IGame game)
 		{
 			return new GameProfile
 				{
-					Ladders = game.Ladders.Select(ladder => _ladderViewModelFactory.CreateBriefViewModel(ladder)).ToList(),
+					Leagues = game.Leagues.Select(league => _leagueViewModelFactory.CreateBriefViewModel(league)).ToList(),
 				};
 		}
 
-		private readonly ILadderViewModelFactory _ladderViewModelFactory;
+		private readonly ILeagueViewModelFactory _leagueViewModelFactory;
 	}
 }

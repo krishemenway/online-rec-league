@@ -40,9 +40,9 @@ namespace OnlineRecLeague.AppData
 				{ "public.team", "./Teams/Team.sql" },
 				{ "public.team_member", "./TeamMembers/TeamMember.sql" },
 				{ "public.invite_to_team", "./TeamMembers/InviteToTeam.sql" },
-				{ "public.ladder", "./Ladders/Ladder.sql" },
-				{ "public.ladder_challenge", "./LadderChallenges/LadderChallenge.sql" },
-				{ "public.ladder_team", "./LadderTeams/LadderTeam.sql" },
+				{ "public.league", "./Leagues/League.sql" },
+				{ "public.league_match", "./LeagueMatches/LeagueMatch.sql" },
+				{ "public.league_team", "./LeagueTeams/LeagueTeam.sql" },
 			};
 	}
 }

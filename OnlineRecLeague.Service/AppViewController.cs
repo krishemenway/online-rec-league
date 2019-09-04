@@ -3,10 +3,8 @@
 namespace OnlineRecLeague.Service.Leagues
 {
 	[Route("")]
-	[Route("league")]
-	[Route("ladder")]
-	[Route("game")]
-	[Route("sport")]
+	[Route("l")]
+	[Route("g")]
 	public class AppViewController : ControllerBase
 	{
 		[HttpGet("{*path}")]

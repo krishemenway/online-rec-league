@@ -1,4 +1,4 @@
-﻿using OnlineRecLeague.Ladders;
+﻿using OnlineRecLeague.Leagues;
 using System;
 using System.Collections.Generic;
 
@@ -14,14 +14,14 @@ namespace OnlineRecLeague.Games
 		string IconImagePath { get; }
 		string BackgroundImagePath { get; }
 
-		IReadOnlyList<ILadder> Ladders { get; }
+		IReadOnlyList<ILeague> Leagues { get; }
 	}
 
 	public class Game : IGame
 	{
-		public Game(Func<IReadOnlyList<ILadder>> findAllLaddersForGameFunc = null)
+		public Game(Func<IReadOnlyList<ILeague>> findAllLeaguesForGameFunc = null)
 		{
-			_lazyLadders = new Lazy<IReadOnlyList<ILadder>>(findAllLaddersForGameFunc ?? (() => new LadderStore().FindAll(this)));
+			_lazyLeagues = new Lazy<IReadOnlyList<ILeague>>(findAllLeaguesForGameFunc ?? (() => new LeagueStore().FindAll(this)));
 		}
 
 		public Guid GameId { get; set; }
@@ -32,7 +32,7 @@ namespace OnlineRecLeague.Games
 		public string IconImagePath { get; set; }
 		public string BackgroundImagePath { get; set; }
 
-		public IReadOnlyList<ILadder> Ladders => _lazyLadders.Value;
+		public IReadOnlyList<ILeague> Leagues => _lazyLeagues.Value;
 
 		public override bool Equals(object other)
 		{
@@ -44,6 +44,6 @@ namespace OnlineRecLeague.Games
 			return GameId.GetHashCode();
 		}
 
-		private readonly Lazy<IReadOnlyList<ILadder>> _lazyLadders;
+		private readonly Lazy<IReadOnlyList<ILeague>> _lazyLeagues;
 	}
 }
