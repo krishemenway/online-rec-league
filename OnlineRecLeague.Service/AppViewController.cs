@@ -2,19 +2,28 @@
 
 namespace OnlineRecLeague.Service.Leagues
 {
-	[Route("")]
+	public class RootViewController : ControllerBase
+	{
+		[HttpGet("")]
+		public ActionResult RootView()
+		{
+			Response.ContentType = "text/html; charset=UTF-8";
+			return Content(AppViewController.View);
+		}
+	}
+
 	[Route("l")]
 	[Route("g")]
 	public class AppViewController : ControllerBase
 	{
 		[HttpGet("{*path}")]
-		public ActionResult AppView(string path)
+		public ActionResult AppView()
 		{
 			Response.ContentType = "text/html; charset=UTF-8";
 			return Content(View);
 		}
 
-		private const string View = @"
+		internal const string View = @"
 				<html>
 					<head></head>
 					<body>
