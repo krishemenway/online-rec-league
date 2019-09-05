@@ -14,14 +14,14 @@ namespace OnlineRecLeague.AppData
 {RenderCreateStatementsForEachTable()}";
 		}
 
-		private static object RenderCreateStatementsForEachTable()
-		{
-			return string.Join("\n\n", Tables.Reverse().Select(x => GetSchemaContentFromFile(x.Value)));
-		}
-
 		private static string RenderDropStatementForEachTable()
 		{
-			return string.Join("\n", Tables.Select(x => $"DROP TABLE IF EXISTS {x.Key};"));
+			return string.Join("\n", Tables.Reverse().Select(x => $"DROP TABLE IF EXISTS {x.Key};"));
+		}
+
+		private static object RenderCreateStatementsForEachTable()
+		{
+			return string.Join("\n\n", Tables.Select(x => GetSchemaContentFromFile(x.Value)));
 		}
 
 		private static string GetSchemaContentFromFile(string path)

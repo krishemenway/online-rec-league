@@ -13,5 +13,4 @@ ALTER TABLE public.league_team OWNER to onlinerecleague_dbuser;
 GRANT ALL ON TABLE public.league_team TO onlinerecleague_dbuser;
 GRANT INSERT, SELECT, UPDATE, DELETE ON TABLE public.league_team TO onlinerecleague_dbuser;
 
-
 CREATE INDEX league_team_team_id_idx ON public.league_team USING btree (team_id) TABLESPACE pg_default;
