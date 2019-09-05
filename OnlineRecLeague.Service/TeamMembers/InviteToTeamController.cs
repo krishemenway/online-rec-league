@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Email;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
+using System.Collections.Generic;
 
 namespace OnlineRecLeague.TeamMembers
 {
@@ -30,7 +32,7 @@ namespace OnlineRecLeague.TeamMembers
 
 			foreach (var email in request.Emails)
 			{
-				_emailSender.SendEmail(email, "Invite to Team", "Invite to Team Body");
+				_emailSender.SendEmail(email, "Invite to Team", $"Invite to Team ({team.Name}) Body");
 			}
 			
 			return Result.Successful();
@@ -38,5 +40,11 @@ namespace OnlineRecLeague.TeamMembers
 
 		private readonly ITeamStore _teamStore;
 		private readonly IEmailSender _emailSender;
+	}
+
+	public class InviteToTeamRequest
+	{
+		public Id<Team> TeamId { get; set; }
+		public IReadOnlyList<string> Emails { get; set; }
 	}
 }

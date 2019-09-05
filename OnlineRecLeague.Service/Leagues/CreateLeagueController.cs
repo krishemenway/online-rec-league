@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Games;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Users;
 using System;
 
@@ -40,7 +42,7 @@ namespace OnlineRecLeague.Leagues
 	{
 		public string Name { get; set; }
 		public string UriPath { get; set; }
-		public Guid SportId { get; set; }
+		public Id<Game> GameId { get; set; }
 		public string Rules { get; set; }
 	}
 }

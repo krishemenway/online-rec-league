@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
 using OnlineRecLeague.Leagues;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Teams;
+using OnlineRecLeague.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace OnlineRecLeague.LeagueTeams
 			_teamStore = teamStore ?? new TeamStore();
 		}
 
-		public IReadOnlyList<ILeagueTeam> Find(IReadOnlyList<Guid> leagueTeamIds)
+		public IReadOnlyList<ILeagueTeam> Find(IReadOnlyList<Id<LeagueTeam>> leagueTeamIds)
 		{
 			const string sql = @"
 				SELECT
@@ -76,9 +78,9 @@ namespace OnlineRecLeague.LeagueTeams
 
 	public class LeagueTeamRecord
 	{
-		public Guid LeagueTeamId { get; set; }
-		public Guid TeamId { get; set; }
+		public Id<LeagueTeam> LeagueTeamId { get; set; }
+		public Id<Team> TeamId { get; set; }
 		public DateTimeOffset CreatedAtTime { get; set; }
-		public Guid CreatedByUserId { get; set; }
+		public Id<User> CreatedByUserId { get; set; }
 	}
 }

@@ -4,11 +4,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using OnlineRecLeague.Service.DataTypes;
+using OnlineRecLeague.Leagues;
+using OnlineRecLeague.LeagueMatches;
+using OnlineRecLeague.Games;
+using OnlineRecLeague.LeagueTeams;
+using OnlineRecLeague.TeamMembers;
+using OnlineRecLeague.Teams;
+using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.AppData
 {
 	internal class AppDataConnection
 	{
+		static AppDataConnection()
+		{
+			Dapper.SqlMapper.AddTypeHandler(new IdDapperConverter<Game>());
+			Dapper.SqlMapper.AddTypeHandler(new IdDapperConverter<League>());
+			Dapper.SqlMapper.AddTypeHandler(new IdDapperConverter<LeagueTeam>());
+			Dapper.SqlMapper.AddTypeHandler(new IdDapperConverter<LeagueMatch>());
+			Dapper.SqlMapper.AddTypeHandler(new IdDapperConverter<Team>());
+			Dapper.SqlMapper.AddTypeHandler(new IdDapperConverter<TeamMember>());
+			Dapper.SqlMapper.AddTypeHandler(new IdDapperConverter<User>());
+		}
+
 		internal static IDbConnection Create()
 		{
 			var connection = new NpgsqlConnection(ConnectionString.Value);

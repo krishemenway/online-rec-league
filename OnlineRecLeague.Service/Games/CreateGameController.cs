@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Users;
+using System;
 
 namespace OnlineRecLeague.Games
 {
@@ -29,5 +30,11 @@ namespace OnlineRecLeague.Games
 
 		private readonly IGameStore _gameStore;
 		private readonly IGameProfileFactory _gameProfileFactory;
+	}
+
+	public class CreateGameRequest
+	{
+		public string Name { get; set; }
+		public DateTimeOffset ReleaseDate { get; set; }
 	}
 }

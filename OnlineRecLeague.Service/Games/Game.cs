@@ -1,4 +1,5 @@
 ﻿using OnlineRecLeague.Leagues;
+using OnlineRecLeague.Service.DataTypes;
 using System;
 using System.Collections.Generic;
 
@@ -6,7 +7,7 @@ namespace OnlineRecLeague.Games
 {
 	public interface IGame
 	{
-		Guid GameId { get; }
+		Id<Game> GameId { get; }
 		string Name { get; }
 
 		DateTimeOffset ReleaseDate { get; }
@@ -24,7 +25,7 @@ namespace OnlineRecLeague.Games
 			_lazyLeagues = new Lazy<IReadOnlyList<ILeague>>(findAllLeaguesForGameFunc ?? (() => new LeagueStore().FindAll(this)));
 		}
 
-		public Guid GameId { get; set; }
+		public Id<Game> GameId { get; set; }
 		public string Name { get; set; }
 
 		public DateTimeOffset ReleaseDate { get; set; }

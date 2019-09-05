@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
 
@@ -50,5 +51,10 @@ namespace OnlineRecLeague.TeamMembers
 		private readonly IInviteToTeamStore _inviteToTeamStore;
 		private readonly ITeamMemberStore _teamMemberStore;
 		private readonly IUserSessionStore _userSessionStore;
+	}
+
+	public class JoinTeamRequest
+	{
+		public Id<Team> TeamId { get; set; }
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineRecLeague.Service.DataTypes;
+using OnlineRecLeague.Teams;
 
 namespace OnlineRecLeague.LeagueTeams
 {
@@ -21,7 +22,7 @@ namespace OnlineRecLeague.LeagueTeams
 
 	public class LeagueTeamViewModel
 	{
-		public Guid TeamId { get; set; }
+		public Id<Team> TeamId { get; set; }
 		public string Name { get; set; }
 	}
 }

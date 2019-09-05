@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
 using OnlineRecLeague.Leagues;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Users;
 using System;
 
@@ -34,7 +35,7 @@ namespace OnlineRecLeague.LeagueMatches
 
 	public class SetLeagueMatchTimeRequest
 	{
-		public Guid LeagueMatchId { get; set; }
+		public Id<LeagueMatch> LeagueMatchId { get; set; }
 		public DateTimeOffset MatchTime { get; set; }
 	}
 }

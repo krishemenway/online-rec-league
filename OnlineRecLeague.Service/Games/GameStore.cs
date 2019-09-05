@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
+using OnlineRecLeague.Service.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace OnlineRecLeague.Games
 	public interface IGameStore
 	{
 		IGame Save(CreateGameRequest createGameRequest);
-		IReadOnlyDictionary<Guid, IGame> FindGamesByGameId(params Guid[] gameIds);
+		IReadOnlyDictionary<Id<Game>, IGame> FindGamesByGameId(params Id<Game>[] gameIds);
 	}
 
 	internal class GameStore : IGameStore
@@ -25,12 +26,12 @@ namespace OnlineRecLeague.Games
 					(@Name, @ReleaseDate)
 					RETURNING game_id;";
 
-				var gameId = connection.Query<Guid>(sql, createGameRequest).Single();
+				var gameId = connection.Query<Id<Game>>(sql, createGameRequest).Single();
 				return FindGamesByGameId(new[] { gameId })[gameId];
 			}
 		}
 
-		public IReadOnlyDictionary<Guid, IGame> FindGamesByGameId(params Guid[] gameIds)
+		public IReadOnlyDictionary<Id<Game>, IGame> FindGamesByGameId(params Id<Game>[] gameIds)
 		{
 			using (var connection = AppDataConnection.Create())
 			{
@@ -43,7 +44,7 @@ namespace OnlineRecLeague.Games
 					WHERE public.game_id = any(@GameIds)";
 
 				return connection
-					.Query<GameRecord>(sql, new { gameIds })
+					.Query<GameRecord>(sql, new { GameIds = gameIds.ConvertToGuids().ToList() })
 					.Select(CreateGame)
 					.ToDictionary(x => x.GameId, x => x);
 			}
@@ -52,11 +53,18 @@ namespace OnlineRecLeague.Games
 		private IGame CreateGame(GameRecord gameRecord)
 		{
 			return new Game
-				{
-					GameId = gameRecord.GameId,
-					Name = gameRecord.Name,
-					ReleaseDate = gameRecord.ReleaseDate,
-				};
+			{
+				GameId = gameRecord.GameId,
+				Name = gameRecord.Name,
+				ReleaseDate = gameRecord.ReleaseDate,
+			};
 		}
+	}
+
+	public class GameRecord
+	{
+		public Id<Game> GameId { get; set; }
+		public string Name { get; set; }
+		public DateTimeOffset ReleaseDate { get; set; }
 	}
 }

@@ -1,4 +1,4 @@
-﻿using OnlineRecLeague.LeagueTeams;
+﻿using OnlineRecLeague.Service.DataTypes;
 
 namespace OnlineRecLeague.Leagues
 {
@@ -8,7 +8,7 @@ namespace OnlineRecLeague.Leagues
 		LeagueViewModel CreateDetailedViewModel(ILeague league);
 	}
 
-	internal class LeagueViewModelFactory : ILeagueViewModelFactory
+	public class LeagueViewModelFactory : ILeagueViewModelFactory
 	{
 		public LeagueViewModel CreateBriefViewModel(ILeague league)
 		{
@@ -27,5 +27,11 @@ namespace OnlineRecLeague.Leagues
 					Name = league.Name,
 				};
 		}
+	}
+
+	public class LeagueViewModel
+	{
+		public Id<League> LeagueId { get; set; }
+		public string Name { get; set; }
 	}
 }

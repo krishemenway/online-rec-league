@@ -2,8 +2,9 @@
 using Moq;
 using NUnit.Framework;
 using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Games;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Users;
-using System;
 
 namespace OnlineRecLeague.Leagues
 {
@@ -17,7 +18,7 @@ namespace OnlineRecLeague.Leagues
 			{
 				Name = "League Name",
 				UriPath = "UriPath",
-				SportId = Guid.NewGuid(),
+				GameId = Id<Game>.NewId(),
 			};
 
 			GivenUser = new UserBuilder();

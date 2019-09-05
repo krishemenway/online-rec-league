@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
 using System;
@@ -11,12 +12,12 @@ namespace OnlineRecLeague.TeamMembers
 	public interface ITeamMemberStore
 	{
 		void JoinTeam(IUser user, ITeam team);
-		IReadOnlyDictionary<Guid, IReadOnlyList<ITeamMember>> FindTeamMembers(IReadOnlyList<Guid> teamIds);
+		IReadOnlyDictionary<Id<Team>, IReadOnlyList<ITeamMember>> FindTeamMembers(IReadOnlyList<Id<Team>> teamIds);
 	}
 
 	public class TeamMemberStore : ITeamMemberStore
 	{
-		public IReadOnlyDictionary<Guid, IReadOnlyList<ITeamMember>> FindTeamMembers(IReadOnlyList<Guid> teamIds)
+		public IReadOnlyDictionary<Id<Team>, IReadOnlyList<ITeamMember>> FindTeamMembers(IReadOnlyList<Id<Team>> teamIds)
 		{
 			const string sql = @"
 				SELECT
@@ -57,5 +58,16 @@ namespace OnlineRecLeague.TeamMembers
 		{
 			return new TeamMember(record);
 		}
+	}
+
+	public class TeamMemberRecord
+	{
+		public Id<TeamMember> TeamMemberId { get; set; }
+
+		public Id<Team> TeamId { get; set; }
+		public Id<User> UserId { get; set; }
+
+		public string NickName { get; set; }
+		public DateTime JoinedTime { get; set; }
 	}
 }

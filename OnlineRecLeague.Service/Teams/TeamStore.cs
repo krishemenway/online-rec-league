@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.TeamMembers;
 using OnlineRecLeague.Users;
 using System;
@@ -10,29 +11,28 @@ namespace OnlineRecLeague.Teams
 {
 	public interface ITeamStore
 	{
-		bool TryFindTeam(Guid teamId, out ITeam team);
-		IReadOnlyList<ITeam> FindTeams(IReadOnlyList<Guid> teamIds);
+		bool TryFindTeam(Id<Team> teamId, out ITeam team);
+		IReadOnlyList<ITeam> FindTeams(IReadOnlyList<Id<Team>> teamIds);
 		ITeam CreateTeam(CreateTeamRequest request, IUser teamCreator);
 	}
 
 	public class TeamStore : ITeamStore
 	{
-		public bool TryFindTeam(Guid teamId, out ITeam team)
+		public bool TryFindTeam(Id<Team> teamId, out ITeam team)
 		{
 			team = FindTeams(new[] { teamId }).SingleOrDefault();
 			return team != null;
 		}
 
-		public IReadOnlyList<ITeam> FindTeams(IReadOnlyList<Guid> teamIds)
+		public IReadOnlyList<ITeam> FindTeams(IReadOnlyList<Id<Team>> teamIds)
 		{
 			const string sql = @"
 				SELECT
 					team_id as teamid,
 					name,
 					profile_content as profilecontent,
-					user_name_prefix as usernameprefix,
 					owner_user_id as owneruserid,
-					created_at as createdat
+					created_time as createdtime
 				FROM
 					public.team
 				WHERE
@@ -40,7 +40,7 @@ namespace OnlineRecLeague.Teams
 
 			using (var connection = AppDataConnection.Create())
 			{
-				var teamMembersByTeamId = new Dictionary<Guid, IReadOnlyList<ITeamMember>>();
+				var teamMembersByTeamId = new Dictionary<Id<Team>, IReadOnlyList<ITeamMember>>();
 
 				var teams = connection
 					.Query<TeamRecord>(sql, new { teamIds })
@@ -57,28 +57,27 @@ namespace OnlineRecLeague.Teams
 		{
 			const string sql = @"
 				INSERT INTO public.team
-				(name, owner_user_id, profile_content, user_name_prefix, owner_user_id, created_at)
+				(name, owner_user_id, profile_content, owner_user_id, created_time)
 				VALUES
-				(@Name, @OwnerUserId, @ProfileContent, @UserNamePrefix, @OwnerUserId, @CreatedAt)
+				(@Name, @OwnerUserId, @ProfileContent, @OwnerUserId, @CreatedTime)
 				RETURNING team_id;";
 
 			using (var connection = AppDataConnection.Create())
 			{
 				var args = new
-					{
-						request.Name,
-						request.ProfileContent,
-						request.UserNamePrefix,
-						OwnerUserId = teamCreator.UserId,
-						CreatedAt = teamCreator.DefaultTimezone.CurrentTime(),
-					};
+				{
+					request.Name,
+					request.ProfileContent,
+					OwnerUserId = teamCreator.UserId,
+					CreatedAt = teamCreator.DefaultTimezone.CurrentTime(),
+				};
 
-				var team_id = connection.Query<Guid>(sql, args).Single();
-				return TryFindTeam(team_id, out var team) ? team : throw new Exception("Somehow that team you saved doesn't exist now?");
+				var teamId = connection.Query<Id<Team>>(sql, args).Single();
+				return TryFindTeam(teamId, out var team) ? team : throw new Exception("Somehow that team you saved doesn't exist now?");
 			}
 		}
 
-		private void LoadTeamMembersForTeams(List<ITeam> teams, Dictionary<Guid, IReadOnlyList<ITeamMember>> referenceTeamMembersByTeamId)
+		private void LoadTeamMembersForTeams(List<ITeam> teams, Dictionary<Id<Team>, IReadOnlyList<ITeamMember>> referenceTeamMembersByTeamId)
 		{
 			var teamMembersFromDbByTeamId = new TeamMemberStore().FindTeamMembers(teams.Select(x => x.TeamId).ToList());
 
@@ -93,13 +92,21 @@ namespace OnlineRecLeague.Teams
 		private ITeam CreateTeam(TeamRecord record, Func<IReadOnlyList<ITeamMember>> findTeamMembersFunc)
 		{
 			return new Team(record.TeamId, findTeamMembersFunc)
-				{
-					Name = record.Name,
-					ProfileContent = record.ProfileContent,
-					UserNamePrefix = record.UserNamePrefix,
-					OwnerUserId = record.OwnerUserId,
-					CreatedAt = record.CreatedTime,
-				};
+			{
+				Name = record.Name,
+				ProfileContent = record.ProfileContent,
+				OwnerUserId = record.OwnerUserId,
+				CreatedTime = record.CreatedTime,
+			};
 		}
+	}
+
+	public class TeamRecord
+	{
+		public Id<Team> TeamId { get; set; }
+		public string Name { get; set; }
+		public string ProfileContent { get; set; }
+		public Id<User> OwnerUserId { get; set; }
+		public DateTime CreatedTime { get; set; }
 	}
 }

@@ -1,11 +1,12 @@
 ﻿using OnlineRecLeague.Regions;
+using OnlineRecLeague.Service.DataTypes;
 using System;
 
 namespace OnlineRecLeague.Users
 {
 	public interface IUser
 	{
-		Guid UserId { get; }
+		Id<User> UserId { get; }
 
 		string NickName { get; }
 		string RealName { get; }
@@ -29,12 +30,12 @@ namespace OnlineRecLeague.Users
 
 	public class User : IUser
 	{
-		public User(Guid userId)
+		public User(Id<User> userId)
 		{
 			UserId = userId;
 		}
 
-		public Guid UserId { get; }
+		public Id<User> UserId { get; }
 
 		public string NickName { get; set; }
 		public string RealName { get; set; }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
-using System;
+using OnlineRecLeague.Service.DataTypes;
 
 namespace OnlineRecLeague.Leagues
 {
@@ -53,7 +53,7 @@ namespace OnlineRecLeague.Leagues
 
 	public class FindLeagueRequest
 	{
-		public Guid? LeagueId { get; set; }
+		public Id<League>? LeagueId { get; set; }
 		public string Path { get; set; }
 	}
 }

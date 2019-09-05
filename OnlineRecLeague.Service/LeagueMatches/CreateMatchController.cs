@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Leagues;
+using OnlineRecLeague.LeagueTeams;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Users;
 using System;
 
@@ -20,9 +23,9 @@ namespace OnlineRecLeague.LeagueMatches
 
 	public class CreateMatchRequest
 	{
-		public Guid LeagueId { get; set; }
+		public Id<League> LeagueId { get; set; }
 
-		public Guid HomeLeagueTeamId { get; set; }
-		public Guid AwayLeagueTeamId { get; set; }
+		public Id<LeagueTeam> HomeLeagueTeamId { get; set; }
+		public Id<LeagueTeam> AwayLeagueTeamId { get; set; }
 	}
 }

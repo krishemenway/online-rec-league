@@ -34,4 +34,10 @@ namespace OnlineRecLeague.Teams
 		private readonly ITeamProfileFactory _teamProfileFactory;
 		private readonly IUserSessionStore _userSessionStore;
 	}
+
+	public class CreateTeamRequest
+	{
+		public string Name { get; set; }
+		public string ProfileContent { get; set; }
+	}
 }

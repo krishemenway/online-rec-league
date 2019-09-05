@@ -1,25 +1,35 @@
-﻿using OnlineRecLeague.LeagueTeams;
-using System;
+﻿using OnlineRecLeague.Leagues;
+using OnlineRecLeague.LeagueTeams;
+using OnlineRecLeague.Service.DataTypes;
 
 namespace OnlineRecLeague.LeagueMatches
 {
 	public interface ILeagueMatch
 	{
-		Guid LeagueMatchId { get; }
+		Id<LeagueMatch> LeagueMatchId { get; }
+		Id<League> LeagueId { get; }
 
-		Guid LeagueId { get; }
+		Id<LeagueTeam> HomeLeagueTeamId { get; }
+		ILeagueTeam HomeTeam { get; }
 
-		Guid HomeLeagueTeamId { get; }
-		Guid AwayLeagueTeamId { get; }
+		Id<LeagueTeam> AwayLeagueTeamId { get; }
+		ILeagueTeam AwayTeam { get; }
+
+		ILeagueTeam WinningTeam { get; }
 	}
 
-	internal class LeagueMatch : ILeagueMatch
+	public class LeagueMatch : ILeagueMatch
 	{
-		public Guid LeagueMatchId { get; set; }
-		public Guid LeagueId { get; set; }
+		public Id<LeagueMatch> LeagueMatchId { get; set; }
+		public Id<League> LeagueId { get; set; }
 
-		public Guid HomeLeagueTeamId { get; set; }
-		public Guid AwayLeagueTeamId { get; set; }
+		public Id<LeagueTeam> HomeLeagueTeamId { get; set; }
+		public ILeagueTeam HomeTeam { get; set; }
+
+		public Id<LeagueTeam> AwayLeagueTeamId { get; set; }
+		public ILeagueTeam AwayTeam { get; set; }
+
+		public ILeagueTeam WinningTeam { get; set; }
 
 		public override bool Equals(object other)
 		{

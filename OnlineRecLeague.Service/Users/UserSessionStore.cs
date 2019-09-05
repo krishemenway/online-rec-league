@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using OnlineRecLeague.Service.DataTypes;
 using System;
 
 namespace OnlineRecLeague.Users
@@ -10,7 +11,7 @@ namespace OnlineRecLeague.Users
 		void SetUserInSession(ISession session, IUser user);
 	}
 
-	internal class UserSessionStore : IUserSessionStore
+	public class UserSessionStore : IUserSessionStore
 	{
 		public UserSessionStore(IUserStore userStore = null)
 		{
@@ -21,7 +22,7 @@ namespace OnlineRecLeague.Users
 		{
 			user = null;
 
-			if (!Guid.TryParse(session.GetString("LoggedInUser"), out var userId))
+			if (!Id<User>.TryParse(session.GetString("LoggedInUser"), out var userId))
 			{
 				return false;
 			}

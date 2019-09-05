@@ -1,9 +1,9 @@
-﻿using System;
+﻿using OnlineRecLeague.Service.DataTypes;
 
 namespace OnlineRecLeague.Users
 {
 	public class FindProfileRequest
 	{
-		public Guid UserId { get; set; }
+		public Id<User> UserId { get; set; }
 	}
 }

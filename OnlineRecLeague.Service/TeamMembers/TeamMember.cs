@@ -1,4 +1,5 @@
 ﻿using System;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
 
@@ -24,13 +25,13 @@ namespace OnlineRecLeague.TeamMembers
 			JoinedTime = record.JoinedTime;
 		}
 
-		public Guid TeamMemberId { get; }
+		public Id<TeamMember> TeamMemberId { get; }
 
 		public IUser User { get; set; }
 		public ITeam Team { get; set; }
 
-		public Guid TeamId { get; set; }
-		public Guid UserId { get; set; }
+		public Id<Team> TeamId { get; set; }
+		public Id<User> UserId { get; set; }
 
 		public string NickName { get; set; }
 		public DateTimeOffset JoinedTime { get; set; }

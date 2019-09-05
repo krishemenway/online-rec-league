@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineRecLeague.DataTypes;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Users;
 using System;
 
@@ -16,5 +17,10 @@ namespace OnlineRecLeague.Games
 		{
 			throw new NotImplementedException();
 		}
+	}
+
+	public class FindGameByIdRequest
+	{
+		public Id<Game> GameId { get; set; }
 	}
 }

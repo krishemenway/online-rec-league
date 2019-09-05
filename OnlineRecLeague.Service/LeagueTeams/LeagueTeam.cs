@@ -1,37 +1,39 @@
 ﻿using System;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Teams;
+using OnlineRecLeague.Users;
 
 namespace OnlineRecLeague.LeagueTeams
 {
 	public interface ILeagueTeam
 	{
-		Guid LeagueTeamId { get; }
+		Id<LeagueTeam> LeagueTeamId { get; }
 
-		Guid TeamId { get; }
+		Id<Team> TeamId { get; }
 		ITeam Team { get; }
 
 		string Name { get; }
 
 		DateTimeOffset CreatedAtTime { get; }
-		Guid CreatedByUserId { get; }
+		Id<User> CreatedByUserId { get; }
 	}
 
 	public class LeagueTeam : ILeagueTeam
 	{
-		public LeagueTeam(Guid leagueTeamId)
+		public LeagueTeam(Id<LeagueTeam> leagueTeamId)
 		{
 			LeagueTeamId = leagueTeamId;
 		}
 
-		public Guid LeagueTeamId { get; }
+		public Id<LeagueTeam> LeagueTeamId { get; }
 
-		public Guid TeamId { get; set; }
+		public Id<Team> TeamId { get; set; }
 		public ITeam Team { get; set; }
 
 		public string Name { get; set; }
 
 		public DateTimeOffset CreatedAtTime { get; set; }
-		public Guid CreatedByUserId { get; set; }
+		public Id<User> CreatedByUserId { get; set; }
 
 		public override bool Equals(object other)
 		{

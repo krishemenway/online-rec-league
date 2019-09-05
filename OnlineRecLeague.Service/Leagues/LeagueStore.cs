@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
 using OnlineRecLeague.Games;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Service.LeagueMatchStrategies;
 using OnlineRecLeague.Users;
 using System;
@@ -11,7 +12,7 @@ namespace OnlineRecLeague.Leagues
 {
 	public interface ILeagueStore
 	{
-		ILeague Find(Guid leagueId);
+		ILeague Find(Id<League> leagueId);
 		ILeague FindByPath(string path);
 
 		IReadOnlyList<ILeague> FindAll();
@@ -22,7 +23,7 @@ namespace OnlineRecLeague.Leagues
 
 	internal class LeagueStore : ILeagueStore
 	{
-		public ILeague Find(Guid leagueId)
+		public ILeague Find(Id<League> leagueId)
 		{
 			const string sql = @"
 				SELECT
@@ -105,7 +106,7 @@ namespace OnlineRecLeague.Leagues
 				INSERT INTO public.league
 				(name, uri_path, game_id, rules, created_by_user_id)
 				VALUES
-				(@Name, @UriPath, @SportId, @Rules, @CreatedByUserId)
+				(@Name, @UriPath, @GameId, @Rules, @CreatedByUserId)
 				RETURNING league_id;";
 
 			using (var connection = AppDataConnection.Create())
@@ -114,21 +115,20 @@ namespace OnlineRecLeague.Leagues
 				{
 					createLeagueRequest.Name,
 					createLeagueRequest.UriPath,
-					createLeagueRequest.SportId,
+					createLeagueRequest.GameId,
 					createLeagueRequest.Rules,
 					createdByUser.UserId,
 				};
 
-				var leagueId = connection.Query<Guid>(sql, sqlParams).Single();
-				return Find(leagueId);
+				return Find(connection.Query<Id<League>>(sql, sqlParams).Single());
 			}
 		}
 	}
 
 	public class LeagueRecord
 	{
-		public Guid LeagueId { get; set; }
-		public Guid GameId { get; set; }
+		public Id<League> LeagueId { get; set; }
+		public Id<Game> GameId { get; set; }
 
 		public LeagueMatchStrategies LeagueMatchStrategy { get; set; }
 
@@ -137,6 +137,6 @@ namespace OnlineRecLeague.Leagues
 
 		public string Rules { get; set; }
 
-		public Guid CreatedByUserId { get; set; }
+		public Id<User> CreatedByUserId { get; set; }
 	}
 }

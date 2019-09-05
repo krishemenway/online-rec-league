@@ -2,6 +2,7 @@
 using OnlineRecLeague.AppData;
 using OnlineRecLeague.Leagues;
 using OnlineRecLeague.LeagueTeams;
+using OnlineRecLeague.Service.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace OnlineRecLeague.LeagueMatches
 		IReadOnlyList<ILeagueMatch> FindAll(ILeagueTeam leagueTeam);
 
 		void Create(CreateMatchRequest saveLeagueMatchRequest);
-		void SetMatchTime(Guid leagueMatchId, DateTimeOffset matchTime);
+		void SetMatchTime(Id<LeagueMatch> leagueMatchId, DateTimeOffset matchTime);
 		void ReportResults(ILeagueMatch match, bool matchSuccessful, string matchResults, DateTimeOffset matchResultsReportedTime);
 	}
 
@@ -94,7 +95,7 @@ namespace OnlineRecLeague.LeagueMatches
 			}
 		}
 
-		public void SetMatchTime(Guid leagueMatchId, DateTimeOffset matchTime)
+		public void SetMatchTime(Id<LeagueMatch> leagueMatchId, DateTimeOffset matchTime)
 		{
 			const string sql = @"
 				UPDATE public.league_match
@@ -124,7 +125,7 @@ namespace OnlineRecLeague.LeagueMatches
 			}
 		}
 
-		private ILeagueMatch Create(LeagueMatchRecord record, IReadOnlyDictionary<Guid, ILeagueTeam> leagueTeamsByLeagueTeamId)
+		private ILeagueMatch Create(LeagueMatchRecord record, IReadOnlyDictionary<Id<LeagueTeam>, ILeagueTeam> leagueTeamsByLeagueTeamId)
 		{
 			return new LeagueMatch
 			{
@@ -132,18 +133,23 @@ namespace OnlineRecLeague.LeagueMatches
 				LeagueId = record.LeagueId,
 					
 				HomeLeagueTeamId = record.HomeLeagueTeamId,
+				HomeTeam = leagueTeamsByLeagueTeamId[record.HomeLeagueTeamId],
+
 				AwayLeagueTeamId = record.AwayLeagueTeamId,
+				AwayTeam = leagueTeamsByLeagueTeamId[record.AwayLeagueTeamId],
+
+				WinningTeam = record.WinningLeagueTeamId.HasValue ? leagueTeamsByLeagueTeamId[record.WinningLeagueTeamId.Value] : null,
 			};
 		}
 	}
 
 	public class LeagueMatchRecord
 	{
-		public Guid LeagueMatchId { get; set; }
-		public Guid LeagueId { get; set; }
+		public Id<LeagueMatch> LeagueMatchId { get; set; }
+		public Id<League> LeagueId { get; set; }
 
-		public Guid HomeLeagueTeamId { get; set; }
-		public Guid AwayLeagueTeamId { get; set; }
+		public Id<LeagueTeam> HomeLeagueTeamId { get; set; }
+		public Id<LeagueTeam> AwayLeagueTeamId { get; set; }
 
 		public DateTimeOffset MatchCreatedTime { get; set; }
 		public DateTimeOffset? MatchStartTime { get; set; }
@@ -151,6 +157,6 @@ namespace OnlineRecLeague.LeagueMatches
 
 		public string MatchResultsJson { get; set; }
 
-		public Guid WinningLeagueTeamId { get; set; }
+		public Id<LeagueTeam>? WinningLeagueTeamId { get; set; }
 	}
 }

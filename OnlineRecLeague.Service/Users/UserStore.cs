@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
 using OnlineRecLeague.Regions;
+using OnlineRecLeague.Service.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace OnlineRecLeague.Users
 {
 	public interface IUserStore
 	{
-		bool TryFindUserById(Guid userId, out IUser user);
+		bool TryFindUserById(Id<User> userId, out IUser user);
 		bool TryFindUserByEmail(string emailAddress, out IUser user);
 
-		IReadOnlyList<IUser> FindUsers(IReadOnlyList<Guid> userIds);
+		IReadOnlyList<IUser> FindUsers(IReadOnlyList<Id<User>> userIds);
 		IReadOnlyList<IUser> FindUsersByQuery(string query);
 
 		IUser CreateNewUser(CreateUserRequest request);
@@ -29,7 +30,7 @@ namespace OnlineRecLeague.Users
 			_regionStore = regionStore ?? new RegionStore();
 		}
 
-		public bool TryFindUserById(Guid userId, out IUser user)
+		public bool TryFindUserById(Id<User> userId, out IUser user)
 		{
 			user = FindUsers(new[] { userId }).FirstOrDefault();
 			return user != null;
@@ -61,7 +62,7 @@ namespace OnlineRecLeague.Users
 			}
 		}
 
-		public IReadOnlyList<IUser> FindUsers(IReadOnlyList<Guid> userIds)
+		public IReadOnlyList<IUser> FindUsers(IReadOnlyList<Id<User>> userIds)
 		{
 			const string sql = @"
 				SELECT
@@ -82,7 +83,7 @@ namespace OnlineRecLeague.Users
 
 			using (var connection = AppDataConnection.Create())
 			{
-				return connection.Query<UserRecord>(sql, new { userIds }).Select(Create).ToList();
+				return connection.Query<UserRecord>(sql, new { UserIds = userIds.ConvertToGuids().ToList() }).Select(Create).ToList();
 			}
 		}
 
@@ -133,7 +134,7 @@ namespace OnlineRecLeague.Users
 						EmailConfirmationCode = Guid.NewGuid(),
 					};
 
-				var userId = connection.QuerySingle<Guid>(sql, sqlParams);
+				var userId = connection.QuerySingle<Id<User>>(sql, sqlParams);
 				return FindUsers(new[] { userId }).Single();
 			}
 		}

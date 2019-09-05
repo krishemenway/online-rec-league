@@ -1,10 +1,11 @@
-﻿using System;
+﻿using OnlineRecLeague.Service.DataTypes;
+using System;
 
 namespace OnlineRecLeague.Users
 {
 	internal class UserRecord
 	{
-		public Guid UserId { get; set; }
+		public Id<User> UserId { get; set; }
 
 		public string NickName { get; set; }
 		public string RealName { get; set; }

@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using OnlineRecLeague.AppData;
+using OnlineRecLeague.Service.DataTypes;
 using OnlineRecLeague.Teams;
 using OnlineRecLeague.Users;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,14 +10,14 @@ namespace OnlineRecLeague.TeamMembers
 {
 	public interface IInviteToTeamStore
 	{
-		IReadOnlyList<Guid> FindOpenInvitesForUsers(IUser user);
+		IReadOnlyList<Id<Team>> FindOpenInvitesForUsers(IUser user);
 		void SaveInviteToTeam(ITeam team, string email);
 		void RemoveInviteToTeam(ITeam team, string email);
 	}
 
 	public class InviteToTeamStore : IInviteToTeamStore
 	{
-		public IReadOnlyList<Guid> FindOpenInvitesForUsers(IUser user)
+		public IReadOnlyList<Id<Team>> FindOpenInvitesForUsers(IUser user)
 		{
 			const string sql = @"
 				SELECT team_id
@@ -26,7 +26,7 @@ namespace OnlineRecLeague.TeamMembers
 
 			using (var connection = AppDataConnection.Create())
 			{
-				return connection.Query<Guid>(sql, new { user.Email }).ToList();
+				return connection.Query<Id<Team>>(sql, new { user.Email }).ToList();
 			}
 		}
 

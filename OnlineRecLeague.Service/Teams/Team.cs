@@ -1,4 +1,6 @@
-﻿using OnlineRecLeague.TeamMembers;
+﻿using OnlineRecLeague.Service.DataTypes;
+using OnlineRecLeague.TeamMembers;
+using OnlineRecLeague.Users;
 using System;
 using System.Collections.Generic;
 
@@ -6,13 +8,12 @@ namespace OnlineRecLeague.Teams
 {
 	public interface ITeam
 	{
-		Guid TeamId { get; }
+		Id<Team> TeamId { get; }
 		string Name { get; }
 
-		DateTimeOffset CreatedAt { get; }
-		Guid OwnerUserId { get; }
+		DateTimeOffset CreatedTime { get; }
+		Id<User> OwnerUserId { get; }
 
-		string UserNamePrefix { get; }
 		string ProfileContent { get; }
 
 		IReadOnlyList<ITeamMember> TeamMembers { get; }
@@ -20,21 +21,20 @@ namespace OnlineRecLeague.Teams
 
 	public class Team : ITeam
 	{
-		public Team(Guid teamId, Func<IReadOnlyList<ITeamMember>> findTeamMembersFunc = null)
+		public Team(Id<Team> teamId, Func<IReadOnlyList<ITeamMember>> findTeamMembersFunc = null)
 		{
 			TeamId = teamId;
 			_lazyTeamMembers = new Lazy<IReadOnlyList<ITeamMember>>(findTeamMembersFunc ?? (() => new TeamMemberStore().FindTeamMembers(new[]{TeamId})[TeamId]));
 		}
 
-		public Guid TeamId { get; }
+		public Id<Team> TeamId { get; }
 		public string Name { get; set; }
 
-		public DateTimeOffset CreatedAt { get; set; }
-		public Guid OwnerUserId { get; set; }
+		public DateTimeOffset CreatedTime { get; set; }
+		public Id<User> OwnerUserId { get; set; }
 
 		public IReadOnlyList<ITeamMember> TeamMembers => _lazyTeamMembers.Value;
 
-		public string UserNamePrefix { get; set; }
 		public string ProfileContent { get; set; }
 
 		public override bool Equals(object other)
